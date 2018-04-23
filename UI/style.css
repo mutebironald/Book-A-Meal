@@ -124,6 +124,7 @@ button,input[type="submit"]{
     border:solid steelblue;
     background: white;
     color:steelblue;
+    font-size: 0.9em;
 
 }
 
