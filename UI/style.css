@@ -34,6 +34,11 @@ nav{
 
 nv ul{
     overflow: hidden;
+    -webkit-transition: max-height 0.4s;
+    -ms-transition: max-height 0.4s;
+    -moz-transition: max-height 0.4s;
+    -o-transition: max-height 0.4s;
+    transition: max-height 0.4s;
 }
 
 nav li{
@@ -153,7 +158,7 @@ footer{
 
 .handle{
     width:100%;
-    background: #005c48;
+    background: rgb(125, 76, 150);
     text-align: left;
     box-sizing: border-box;
     padding: 15px 10px;
@@ -162,7 +167,7 @@ footer{
     display: none;
 }
 
-@media screen and (max-width: 884px){
+@media screen and (max-width: 357px){
 
     nav ul{
         max-height: 0;
@@ -180,5 +185,6 @@ footer{
 
     .handle{
         display: block;
+
     }
 }

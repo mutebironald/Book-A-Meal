@@ -7,6 +7,7 @@
     <title>Account</title>
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
     <header>
@@ -64,6 +65,14 @@
     <footer>
         <p>&copy; Book-A-Meal 2018</p>
     </footer>
+
+    <script>
+            $('.handle').on('click', function(){
+                $('nav ul').toggleClass('showing');
+            })
+    </script>
+
+
     
 </body>
 </html>
