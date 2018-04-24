@@ -146,6 +146,8 @@ input:focus{
 table{
     border-collapse: collapse;
     width: 100%;
+    margin: auto;
+    
 }
 
 table, th, td{
