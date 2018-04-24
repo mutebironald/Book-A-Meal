@@ -1,15 +1,15 @@
 body{
     text-align: center;
     margin: 0;
-    padding:0;
+    padding: 0;
     background-color: yellow;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 400;
 }
 
 .container{
-    width:80%;
-    margin:0 auto;
+    width: 80%;
+    margin: 0 auto;
 }
 
 header{
@@ -17,13 +17,13 @@ header{
 }
 
 header::after{
-    content:'';
+    content: '';
     display: table;
     clear: both;
 }
 .logo{
     float: left;
-    padding:10px 0;
+    padding: 10px 0;
 }
 nav{
     float: right;
@@ -45,17 +45,17 @@ nav li{
     font-size: larger;
     display: inline-block;
     margin: 0 35px;
-    margin-left:70px;
-    padding-top:25px;
+    margin-left: 70px;
+    padding-top: 25px;
 
-    position:relative;
+    position: relative;
 
 }
 
 nav a{
     color:white;
-    text-transform:none;
-    text-decoration:none;
+    text-transform: none;
+    text-decoration: none;
     
 }
 
@@ -65,19 +65,19 @@ nav a:hover{
 }
 
 nav a::before{
-    content:'';
+    content: '';
     display: block;
-    height:5px;
+    height: 5px;
     background-color: black;
 
-    position:absolute;
+    position: absolute;
     top: 0;
-    width:0%;
-    transition:all ease-in-out 200ms;
+    width: 0%;
+    transition: all ease-in-out 200ms;
 }
 
 nav a:hover::before{
-    width:100%;
+    width: 100%;
 }
 
 
@@ -87,46 +87,46 @@ h1{
     color:fuchsia;
 }
 h2{
-    font-size:25px;
+    font-size: 25px;
     color:fuchsia;
 }
 form{
-    margin:20px auto;
+    margin: 20px auto;
     width: 320px;
     color:purple;
 }
 input{
-    padding:10px;
-    font-size:inherit;
+    padding: 10px;
+    font-size: inherit;
 }
 
 input[type="text"]{
-    display:block;
-    margin-bottom:25px;
+    display: block;
+    margin-bottom: 25px;
     width: 100%;
     border: 4px solid dodgerblue;
     background:#FAF6D9;
 }
 
 input[type="password"]{
-    display:block;
-    margin-bottom:25px;
+    display: block;
+    margin-bottom: 25px;
     width: 100%;
     border: 4px solid green;
     background:#FAF6D9;
 }
 
 input[type="email"]{
-    display:block;
+    display: block;
     margin-bottom: 25px;
     width: 100%;
-    border:4px solid green;
+    border: 4px solid green;
     background: #FAF6D9;
 }
 button,input[type="submit"]{
-    width:344px;
-    height:45px;
-    border:solid steelblue;
+    width: 344px;
+    height: 45px;
+    border: solid steelblue;
     background: white;
     color:steelblue;
     font-size: 0.9em;
@@ -148,8 +148,8 @@ section{
 
 footer{
     position: fixed;
-    left:0;
-    bottom:0;
+    left: 0;
+    bottom: 0;
     width: 100%;
     background-color:brown;
     color: white;
@@ -157,12 +157,12 @@ footer{
 }
 
 .handle{
-    width:100%;
+    width: 100%;
     background: rgb(125, 76, 150);
     text-align: left;
     box-sizing: border-box;
     padding: 15px 10px;
-    cursor:pointer;
+    cursor: pointer;
 
     display: none;
 }
@@ -176,7 +176,7 @@ footer{
         max-height:20em;
     }
     nav ul li{
-        box-sizing:border-box;
+        box-sizing: border-box;
         width: 100%;
         padding: 15px;
         text-align: left;
