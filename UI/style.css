@@ -17,7 +17,6 @@ header{
 }
 
 header::after{
-    content: '';
     display: table;
     clear: both;
 }
@@ -32,7 +31,7 @@ nav{
     padding:20px 0;
 }
 
-nv ul{
+nav ul{
     overflow: hidden;
     -webkit-transition: max-height 0.4s;
     -ms-transition: max-height 0.4s;
@@ -65,7 +64,6 @@ nav a:hover{
 }
 
 nav a::before{
-    content: '';
     display: block;
     height: 5px;
     background-color: black;
