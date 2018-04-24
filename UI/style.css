@@ -13,7 +13,7 @@ body{
 }
 
 header{
-    background: rgb(129, 116, 0);
+    background: #817400;
 }
 
 header::after{
@@ -28,7 +28,7 @@ nav{
     float: right;
     list-style: none;
     text-align: center;
-    padding:20px 0;
+    padding: 20px 0;
 }
 
 nav ul{
@@ -205,7 +205,7 @@ footer{
         max-height: 0;
     }
     .showing{
-        max-height:20em;
+        max-height: 20em;
     }
     nav ul li{
         box-sizing: border-box;
