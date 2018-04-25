@@ -30,10 +30,10 @@
     <div class="container">
         <h2>Meals </h2>:
 
-            <table>
+            <table class="menu">
                 <tr>
-                    <th>Meal Name</th>
-                    <th>URL</th>
+                    <th>Name</th>
+                    <th>Price</th>
                     <th>Delete</th>
                     <th>Meal ID</th>
                 </tr>
@@ -41,9 +41,9 @@
                 <form action="/account/detetemeal">
                     <tr>
                         <td>Meal Name</td>
-                        <td>Meal Url</td>
-                        <td><input type="submit" value="Delete"></td>
-                        <td><input type="text" name="mealid" placeholder="Meal ID" size="5"  hidden></td>
+                        <td>Meal Price</td>
+                        <td><button class="del-btn" style="float:left"> Delete</button></td>
+                        <td>Meal ID</td>
                     </tr>
                 
                 </form>
@@ -53,7 +53,7 @@
 
             <h2>Add new Meal </h2>
             <form class="" action="/account/createmeal" method="POST">
-                <input type="text" name="mealnumber" placeholder="Meal number or name" id="">
+                <input type="text" name="mealnumber" placeholder="Meal name or ID" id="">
                 <input type="submit" value="Create" class="btn btn-primary">
             </form>
     </div>
