@@ -7,3 +7,5 @@ python:
 script:
 
  - python test_user.py
+
+ echo "todo"
