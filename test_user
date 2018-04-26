@@ -48,7 +48,6 @@ class TestUser(unittest.TestCase):
         self.assertIn(u'token',result)
         self.assertEqual(login.status_code, 200)
 
-    
 
 if __name__=="__main__":
     unittest.main()
