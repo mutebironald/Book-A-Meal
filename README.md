@@ -30,7 +30,6 @@ f)PostgreSQL
 pip install -r requirements
 ```
 
-
 ####  User Interface:
 
 Here  [Click Me](https://mutebironald4.github.io/index.html)
@@ -48,5 +47,5 @@ c) Activate virtual environment env\Scripts\activate
 
  - Write MORE Tests
  - Improve my models
-
-
+  - Add Travis CI
+ 
