@@ -1,21 +1,52 @@
 # Book-A-Meal
+
 Our application is a meal booking app that allows customers to make food orders and helps the food vendor know what the customers want to eat.
 
-Tech used:
+  - Type some Markdown on the left
+  - See HTML in the right
+  - Magic
+
+# Functions
+Sign in User
+Sign up User
+Create Menu
+Add meals to Menu
+Edit order
+Delete Meal
+
+### Tech
+
+Book-A-Meal uses a number of open source technologies:
 a)HTML
 b)CSS
 c)Git
 d)python 2.7 or higher
+e)Flask
+f)PostgreSQL
 
-To install virtual environment pip install virtualenv for python 2.X pip3 install virtualenv
-To setup virtual environment virtualenv env
-To activate virtual environment env\scripts\activate
+### Installation
 
-UI: https://mutebironald4.github.io/index.html
+```sh
+pip install -r requirements
+```
 
-How to use the api:
-The api has two versions running.
-Navigate to the following endpoints in browser 127.0.0.1:5000/endpointurl
 
-Author:
-Ronald Mutebi
+####  User Interface:
+
+Here  [Click Me](https://mutebironald4.github.io/index.html)
+
+### Create a virtualenv, and activate it:
+a) To install virtual environment pip install virtualenv for python 2.x pip3 install virtualenv
+b) Setup virtual environment virtualenv env
+c) Activate virtual environment env\Scripts\activate
+
+### To see the application, access this url in your browser:
+(http://localhost:5000)
+
+
+### Todos
+
+ - Write MORE Tests
+ - Improve my models
+
+
