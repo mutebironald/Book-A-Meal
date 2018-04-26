@@ -3,12 +3,9 @@ python:
   - "2.7"
 
 
-# command to install dependencies
-install:
-  - pip install coverage
-  - pip install requirements.txt
 # command to run tests
 script:
+  
   - python manage.py run_test #pip setup.py install
   - python manage.py cover
 after_success:
