@@ -2,9 +2,8 @@
 
 Our application is a meal booking app that allows customers to make food orders and helps the food vendor know what the customers want to eat.
 
-  - Type some Markdown on the left
-  - See HTML in the right
-  - Magic
+[![Build Status](https://travis-ci.org/mutebironald4/Book-A-Meal.svg?branch=master)](https://travis-ci.org/mutebironald4/Book-A-Meal)
+
 
 # Functions
 Sign in User
