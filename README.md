@@ -15,7 +15,6 @@ Our application is a meal booking app that allows customers to make food orders 
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg)
 
 
-
 # Functions
 Sign in User
 Sign up User
