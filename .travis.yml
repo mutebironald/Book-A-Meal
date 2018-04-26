@@ -8,4 +8,4 @@ script:
 
  - python test_user.py
 
- echo "todo"
+ - echo "todo"
