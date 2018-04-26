@@ -3,7 +3,7 @@ class User():
     USERS = [{'id':1, 'email':'ronald@gmail.com', 'password':'123456', 'authenticated':False},
             {'id':2, 'email':'mutebi@gmail.com', 'password':'123hdg', 'authenticated':True}]
 
-    def get_user(self, email, password):
+    def login_user(self, email, password):
         """This represents a sign/login in"""
         user = [x for x in USERS if x.get('email') ==email if x.get('password')==password]
 
@@ -26,20 +26,6 @@ class User():
 
 
 
-    def add_user(self, email, password ):
-        USERS.append({'id': str(number), 'email': email, 'password':password})
-        return "You have successfully registered"
-
-    def get_requests(self, owner_id):
-        return USERS
-
-    def delete_request(self, request_id):
-        for i, request [ ]:
-            if requests[ ]:
-                del USERS[i]
-                break
-
-
 class Order():
 
     ORDERS = [{'order_id':3, 'user_id':'id', 'meal':'meal_name'}]
@@ -49,7 +35,8 @@ class Order():
         return all_orders
 
     def get_specific order(order_id):
-        specific_order = [  for k in ORDERS if order_id if ]
+        specific_order = [ k for k in ORDERS if order_id =ORDERS['orderid'] ]
+        return specific_order
 
 
 class Menu():
