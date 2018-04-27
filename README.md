@@ -2,9 +2,7 @@
 
 Our application is a meal booking app that allows customers to make food orders and helps the food vendor know what the customers want to eat.
 
-  - Type some Markdown on the left
-  - See HTML in the right
-  - Magic
+
 
 # Functions
 Sign in User
