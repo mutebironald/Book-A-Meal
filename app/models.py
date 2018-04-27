@@ -34,8 +34,8 @@ class Order():
         all_orders = [ d for d in ORDERS ]
         return all_orders
 
-    def get_specific order(order_id):
-        specific_order = [ k for k in ORDERS if order_id =ORDERS['orderid'] ]
+    def get_specific order('order_id'):
+        specific_order = [ k for k in ORDERS if order_id =ORDERS['order_id'] ]
         return specific_order
 
 
