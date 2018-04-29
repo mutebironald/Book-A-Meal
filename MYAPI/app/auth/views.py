@@ -2,6 +2,7 @@ from flask import render_template, jsonify, request, make_response
 
 from . import auth
 
+
 import re
 
 from app.models import User, USERS
@@ -17,7 +18,7 @@ def loginpage():
     Render the login template on the /login
     """
        
-    email = request.json_get['email']
+    email = request.get['email']
     password = request.json_get['password']
     password2 = request.json_get['password2']
     if not re.match(r"([\w\.-]+)@([\w\.-]+)(\.[\w\.]+$)", email):
@@ -41,16 +42,16 @@ def loginpage():
     
 
 
-@auth.route('/api/v1/auth/register', methods=['POST'])
+@auth.route('/api/auth/signup', methods=['POST'])
 def register():
     """
     Render the registration template on the /register route
     """
-    email = request.json_get['email']
-    password = request.json_get['password']
-    new_user = User(email, password) 
-    new_user.register_user(new_user)  
+    email = request.json_get()['email']
+    password = request.json_get()['password']
+    """new_user = User(email, password) 
+    new_user.register_user(new_user)  """
+    return jsonify({'message':password})
 
-    
 
     
