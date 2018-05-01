@@ -1,58 +1,87 @@
 import datetime
 
 
-#MOCK_USERS = {'ronald@gmail.com' : '123456'}
-
 MOCK_USERS = [
     {"email": "ronald@example.com",
      "salt": "8Fb23mMNHD5Zb8pr2qWA3PE9bH0=",
-     "hashed": "1736f83698df3f8153c1fbd6ce2840f8aace4f200771a46672635374073cc876cf0aa6a31f780e576578f791b5555b50df46303f0c3a7f2d21f91aa1429ac22e"}]
+     "hashed": "1736f83698df3f8153c1fbd6ce2840f8aace4f200771a46672635374073cc876cf0aa6a31f780e576578f791b5555b50df46303f0c3a7f2d21f91aa1429ac22e"
+     }]
 
 MOCK_MEALS = [{
-    '_id': '1',
-     'mealname': 'Beef with Rice',
-     'owner':'ronald@example.com'}]
+    '_id': 1,
+    'meal_name': 'Beef with Rice',
+    'owner':'ronald@example.com'
+    }]
 
 MOCK_ORDERS = [{
-    "_id": "1",
+    "_id": 1,
+    "meal_name": "Beef with Rice", 
+    "meal_id": "1", 
+    "time": datetime.datetime.utcnow()
+    }]
+
+
+MOCK_MENUS = [{
+     "_id": 1,
      "meal_name": "Beef with Rice", 
-     "meal_id": "1", 
-     "time": datetime.datetime.utcnow()}]
+     "meal_id": "1"
+     }]   
+
 
 class MockDBHelper:
+    """This class handles all methods associated with the user, meals, menu and order."""
 
     def get_user(self, email):
-        user = [x for x in MOCK_USERS if x.get("email") == email]
-        if user:
-            return user[0]
+        """Helps am already registered user to log in."""
+        available_user = [user for user in MOCK_USERS if user["email"] == email]
+        if available_user:
+            return available_user[0]
         return None
 
     def add_user(self, email, salt, hashed):
-        MOCK_USERS.append({"email" : email, "salt": salt, "hashed":hashed})
+        """Enables user registration or signup"""
+        MOCK_USERS.append({
+            "email" : email, 
+            "salt": salt,
+            "hashed":hashed
+            })
 
 
-    def add_meal(self, mealname, owner):
-        MOCK_MEALS.append({'_id': MOCK_MEALS[-1]['_id'] + 1 , 'mealname': mealname, 'owner': owner})
-        return mealname
+    def add_meal(self, meal_name, owner):
+        """Enables caterer to add a meal option"""
+        MOCK_MEALS.append({
+            '_id': MOCK_MEALS[-1]['_id'] + 1 ,
+            'meal_name': meal_name,
+            'owner': owner
+            })
 
-    def update_meal(self, _id, mealname):
+        return meal_name
+
+    def update_meal(self, _id, meal_name):
+        """Enables caterer to change a specific meal option"""
         for meal in MOCK_MEALS:
-            if meal.get('_id') == _id:
-                meal['mealname'] = mealname
+            if u"{}".format(meal.get('_id')) == _id:
+                meal['meal_name'] = meal_name
                 break
+           
 
 
     #Implementing for only one user
     def get_meals(self, owner_id):
+        """Returns all available meal options"""
         return MOCK_MEALS
+        #implementation for many meals
         #for meal in MOCK_MEALS:
             #if meal.get("owner_id") == owner_id:
                 #return MOCK_MEALS
 
     def get_meal(self, meal_id):
+        """To get meals from meal options"""
         for meal in MOCK_MEALS:
-            if meal.get("_id") == meal_id:
+            if u"{}".format(meal.get('_id')) == meal_id:
                 return meal
+
+    
 
     def delete_meal(self, meal_id):
         for i, meal in enumerate(MOCK_MEALS):
@@ -60,20 +89,40 @@ class MockDBHelper:
                 del MOCK_MEALS[i]
             break
 
+    
     def add_order(self, meal_id, time):
-        meal = self.get_meal(meal_id)
-        MOCK_ORDERS.append({'_id':meal_id, "owner": meal["owner"], "meal_name": meal["mealname"], "meal_id": meal_id, "time": time})
+        """Enables customer to make an order."""
+        meal = self.get_menu(meal_id)
+        MOCK_ORDERS.append({
+            '_id':meal_id, 
+            "owner": meal["owner"], 
+            "meal_name": meal["mealname"], 
+            "meal_id": meal_id, 
+            "time": time
+            })
+
         return True
         
 
 
     def get_orders(self, owner_id):
+        """Returns all orders belonging to a particular caterer"""
         return MOCK_ORDERS
 
     def delete_order(self, order_id):
+        """Enables the caterer to resolve/remove orders"""
         for i, order in enumerate(MOCK_ORDERS):
             if order.get("_id") == order_id:
                 del MOCK_ORDERS[i]
                 break
         
+    def get_menu(self, meal_id):
+        """To get meal from the menu"""
+        for menu in MOCK_MENUS:
+            if u"{}".format(menu.get('_id')) == meal_id:
+                return menu
 
+    def setup_menu(self, meal_id, meal_name):
+        """Enables caterer to setup menu for the day"""
+        MOCK_MENUS.append({"_id": MOCK_MENUS[-1]['_id'] + 1, "meal_name": meal_name, "meal_id": meal_id })
+        return MOCK_MENUS
