@@ -62,7 +62,14 @@ def login():
     if email:
         password = request.form.get('password')
         if password:
-            stored_user = DB.get_user(email)
+            stored_user = DB.get_user(email) 
+            #stored_user = {
+                            # "email": "ronald@gmail.com",
+                            # "salt": "8Fb23mMNHD5Zb8pr2qWA3PE9bH0=",
+                            # "hashed": "1736f83698df3f8153c1fbd6ce2840f8aace4f200771a46672635374073cc876cf0aa6a31f780e576578f791b5555b50df46303f0c3a7f2d21f91aa1429ac22e"
+                            # }
+
+            # return jsonify({"message":stored_user})
             if stored_user and PH.validate_password(password, stored_user['salt'], stored_user['hashed']):
                 user = User(email) 
                 login_user(user)
@@ -73,44 +80,45 @@ def login():
     return make_response("Your email field is empty", 400)
 
 
-
-@app.route('/api/v1/auth/logout')
-def logout():
-    """signs out loged in user"""
-    logout_user()
-    return make_response("You are now logged out", 200)
-
 @app.route('/api/v1/meals')
 #@basic_auth.required
 def account_get_meals():
     """Enables meal retrieval for authenticated user"""
     meals = DB.get_meals(current_user.get_id())
-    return jsonify({'MOCK_MEALS': meals})
+    return jsonify({'MOCK_MEALS': meals}), 200
 
 @app.route('/api/v1/meals', methods=['POST'])
 #@basic_auth.required
 def account_create_meal():
     """Enables Authenticated user to create meals"""
     meal_name = request.form.get('meal_name')
-    meal_id = DB.add_meal(meal_name, current_user.get_id())
-    DB.update_meal(meal_id, meal_name)
-    return make_response("You successfully created a meal", 200)
+    if meal_name:
+        meal_id = DB.add_meal(meal_name, current_user.get_id())
+        DB.update_meal(meal_id, meal_name)
+        return make_response("You successfully created a meal", 200)
+
+    else:
+        return make_response('Please enter a meal name', 400)
 
 
 
 @app.route('/api/v1/meals/<meal_id>', methods=["PUT"])
-#@basic_auth.required
+# @basic_auth.required
 def account_update_meal(meal_id):
     """Authenticated user is ale to update meal"""
     meal_name = request.form.get('mealname')
-    DB.update_meal(meal_id, meal_name)
-    return jsonify({'meals': MOCK_MEALS})
+    if meal_name:
+        DB.update_meal(meal_id, meal_name)
+        return jsonify({'meals': MOCK_MEALS}), 200
+
+    else:
+        return make_response('Please enter a meal name', 400)
 
 
 
 
 @app.route('/api/v1/meals/<meal_id>', methods=["DELETE"])
-#@basic_auth.required
+# @basic_auth.required
 def account_delete_meal(meal_id):
     """Authenticated user is able to delete particular meal"""
     meal_id = request.form.get('meal_id')
