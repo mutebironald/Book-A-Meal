@@ -14,10 +14,37 @@ class TestMeals(unittest.TestCase):
         """Called after each test method."""
         pass
 
+    def test_new_order(self):
+        response = self.client.post('/api/v1/orders/1')
+        self.assertIn(b"Your order has been logged and a you will be served shortly", response.data)
+
+    def test_get_all_orders(self):
+        response = self.client.get('/api/v1/orders')
+        self.assertEqual(response.status_code, 200)
+
+    def test_remove_order(self):
+        response = self.client.delete('/api/v1/orders/1')
+        self.assertEqual(response.status_code, 202)
+
+    def test_remove_order_with_non_existent_id(self):
+        response = self.client.delete('/api/v1/orders/100')
+        self.assertEqual(response.status_code, 404)
+
+    
+
+
+
+# #verify
+# @app.route('/api/v1/orders/<meal_id>', methods=['POST'])
+# def new_order(meal_id):
+#     """Enables customer to make an order"""
+#     DB.add_order(meal_id, datetime.datetime.utcnow())
+#     return "Your order has been logged and a you will be served shortly"
+
 
 
 # @app.route('/api/v1/orders')
-# #@login_required
+# #@basic_auth.required
 # @basic_auth.required
 # def get_all_orders():
 #     """Enables Authenticated caterer is able to get all orders""" 
@@ -32,32 +59,13 @@ class TestMeals(unittest.TestCase):
 
 # #verify
 # @app.route('/api/v1/orders/<order_id>')
-# #@login_required
+# #@basic_auth.required
 # def remove_order(order_id):
 #     """Enables caterer to remove a particular order."""
 #     order_id = request.args.get("order_id")
 #     DB.delete_order(order_id)
 #     return make_response("The order has been successfully removed", 202)
-
-# @app.route('/api/v1/orders/<meal_id>', methods=['POST'])
-# def new_order(meal_id):
-#     """Enables customer to make an order"""
-#     DB.add_order(meal_id, datetime.datetime.utcnow())
-#     return "Your order has been logged and a you will be served shortly"
-
-    # def test_get_menu(self):
-    #     response = self.client.get('/api/v1/menu' )
-    #     self.assertEqual(response.status_code, 200)
         
-
-    # def test_setup_menu(self):
-    #     response = self.client.post('/api/v1/menu', content_type = "application/json", data = json.dumps(dict(meal_name="cassava", meal_id=3)))
-    #     self.assertEqual(response.status_code, 201)
-        
-    #not working
-    def test_new_order(self):
-        response = self.client.post('/api/v1/orders/2', content_type="application/json", data=json.dumps(dict(meal_id='2')))
-        self.assertIn(b"Your order has been logged and a you will be served shortly", response.data)
 
 if __name__ == "__main__":
     unittest.main()
