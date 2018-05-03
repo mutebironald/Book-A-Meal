@@ -63,13 +63,6 @@ def login():
         password = request.form.get('password')
         if password:
             stored_user = DB.get_user(email) 
-            #stored_user = {
-                            # "email": "ronald@gmail.com",
-                            # "salt": "8Fb23mMNHD5Zb8pr2qWA3PE9bH0=",
-                            # "hashed": "1736f83698df3f8153c1fbd6ce2840f8aace4f200771a46672635374073cc876cf0aa6a31f780e576578f791b5555b50df46303f0c3a7f2d21f91aa1429ac22e"
-                            # }
-
-            # return jsonify({"message":stored_user})
             if stored_user and PH.validate_password(password, stored_user['salt'], stored_user['hashed']):
                 user = User(email) 
                 login_user(user)
@@ -81,7 +74,7 @@ def login():
 
 
 @app.route('/api/v1/meals')
-#@basic_auth.required
+# @basic_auth.required
 def account_get_meals():
     """Enables meal retrieval for authenticated user"""
     meals = DB.get_meals(current_user.get_id())
@@ -118,7 +111,7 @@ def account_update_meal(meal_id):
 
 
 @app.route('/api/v1/meals/<meal_id>', methods=["DELETE"])
-# @basic_auth.required
+#@basic_auth.required
 def account_delete_meal(meal_id):
     """Authenticated user is able to delete particular meal"""
     meal_id = request.form.get('meal_id')
@@ -127,7 +120,7 @@ def account_delete_meal(meal_id):
 
 
 #verify
-@app.route('/api/v1/orders/<meal_id>', methods=['POST'])
+@app.route('/api/v1/orders/<int:meal_id>', methods=['POST'])
 def new_order(meal_id):
     """Enables customer to make an order"""
     DB.add_order(meal_id, datetime.datetime.utcnow())
@@ -136,8 +129,7 @@ def new_order(meal_id):
 
 
 @app.route('/api/v1/orders')
-#@basic_auth.required
-@basic_auth.required
+# @basic_auth.required
 def get_all_orders():
     """Enables Authenticated caterer is able to get all orders""" 
     now = datetime.datetime.utcnow()
@@ -146,17 +138,17 @@ def get_all_orders():
         deltaseconds = (now - order['time']).seconds
         order['wait_minutes'] = "{}.{}".format((deltaseconds/60),
             str(deltaseconds % 60).zfill(2))
-    return jsonify({"orders": orders})
+    return jsonify({"orders": orders}), 200
 
 
-#verify
-@app.route('/api/v1/orders/<order_id>')
+
+@app.route('/api/v1/orders/<int:order_id>', methods=['DELETE'])
 #@basic_auth.required
 def remove_order(order_id):
     """Enables caterer to remove a particular order."""
-    order_id = request.args.get("order_id")
-    DB.delete_order(order_id)
-    return make_response("The order has been successfully removed", 202)
+    if(DB.delete_order(order_id)):
+        return make_response("The order has been successfully removed", 202)
+    return make_response("The order has been successfully removed", 404)
 
 
 @app.route('/api/v1/menu')
