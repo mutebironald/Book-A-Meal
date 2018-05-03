@@ -20,7 +20,10 @@ class TestMeals(unittest.TestCase):
         #         'Authorization': 'Basic ' + base64.b64encode('Ronald' + \
         #         ":" + 'Mutebi')
         #     }
-        response = self.client.get('/api/v1/meals')
+        response = self.client.get('/api/v1/meals', headers={
+                'Authorization': 'Basic ' + base64.b64encode(bytes('Ronald' + \
+                ":" + 'Mutebi', 'ascii')).decode('ascii')
+            })
         self.assertEqual(response.status_code, 200)
 
 
@@ -45,6 +48,7 @@ class TestMeals(unittest.TestCase):
         response = self.client.post('/api/v1/meals', data=content)
         self.assertEqual(response.status_code, 400)
 
+
     def test_account_update_meal(self):
         content = {
             'meal_name': 'Rice with gnuts',
@@ -55,6 +59,7 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_account_update_meal_without_data(self):
+        #gives 400 error
         content = {
             'meal_name': '',
             'price': 2000
