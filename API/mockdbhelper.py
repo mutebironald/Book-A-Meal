@@ -32,7 +32,10 @@ MOCK_MENUS = [{
 
 
 class MockDBHelper:
-    """This class handles all methods associated with the user, meals, menu and order."""
+    """
+    This class handles all methods associated
+    with the user, meals, menu and order.
+    """
 
     def get_user(self, email):
         """Helps am already registered user to log in."""
@@ -68,12 +71,16 @@ class MockDBHelper:
                 meal['meal_name'] = meal_name
                 break
            
-
-
     #Implementing for only one user
     def get_meals(self, owner_id):
         """Returns all available meal options"""
-        return MOCK_MEALS
+        # return MOCK_MEALS
+        for meal in MOCK_MEALS:
+            if meal.get("owner_id") == owner_id:
+                return MOCK_MEALS
+            break
+
+       
         #implementation for many meals
         #for meal in MOCK_MEALS:
             #if meal.get("owner_id") == owner_id:
@@ -86,7 +93,7 @@ class MockDBHelper:
                 return meal
 
     
-
+    #Add a count to stop iteration in case meal_id not in
     def delete_meal(self, meal_id):
         for i, meal in enumerate(MOCK_MEALS):
             if meal.get("_id") == meal_id:
@@ -99,12 +106,10 @@ class MockDBHelper:
         meal = self.get_menu(meal_id)
         MOCK_ORDERS.append({
             '_id':meal_id, 
-            "owner": meal["owner"], 
-            "meal_name": meal["mealname"], 
+            "meal_name": meal["meal_name"], 
             "meal_id": meal_id, 
             "time": time
             })
-
         return True
         
 
@@ -113,17 +118,31 @@ class MockDBHelper:
         """Returns all orders belonging to a particular caterer"""
         return MOCK_ORDERS
 
-    def delete_order(self, order_id):
+    # def delete_order(self, order_id):
+    #     """Enables the caterer to resolve/remove orders"""
+    #     order = [order for order in MOCK_ORDERS if order['_id'] == order_id]
+    #     if order:
+    #         del MOCK_ORDERS[order[0]['_id']]
+    #         return True
+    #     return False
+
+    def delete_order( self, order_id):
         """Enables the caterer to resolve/remove orders"""
-        for i, order in enumerate(MOCK_ORDERS):
-            if order.get("_id") == order_id:
-                del MOCK_ORDERS[i]
-                break
+        order = [(i, order) for i, order in enumerate(MOCK_ORDERS) if order['_id'] == order_id]
+        print(order)
+        if order:
+            del MOCK_ORDERS[order[0][0]]
+            return True
+        return False
         
     def get_menu(self, meal_id):
         """To get meal from the menu"""
+        print(type(meal_id))
         for menu in MOCK_MENUS:
-            if u"{}".format(menu.get('_id')) == meal_id:
+            print(type(menu['_id']))
+            if menu['_id'] == meal_id:
+                print('xxxxxxxxxxxxxxxxxx')
+                
                 return menu
 
     def setup_menu(self, meal_id, meal_name):
