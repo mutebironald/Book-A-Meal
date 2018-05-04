@@ -17,7 +17,6 @@ def load_user(user_id):
 def home():
     """Starting point for the API"""
     return "Welcome to Book-A-Meal"
-    
 
 @app.route('/api/v1/auth/signup', methods=["POST"])
 def register():
@@ -55,9 +54,9 @@ def login():
 @app.route('/api/v1/meals')
 @basic_auth.required
 def account_get_meals():
-    """Enables meal retrieval for authenticated user"""
+    """Enables meal retrieval for authenticated user""" 
     meals = DB.get_meals(current_user.get_id())
-    return jsonify({'MOCK_MEALS': meals}), 200
+    return make_response(jsonify({'MOCK_MEALS': meals}), 200)
 
 @app.route('/api/v1/meals', methods=['POST'])
 @basic_auth.required
