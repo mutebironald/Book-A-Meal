@@ -46,5 +46,3 @@ c) Activate virtual environment env\Scripts\activate
 
  - Write MORE Tests
  - Improve my models
-
-
