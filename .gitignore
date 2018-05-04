@@ -3,3 +3,4 @@ newenv
 env
 *.pyc
 .pytest_cache
+htmlcov
