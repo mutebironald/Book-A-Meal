@@ -15,7 +15,7 @@ script:
   - pytest --cov=./
   #- echo "todo"
 
-after-success:
+after_success:
   -coveralls
 
 # Come 
