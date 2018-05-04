@@ -16,6 +16,6 @@ script:
   - echo "todo"
 
 after-success:
-  -coveralls
+  - coveralls
 
 # Come 
