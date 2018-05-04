@@ -1,0 +1,6 @@
+env
+newenv
+*.pyc
+htmlcov
+.vscode
+.coverage

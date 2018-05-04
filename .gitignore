@@ -1,2 +1,5 @@
+newenv
+.vscode
 env
 *.pyc
+.pytest_cache

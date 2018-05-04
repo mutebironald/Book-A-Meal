@@ -2,7 +2,7 @@
 
 Our application is a meal booking app that allows customers to make food orders and helps the food vendor know what the customers want to eat.
 
-
+[![Build Status](https://travis-ci.org/mutebironald4/Book-A-Meal.svg)](https://travis-ci.org/mutebironald4/Book-A-Meal)
 
 # Functions
 Sign in User
@@ -28,6 +28,7 @@ f)PostgreSQL
 pip install -r requirements
 ```
 
+
 ####  User Interface:
 
 Here  [Click Me](https://mutebironald4.github.io/index.html)
@@ -41,9 +42,7 @@ c) Activate virtual environment env\Scripts\activate
 (http://localhost:5000)
 
 
-### Todos
+### Todos.
 
  - Write MORE Tests
  - Improve my models
-  - Add Travis CI
- 
