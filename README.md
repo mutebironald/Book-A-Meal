@@ -4,6 +4,8 @@ Our application is a meal booking app that allows customers to make food orders 
 
 [![Build Status](https://travis-ci.org/mutebironald4/Book-A-Meal.svg?branch=develop)](https://travis-ci.org/mutebironald4/Book-A-Meal)
 
+[![Coverage Status](https://coveralls.io/repos/github/mutebironald4/Book-A-Meal/badge.svg?branch=develop)](https://coveralls.io/github/mutebironald4/Book-A-Meal?branch=develop)
+
 # Functions
 Sign in User
 Sign up User

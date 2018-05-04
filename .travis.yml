@@ -13,9 +13,9 @@ install:
 script:
   - pytest
   - pytest --cov=./
-  - echo "todo"
+  #- echo "todo"
 
-after-success:
-  - coveralls
+after_success:
+  -coveralls
 
 # Come 
