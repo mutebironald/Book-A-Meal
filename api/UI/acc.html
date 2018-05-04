@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Account</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <img src="food4.jpeg" alt="logo" class="logo" width="200" height="142">
+            <nav>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="acc.html">Account</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="index.html">Register</a></li>
+            </nav>
+
+        </div>
+    </header>
+    <div class="container">
+        <h1>Account</h1>
+        <p>Manage/setup Meals </p>
+    </div>
+
+    <div class="container">
+        <h2>Meals </h2>:
+
+            <table class="menu">
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Delete</th>
+                    <th>Meal ID</th>
+                </tr>
+                
+                <form action="/account/detetemeal">
+                    <tr>
+                        <td>Meal Name</td>
+                        <td>Meal Price</td>
+                        <td><button class="del-btn" style="float:left"> Delete</button></td>
+                        <td>Meal ID</td>
+                    </tr>
+                
+                </form>
+
+
+            </table>
+
+            <h2>Add new Meal </h2>
+            <form class="" action="/account/createmeal" method="POST">
+                <input type="text" name="mealnumber" placeholder="Meal name or ID" id="">
+                <input type="submit" value="Create" class="btn btn-primary">
+            </form>
+    </div>
+
+
+    <br>
+    <br>
+    
+
+    <footer>
+        <p>&copy; Book-A-Meal 2018</p>
+    </footer>
+
+    <script>
+            $('.handle').on('click', function(){
+                $('nav ul').toggleClass('showing');
+            })
+    </script>
+
+
+    
+</body>
+</html>
