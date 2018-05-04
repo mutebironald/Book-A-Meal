@@ -17,6 +17,7 @@ def load_user(user_id):
 def home():
     """Starting point for the API"""
     return "Welcome to Book-A-Meal"
+    
 
 @app.route('/api/v1/auth/signup', methods=["POST"])
 def register():
