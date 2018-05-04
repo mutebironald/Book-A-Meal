@@ -11,11 +11,11 @@ install:
 
 # command to run tests
 script:
- - pytest
- - pytest --cov =./
- - echo "todo"
+  - pytest
+  - pytest --cov =./
+  - echo "todo"
 
- after-success:
-  - coveralls
+after-success:
+  -coveralls
 
 # Come 
