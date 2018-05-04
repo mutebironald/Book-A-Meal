@@ -1,7 +1,5 @@
+newenv
+.vscode
 env
 *.pyc
-
-
-
-
-test_user.py
+.pytest_cache

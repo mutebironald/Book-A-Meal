@@ -2,18 +2,7 @@
 
 Our application is a meal booking app that allows customers to make food orders and helps the food vendor know what the customers want to eat.
 
-[![Build Status](https://travis-ci.org/mutebironald4/Book-A-Meal.svg?branch=master)](https://travis-ci.org/mutebironald4/Book-A-Meal)
-
-
-
-![Coveralls github](https://img.shields.io/coveralls/github/jekyll/jekyll.svg)
-
-
-![Code Climate](https://img.shields.io/codeclimate/coverage/jekyll/jekyll.svg)
-
-
-![license](https://img.shields.io/github/license/mashape/apistatus.svg)
-
+[![Build Status](https://travis-ci.org/mutebironald4/Book-A-Meal.svg)](https://travis-ci.org/mutebironald4/Book-A-Meal)
 
 # Functions
 Sign in User
@@ -53,7 +42,7 @@ c) Activate virtual environment env\Scripts\activate
 (http://localhost:5000)
 
 
-### Todos
+### Todos.
 
  - Write MORE Tests
  - Improve my models
