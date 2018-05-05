@@ -34,7 +34,6 @@ def register():
         return make_response("You must enter a password", 400)
     return make_response("Your email field is empty", 400)
     
-
 @app.route('/api/v1/auth/login', methods=['POST'])
 def login():
     """Facilitates user registration."""
