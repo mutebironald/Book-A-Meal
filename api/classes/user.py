@@ -11,5 +11,3 @@ class User:
         
     def is_anonymous(self):
         return False
-
-
