@@ -43,6 +43,7 @@ class TestMeals(unittest.TestCase):
                 ":" + 'Mutebi', 'ascii')).decode('ascii')
             })
         self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Please enter a meal name", response.data)
  
     def test_account_update_meal(self):
         content = {
@@ -70,6 +71,7 @@ class TestMeals(unittest.TestCase):
                 ":" + 'Mutebi', 'ascii')).decode('ascii')
             })
         self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Please enter a meal name", response.data)
 
     def test_account_delete_meal(self):
         response = self.client.delete('/api/v1/meals/2',headers={
@@ -77,7 +79,7 @@ class TestMeals(unittest.TestCase):
                 ":" + 'Mutebi', 'ascii')).decode('ascii')
             } )
         self.assertEqual(response.status_code, 202)
+        self.assertIn(b"The meal has been deleted", response.data)
 
 if __name__ == "__main__":
     unittest.main()
-        
