@@ -1,6 +1,5 @@
 import datetime
 
-
 MOCK_USERS = [
     {
     "email": "ronald@gmail.com",
@@ -23,16 +22,12 @@ MOCK_ORDERS = [{
     "time": datetime.datetime.utcnow()
     }]
 
-
-
 MOCK_MENUS = [{
      "_id": 1,
      "meal_name": "Beef with Rice", 
      'price': 3000,
      "meal_id": "1"
      }]   
-
-
 
 class MockDBHelper:
     """
@@ -56,7 +51,6 @@ class MockDBHelper:
             "hashed":hashed
             })
 
-
     def add_meal(self, meal_name, price,  owner):
         """Enables caterer to add a meal option"""
         MOCK_MEALS.append({
@@ -78,12 +72,10 @@ class MockDBHelper:
     #Implementing for only one user
     def get_meals(self, owner_id):
         """Returns all available meal options"""
-        # return MOCK_MEALS
         for meal in MOCK_MEALS:
             if meal.get("owner_id") == owner_id:
                 return MOCK_MEALS
             break
-
 
     def get_meal(self, meal_id):
         """To get meals from meal options"""
@@ -91,15 +83,12 @@ class MockDBHelper:
             if u"{}".format(meal.get('_id')) == meal_id:
                 return meal
 
-    
-    #Add a count to stop iteration in case meal_id not in
     def delete_meal(self, meal_id):
         for i, meal in enumerate(MOCK_MEALS):
             if meal.get("_id") == meal_id:
                 del MOCK_MEALS[i]
             break
 
-    
     def add_order(self, meal_id, time):
         """Enables customer to make an order."""
         meal = self.get_menu(meal_id)
@@ -113,15 +102,10 @@ class MockDBHelper:
             return True
         else:
             return False
-        
-        
-        
-        
+    
     def get_orders(self, owner_id):
         """Returns all orders belonging to a particular caterer"""
         return MOCK_ORDERS
-
-
 
     def delete_order( self, order_id):
         """Enables the caterer to resolve/remove orders"""
