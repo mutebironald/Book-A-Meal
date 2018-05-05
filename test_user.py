@@ -69,6 +69,7 @@ class TestUser(unittest.TestCase):
         self.client.post('/api/v1/auth/signup', content_type = 'multipart/form-data', data=user)
         response = self.client.post('/api/v1/auth/login', content_type='multipart/form-data', data = user)
         self.assertEqual(response.status_code, 200)
+        self.assertIn(b"success!!, you are now logged in", response.data)
         
 
     def test_login_with_non_existent_email(self):
