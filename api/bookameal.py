@@ -116,7 +116,7 @@ def remove_order(order_id):
     """Enables caterer to remove a particular order."""
     if(DB.delete_order(order_id)):
         return make_response("The order has been successfully removed", 202)
-    return make_response("The order has been successfully removed", 404)
+    return make_response("Please enter a valid meal option", 404)
 
 @app.route('/api/v1/menu')
 def get_menu():

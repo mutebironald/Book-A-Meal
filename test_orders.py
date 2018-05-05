@@ -37,6 +37,7 @@ class TestMeals(unittest.TestCase):
                 ":" + 'Mutebi', 'ascii')).decode('ascii')
             })
         self.assertEqual(response.status_code, 202)
+        self.assertIn(b"The order has been successfully removed", response.data)
 
     def test_remove_order_with_non_existent_id(self):
         response = self.client.delete('/api/v1/orders/100', headers={
@@ -44,6 +45,7 @@ class TestMeals(unittest.TestCase):
                 ":" + 'Mutebi', 'ascii')).decode('ascii')
             })
         self.assertEqual(response.status_code, 404)
+        self.assertIn(b"Please enter a valid meal option", response.data)
 
 if __name__ == "__main__":
     unittest.main()
