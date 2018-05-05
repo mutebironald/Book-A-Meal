@@ -1,8 +1,6 @@
 language: python
 python:
-  - "2.7"
   - "3.6"
-
 
 install:
   - pip install -r requirements.txt
@@ -13,10 +11,11 @@ install:
 
 # command to run tests
 script:
+  - pytest
+  - pytest --cov=api
+  #- echo "todo"
 
- - pytest
- - pytest --cov =./
- - echo "todo"
+after_success:
+  coveralls
 
- after-success:
-  - coveralls
+# Come 
