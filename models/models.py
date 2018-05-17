@@ -1,4 +1,5 @@
 from sqlalchemy import SQLAlchemy
+import datetime
 
 # initialize SQLAlchemy
 db = SQLAlchemy()
@@ -6,7 +7,7 @@ db = SQLAlchemy()
 class User(db.Model):
     """Defines a user model mapped to a database table 'user'"""
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    email = db.Column(db.String(45), unique=True)
+    email = db.Column(db.String(145), unique=True)
     password = db.Column(db.String(170))
     admin = db.Column(db.Boolean, default=False)
     orders = db.relationship('Order', ackref='user', lazy='dynamic')
@@ -14,3 +15,14 @@ class User(db.Model):
     def __repr__(self):
         return "User(%d, %s, %s, %s, %s)" %(self.id, self.email, self.password, self.admin, self.orders)
         
+class Admin(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(145), unique=True)
+    user_id = db.Column(db.Integer)
+    admin = db.Column(db.Boolean, default=True)
+    meals = db.relationship('Meal', backref='Admin')
+    menu = db.relationship('Menu', backref='Admin')
+
+    def __repr__(self):
+        return "Admin (%d, %s, %s, %s, %s, %s)" %(self.id, self.email, self.user_id, self.admin, self.meals, self.menu) 
+
