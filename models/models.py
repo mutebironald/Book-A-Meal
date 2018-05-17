@@ -26,3 +26,13 @@ class Admin(db.Model):
     def __repr__(self):
         return "Admin (%d, %s, %s, %s, %s, %s)" %(self.id, self.email, self.user_id, self.admin, self.meals, self.menu) 
 
+class Meal(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(60), nullable=False, unique=True)
+    price = db.Column(db.Integer, nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    menu = db.relationship('menu', backref='meal')
+
+    def __repr__(self):
+        return "Meal (%d, %s, %s, %s)" %(self.id, self.name, self.price, self.admin_id) 
+
