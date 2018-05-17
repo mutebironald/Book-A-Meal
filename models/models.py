@@ -47,3 +47,14 @@ class Menu(db.Model):
     def __repr__(self):
         "Menu (%d, %s, %s, %s, %s)" %(self.id, self.name, self.owner_id, self.meal_id, self.day)
 
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    menu_name = db.Column(db.Integer, db.ForeignKey('menu.name'))
+    meal_id = db.Column(db.Integer)
+    admin_id = db.Column(db.Integer)
+    time_created = db.Column(db.String)
+    customer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return "Order (%d, %s, %s, %s, %s)" %(self.id, self.menu_name, self.meal_id, self.time_created, self.customer_id)
+
