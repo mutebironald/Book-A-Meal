@@ -36,3 +36,14 @@ class Meal(db.Model):
     def __repr__(self):
         return "Meal (%d, %s, %s, %s)" %(self.id, self.name, self.price, self.admin_id) 
 
+class Menu(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(60), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    meal_id = db.Column(db.Integer, db.ForeignKey('meal.id'))
+    day = db.Column(db.String(50), default=datetime.datetime.today())
+    orders = db.relationship('order', backref='menu')
+
+    def __repr__(self):
+        "Menu (%d, %s, %s, %s, %s)" %(self.id, self.name, self.owner_id, self.meal_id, self.day)
+
