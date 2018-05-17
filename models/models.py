@@ -58,3 +58,10 @@ class Order(db.Model):
     def __repr__(self):
         return "Order (%d, %s, %s, %s, %s)" %(self.id, self.menu_name, self.meal_id, self.time_created, self.customer_id)
 
+
+def load_db(db):
+    """create database tables and insert records"""
+    db.drop_all()
+    db.create_all()
+
+    db.session.commit 
