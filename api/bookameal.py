@@ -5,7 +5,10 @@ from .classes.user import User
 from . import app, PH, DB, basic_auth
 from . import login_manager
 import datetime
+
+from validate_email_address import validate_email
 from itsdangerous import URLSafeTimedSerializer
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -22,6 +25,7 @@ def home():
 def register():
     """Facilitates user registration"""
     email = request.form.get('email')
+    email = validate_email(email)
     if email:
         password = request.form.get('password')
         if password:
@@ -32,7 +36,8 @@ def register():
             DB.add_user(email, salt, hashed)
             return make_response("You are now registered", 201)
         return make_response("You must enter a password", 400)
-    return make_response("Your email field is empty", 400)
+    # return make_response("Your email field is empty", 400)
+    return make_response("please enter a valid email address", 400)
     
 @app.route('/api/v1/auth/login', methods=['POST'])
 def login():
