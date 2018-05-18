@@ -23,7 +23,7 @@ class TestUser(unittest.TestCase):
     def test_signup(self):
         """Tests that a user can be signed up"""
         user = {
-            "email":"mutebi@gmail.com",
+            "email":"mutebironald4@gmail.com",
             "password":"lantern"
         }
         response = self.client.post('/api/v1/auth/signup', content_type = 'multipart/form-data', data=user)
@@ -37,7 +37,7 @@ class TestUser(unittest.TestCase):
             "password":""
         }
         response = self.client.post('/api/v1/auth/signup', content_type = 'multipart/form-data', data=user)
-        self.assertEqual(b"Your email field is empty", response.data)
+        self.assertEqual(b"please enter a valid email address", response.data)
         self.assertEqual(response.status_code, 400)
 
     def test_signup_with_password_field_empty(self):
@@ -57,7 +57,7 @@ class TestUser(unittest.TestCase):
             "password":"lantern"
         }
         response = self.client.post('/api/v1/auth/signup', content_type = 'multipart/form-data', data=user)
-        self.assertEqual(b"Your email field is empty", response.data)
+        self.assertEqual(b"please enter a valid email address", response.data)
         self.assertEqual(response.status_code, 400)
 
     def test_login_with_valid_credentials(self):

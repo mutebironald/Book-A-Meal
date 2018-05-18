@@ -43,6 +43,7 @@ def register():
 def login():
     """Facilitates user registration."""
     email = request.form.get('email')
+    email = validate_email(email)
     if email:
         password = request.form.get('password')
         if password:
