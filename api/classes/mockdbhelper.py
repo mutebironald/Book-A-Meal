@@ -93,7 +93,6 @@ class MockDBHelper:
                 meal['price'] = price
                 break
            
-    #Implementing for only one user
     def get_meals(self, owner_id):
         """Returns all available meal options"""
         for meal in MOCK_MEALS:
@@ -106,12 +105,6 @@ class MockDBHelper:
         for meal in MOCK_MEALS:
             if u"{}".format(meal.get('_id')) == meal_id:
                 return meal
-
-    #def delete_meal(self, meal_id):
-        #for i, meal in enumerate(MOCK_MEALS):
-            #if meal.get("_id") == meal_id:
-               #del MOCK_MEALS[i]
-            #break    
 
     def delete_meal( self, meal_id):
         """Enables the caterer to resolve/remove orders"""
@@ -127,6 +120,7 @@ class MockDBHelper:
     def add_order(self, meal_id, time):
         """Enables customer to make an order."""
         meal = self.get_menu(meal_id)
+        print(meal)
         if meal:
             MOCK_ORDERS.append({
                 '_id':meal_id, 
