@@ -5,18 +5,10 @@ from .classes.user import User
 from . import app, PH, DB, basic_auth
 from . import login_manager
 import datetime
-<<<<<<< HEAD
 import re
-# from itsdangerous import URLSafeTimedSerializer
 from flasgger import Swagger
 
 Swagger(app)
-
-=======
-
-from validate_email_address import validate_email
-from itsdangerous import URLSafeTimedSerializer
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -86,7 +78,6 @@ def home():
 @app.route('/api/v1/auth/signup', methods=["POST"])
 def register():
     """Facilitates user registration"""
-<<<<<<< HEAD
     data = request.get_json()
     email = data['email']
     if not re.match(r"([\w\.-]+)@([\w\.-]+)(\.[\w\.]+$)", email):
@@ -102,33 +93,12 @@ def register():
     hashed = PH.get_hash(str(password) + str(salt))
     DB.add_user(email, salt, hashed)
     return make_response("You are now registered", 201)
-=======
-    email = request.form.get('email')
-    email = validate_email(email)
-    if email:
-        password = request.form.get('password')
-        if password:
-            if DB.get_user(email):
-                return make_response("The email already exists", 409)
-            salt = PH.get_salt()
-            hashed = PH.get_hash(password + str(salt))
-            DB.add_user(email, salt, hashed)
-            return make_response("You are now registered", 201)
-        return make_response("You must enter a password", 400)
-    # return make_response("Your email field is empty", 400)
-    return make_response("please enter a valid email address", 400)
->>>>>>> d3b45dfc1509ac93301df16093384b86452a5b01
     
 @app.route('/api/v1/auth/login', methods=['POST'])
 def login():
     """Facilitates user registration."""
-<<<<<<< HEAD
     data = request.get_json()
     email = data['email']
-=======
-    email = request.form.get('email')
-    email = validate_email(email)
->>>>>>> d3b45dfc1509ac93301df16093384b86452a5b01
     if email:
         password = data['password']
         if password:
