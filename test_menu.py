@@ -21,10 +21,10 @@ class TestMeals(unittest.TestCase):
     def test_setup_menu(self):
         content = {
             'meal_name':'cassava',
-            'meal_id': 3,
+            'day': "monday",
             'price': 4000 
         }
-        response = self.client.post('/api/v1/menu', content_type = "application/json", data=content,  headers={
+        response = self.client.post('/api/v1/menu', content_type = "application/json", data=json.dumps(content),  headers={
                 'Authorization': 'Basic ' + base64.b64encode(bytes('Ronald' + \
                 ":" + 'Mutebi', 'ascii')).decode('ascii')
             })
