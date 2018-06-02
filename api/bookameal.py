@@ -19,40 +19,13 @@ def load_user(user_id):
 @app.route('/')
 def home():
     """
-    This is the language awesomeness API
-    Call this api passing a language name and get back its features
+    Home/welcome
     ---
     tags:
-      - Awesomeness Language API
-    parameters:
-      - name: language
-        in: path
-        type: string
-        required: true
-        description: The language name
-      - name: size
-        in: query
-        type: integer
-        description: size of awesomeness
+      - Welcoming our users
     responses:
-      500:
-        description: Error The language is not awesome!
-      200:
-        description: A language with its awesomeness
-        schema:
-          id: awesome
-          properties:
-            language:
-              type: string
-              description: The language name
-              default: Lua
-            features:
-              type: array
-              description: The awesomeness list
-              items:
-                type: string
-              default: ["perfect", "simple", "lovely"]
-
+        200:
+            description: A welcome message appears 
     """
     #if not current_user.is_admin():
         #return 'sorry'
@@ -62,39 +35,28 @@ def home():
 @app.route('/api/v1/auth/signup', methods=["POST"])
 def register():
     """
-    This is a meal booking API. Its to be used y caterers to create meals, menu and receive orders.
-    The customer uses it to make an order
+    SignUp route
     ---
     tags:
       - Book-A-Meal API
     parameters:
-      - name: language
-        in: path
+      - name: email
+        in: query
         type: string
         required: true
-        description: The language name
-      - name: size
+        description: your email address
+      - name: Password
         in: query
-        type: integer
-        description: size of awesomeness
+        type: string
+        required: true
+        description: your password
     responses:
-      500:
-        description: Error The language is not awesome!
-      200:
-        description: A language with its awesomeness
-        schema:
-          id: awesome
-          properties:
-            language:
-              type: string
-              description: The language name
-              default: Lua
-            features:
-              type: array
-              description: The awesomeness list
-              items:
-                type: string
-              default: ["perfect", "simple", "lovely"]
+        201:
+            description: Successfull registration of user
+        401:
+            description: Unsuccessful user registration
+        202:
+            description: Double signup rejection
 
     """
     """Facilitates user registration"""
@@ -116,6 +78,30 @@ def register():
     
 @app.route('/api/v1/auth/login', methods=['POST'])
 def login():
+    """
+    Login route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: email
+        in: query
+        type: string
+        required: true
+        description: your email address
+      - name: Password
+        in: query
+        type: string
+        required: true
+        description: your password
+    responses:
+        200:
+            description: A successfully logged user 
+        401:
+            description: A user with wrong log inexistent email is informed
+        400:
+            description: A user trying to gain access without either an email or password
+    """
     """Facilitates user registration."""
     data = request.get_json()
     email = data['email']
@@ -134,6 +120,25 @@ def login():
 @app.route('/api/v1/meals')
 @basic_auth.required
 def account_get_meals():
+    """
+    Meals route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+      200:
+        description: Meals present are successfully returned
+    """
     """Enables meal retrieval for authenticated user""" 
     meals = DB.get_meals(current_user.get_id())
     return make_response(jsonify({'MOCK_MEALS': meals}), 200)
@@ -142,6 +147,29 @@ def account_get_meals():
 @app.route('/api/v1/meals', methods=['POST'])
 @basic_auth.required
 def account_create_meal():
+    """
+    Meals route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+      200:
+        description: Meal is successfully created
+      400:
+        description: No mealname or price
+    """
+    """Enables meal retrieval for authenticated user""" 
+
     """Enables Authenticated user to create meals"""
     data = request.get_json()
     meal_name = data['meal_name']
@@ -157,6 +185,28 @@ def account_create_meal():
 @app.route('/api/v1/meals/<meal_id>', methods=["PUT"])
 @basic_auth.required
 def account_update_meal(meal_id):
+    """
+    Meals route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+      200:
+        description: The specified Meal has been updated
+      400:
+        description: The user tries updating without a meal name 
+    """
+    """Enables meal retrieval for authenticated user""" 
     """Authenticated user is able to update meal"""
     data = request.get_json()
     meal_name = data['meal_name']
@@ -171,6 +221,25 @@ def account_update_meal(meal_id):
 @app.route('/api/v1/meals/<meal_id>', methods=["DELETE"])
 @basic_auth.required
 def account_delete_meal(meal_id):
+    """
+    Meals route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+      202:
+        description: The meal has been deleted
+    """
     """Authenticated user is able to delete particular meal"""
     DB.delete_meal(meal_id)
     return make_response("The meal has been deleted", 202)
@@ -178,6 +247,25 @@ def account_delete_meal(meal_id):
 @app.route('/api/v1/orders', methods=['POST'])
 @basic_auth.required
 def new_order():
+    """
+    Orders route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+      200:
+        description: order received
+    """
     """Enables customer to make an order"""
     data = request.get_json()
     meal_id = data["meal_id"]
@@ -188,6 +276,25 @@ def new_order():
 @app.route('/api/v1/orders')
 @basic_auth.required
 def get_all_orders():
+    """
+    Orders route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+      200:
+        description: orders retrieved successfully
+    """
     """Enables Authenticated caterer is able to get all orders""" 
     now = datetime.datetime.utcnow()
     orders = DB.get_orders(current_user.get_id())
@@ -200,6 +307,27 @@ def get_all_orders():
 @app.route('/api/v1/orders/<int:order_id>', methods=['DELETE'])
 @basic_auth.required
 def remove_order(order_id):
+    """
+    Orders route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+      202:
+        description: The order has been successfully removed
+      404:
+        description: The meal option entered is not valid
+    """
     """Enables caterer to remove a particular order."""
     if(DB.delete_order(order_id)):
         return make_response("The order has been successfully removed", 202)
@@ -207,12 +335,50 @@ def remove_order(order_id):
 
 @app.route('/api/v1/menu')
 def get_menu():
+    """
+    Menu route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+      200:
+        description: menu returned successfully
+    """
     """Returns the menu"""
     return jsonify({"MENU":new_menu }), 200
     
 @app.route('/api/v1/menu', methods=["post"])
 @basic_auth.required
 def setup_menu():
+    """
+    Menu route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+      201:
+        description: Menu successfully created
+    """
     """Enables caterer to setup menu"""
     data =request.get_json()
     meal_name = data['meal_name']
