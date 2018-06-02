@@ -159,8 +159,11 @@ def account_delete_meal(meal_id):
         #return make_response("The meal is not present")
 
 @app.route('/api/v1/orders', methods=['POST'])
-def new_order(meal_id):
+@basic_auth.required
+def new_order():
     """Enables customer to make an order"""
+    data = request.get_json()
+    meal_id = data["meal_id"]
     DB.add_order(meal_id, datetime.datetime.utcnow())
     return "Your order has been logged and a you will be served shortly"
 
