@@ -16,22 +16,6 @@ def load_user(user_id):
     if user_password:
         return User(user_id)
 
-
-# from flask_login import current_user
-# from flask import url_for, redirect
-# from functools import wraps
-# def requires_roles(*roles):
-#     def wrapper(f):
-#         @wraps(f)
-#         def wrapped(*args, **kwargs):
-#             if current_user.get_role() not in roles:
-#                 return make_response('unauthorized', 401)
-#             return f(*args, **kwargs)
-#         return wrapped
-#     return wrapper
-# @requires_roles('admin')
-
-
 @app.route('/')
 def home():
     """
@@ -77,6 +61,42 @@ def home():
 
 @app.route('/api/v1/auth/signup', methods=["POST"])
 def register():
+    """
+    This is a meal booking API. Its to be used y caterers to create meals, menu and receive orders.
+    The customer uses it to make an order
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+      500:
+        description: Error The language is not awesome!
+      200:
+        description: A language with its awesomeness
+        schema:
+          id: awesome
+          properties:
+            language:
+              type: string
+              description: The language name
+              default: Lua
+            features:
+              type: array
+              description: The awesomeness list
+              items:
+                type: string
+              default: ["perfect", "simple", "lovely"]
+
+    """
     """Facilitates user registration"""
     data = request.get_json()
     email = data['email']
@@ -154,8 +174,6 @@ def account_delete_meal(meal_id):
     """Authenticated user is able to delete particular meal"""
     DB.delete_meal(meal_id)
     return make_response("The meal has been deleted", 202)
-    #else:
-        #return make_response("The meal is not present")
 
 @app.route('/api/v1/orders', methods=['POST'])
 @basic_auth.required
@@ -163,6 +181,7 @@ def new_order():
     """Enables customer to make an order"""
     data = request.get_json()
     meal_id = data["meal_id"]
+    #meal_name = data['meal_name']
     DB.add_order(meal_id, datetime.datetime.utcnow())
     return "Your order has been logged and a you will be served shortly"
 
