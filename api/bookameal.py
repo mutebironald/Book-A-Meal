@@ -81,10 +81,10 @@ def register():
     data = request.get_json()
     email = data['email']
     if not re.match(r"([\w\.-]+)@([\w\.-]+)(\.[\w\.]+$)", email):
-        return jsonify({"error": "Invalid email."})
+        return jsonify({"error": "Invalid email."}), 400
     password = data['password']
     if password.strip() == "":
-        return make_response("you must enter a password", 400)
+        return make_response("You must enter a password", 400)
     if len(password) < 5:
         return jsonify({"message": "Password too short"})
     if DB.get_user(email):
