@@ -67,7 +67,7 @@ class TestMeals(unittest.TestCase):
             'price': 2000
         }
 
-        response = self.client.put('/api/v1/meals/1', data=content,  headers={
+        response = self.client.put('/api/v1/meals/1', data=json.dumps(content), content_type='application/json', headers={
                 'Authorization': 'Basic ' + base64.b64encode(bytes('Ronald' + \
                 ":" + 'Mutebi', 'ascii')).decode('ascii')
             })
@@ -81,7 +81,7 @@ class TestMeals(unittest.TestCase):
             'price': 2000
 
         }
-        response = self.client.put('/api/v1/meals/2', data=content,  headers={
+        response = self.client.put('/api/v1/meals/2', data=json.dumps(content), content_type='application/json',  headers={
                 'Authorization': 'Basic ' + base64.b64encode(bytes('Ronald' + \
                 ":" + 'Mutebi', 'ascii')).decode('ascii')
             })
