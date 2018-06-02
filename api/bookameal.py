@@ -126,13 +126,13 @@ def account_create_meal():
     data = request.get_json()
     meal_name = data['meal_name']
     price = data['price']
-    if meal_name:
+    if meal_name and price:
         meal_id = DB.add_meal(meal_name, price, current_user.get_id())
         DB.update_meal(meal_id, meal_name, price)
         return make_response("You successfully created a meal", 200)
  
     else:
-        return make_response('Please enter a meal name', 400)
+        return make_response('Please enter a meal_name and price', 400)
 
 @app.route('/api/v1/meals/<meal_id>', methods=["PUT"])
 @basic_auth.required

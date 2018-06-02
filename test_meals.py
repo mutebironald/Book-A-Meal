@@ -25,25 +25,40 @@ class TestMeals(unittest.TestCase):
     def test_account_create_meal(self):
         content = {
             'meal_name':'Katogo',
-            'price': 4000 
+            'price': 4000,
+            'day': 'monday' 
         }
-        response = self.client.post('/api/v1/meals', data=content, headers={
+        response = self.client.post('/api/v1/meals', data=json.dumps(content), content_type='application/json',  headers={
                 'Authorization': 'Basic ' + base64.b64encode(bytes('Ronald' + \
                 ":" + 'Mutebi', 'ascii')).decode('ascii')
             })
         self.assertEqual(response.status_code, 200)
 
-    def test_account_create_meal_without_data(self):
+    def test_account_create_meal_without_mealname(self):
         content = {
             'meal_name':'',
-            'price':''
+            'price':'3000',
+            'day': 'monday'
         }
-        response = self.client.post('/api/v1/meals', data=content, headers={
+        response = self.client.post('/api/v1/meals', data=json.dumps(content), content_type='application/json', headers={
                 'Authorization': 'Basic ' + base64.b64encode(bytes('Ronald' + \
                 ":" + 'Mutebi', 'ascii')).decode('ascii')
             })
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Please enter a meal name", response.data)
+        self.assertIn(b"Please enter a meal_name and price", response.data)
+
+    def test_account_create_meal_without_price(self):
+        content = {
+            'meal_name':'',
+            'price':'3000',
+            'day': 'monday'
+        }
+        response = self.client.post('/api/v1/meals', data=json.dumps(content), content_type='application/json', headers={
+                'Authorization': 'Basic ' + base64.b64encode(bytes('Ronald' + \
+                ":" + 'Mutebi', 'ascii')).decode('ascii')
+            })
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Please enter a meal_name and price", response.data)
  
     def test_account_update_meal(self):
         content = {
