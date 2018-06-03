@@ -1,8 +1,7 @@
 from apispec import APISpec
 from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
-from flask import jsonify, make_response, request, json
-
+from flask import jsonify, make_response, request, json, abort
 import os, binascii
 
 from flask_bcrypt import Bcrypt
@@ -21,11 +20,6 @@ spec = APISpec(
         'apispec.ext.flask'
         ],
     )
-
-#from bookameal import home
-
-
-
 
 app = FlaskAPI(__name__)
 app.config.from_object('config.ConfigDevelopment')
@@ -84,8 +78,6 @@ class User(db.Model):
         except Exception as e:
             return str(e)
         
-            
-
     @staticmethod
     def decode_token(token):
         """Decodes the access token from the Authorization header."""
@@ -188,11 +180,6 @@ class Order(db.Model):
         return "Order(%d, %s, %s, %s, %s )" %(
             self.id, self.menu_name, self.admin_id, self.order_time, self.user_id)
 #end of the models
-
-
-
-
-
 
 @app.route('/')
 def home():
