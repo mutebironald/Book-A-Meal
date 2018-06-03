@@ -9,17 +9,20 @@ import datetime
 
 import jwt
 
+from flasgger import Swagger
+
+
 #creating an APISpec
-spec = APISpec(
-    title='Book-A-Meal API',
-    version='1.0.0',
-    info=dict(
-        description='A meal booking API'
-        ),
-    plugins=[
-        'apispec.ext.flask'
-        ],
-    )
+# spec = APISpec(
+#     title='Book-A-Meal API',
+#     version='1.0.0',
+#     info=dict(
+#         description='A meal booking API'
+#         ),
+#     plugins=[
+#         'apispec.ext.flask'
+#         ],
+#     )
 
 app = FlaskAPI(__name__)
 app.config.from_object('config.ConfigDevelopment')
@@ -30,6 +33,7 @@ app.config['SECRET_KEY'] = binascii.hexlify(os.urandom(24))
 
 #db.init_app(app)
 db = SQLAlchemy(app)
+Swagger(app)
 
 #models start here
 
@@ -183,16 +187,24 @@ class Order(db.Model):
 
 @app.route('/')
 def home():
-    """ Home route.
-
-    get:
-        summary: Home endpoint.
-        description: Get the response on accessing the home or base route.
-        parameters:
-        responses:
+    """
+    Home route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
             200:
                 description: Receives welcome message.
-
     """
     
     """Starting point of the API"""
@@ -201,11 +213,21 @@ def home():
 #user routes
 @app.route('/api/v1/auth/signup', methods=['POST'])
 def register():
-    """ Registration route.
-    post:
-        Summary: registering a new user.
-        descriptrion: A new user is registred here.
-        parameters:
+    """
+    Registration route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
     responses:
         201:
             description: Successfull registration of user
@@ -244,16 +266,26 @@ def register():
 
 @app.route('/api/v1/auth/login', methods=['POST'])
 def login():
-    """ Login route.
-    post:
-        summary: Logging in endpoint.
-        description: This logs an already registered user into the API.
-        parameters:
-        responses:
-            200:
-                description: A successfully logged in user receives an access_token
-            401:
-                description: A user with wrong log in credentials is informed
+    """
+    Login route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+        200:
+            description: A successfully logged in user receives an access_token
+        401:
+            description: A user with wrong log in credentials is informed
     """
     user = User.query.filter_by(email=request.data['email']).first()  
 
@@ -277,16 +309,26 @@ def login():
 #meals routes
 @app.route('/api/v1/meals')
 def account_get_meals():
-    """ Meals route.
-    get:
-        summary: meals endpoint.
-        description: Get all the meals present.
-        parameters:
-        responses:
-            400:
-                description: No meals present
-            200:
-                description: Meals are present
+    """
+    Meals route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+        400:
+            description: No meals present
+        200:
+            description: Meals are present
     """
     auth_header = request.headers.get('Authorization')
     
@@ -317,21 +359,26 @@ def account_get_meals():
 
 @app.route('/api/v1/meals/<int:id>', methods=['GET'])
 def account_get_specific_meal(id):
-    """ Meals route.
-    get:
-        summary: meals endpoint.
-        description: Get a single meal with the meal ID.
-        parameters:
-            - name: id
-              in: path
-              description: Meal ID
-              type: integer
-              required: true
-        responses:
-            400:
-                description: The meal with the specified id is absent
-            200:
-                description: The meal is successfully returned.
+    """
+    Meals route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+        400:
+            description: The meal with the specified id is absent
+        200:
+            description: The meal is successfully returned.
     """
     meal = Meal.query.filter_by(id=id).first()
     if not meal:
@@ -347,14 +394,24 @@ def account_get_specific_meal(id):
 
 @app.route('/api/v1/meals', methods=['POST'])
 def account_create_meal():
-    """ Meal route.
-    post:
-        summary: Meal endpoint.
-        description: Add a meal to the database.
-        parameters:
-        responses:
-            201:
-                description: The meal has been created.
+    """
+    Meals route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+        201:
+            description: The meal has been created.
     """
     access_token = request.headers.get('Authorization')
     if access_token:
@@ -379,21 +436,26 @@ def account_create_meal():
 
 @app.route('/api/v1/meals/<int:id>', methods=['PUT'])
 def account_update_meal(id):
-    """Meals route.
-    put:
-        summary: A meal endpoint.
-        description: Update a particular meal whose ID is specified.
-        parameters:
-            - name: id
-              in: path
-              description: meal ID
-              type: integer
-              required: true
-        responses:
-            404:
-                description: The meal you want to update is not in the database.
-            200:
-                description: The meal has been successfully updated.
+    """
+    Meals route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+        404:
+            description: The meal you want to update is not in the database.
+        200:
+            description: The meal has been successfully updated.
     """
     access_token = request.headers.get('Authorization')
     if access_token:
@@ -434,9 +496,9 @@ def account_delete_meal(id):
               in: path
               type: integer
               required: true
-        responses:
-            200:
-                description: The meal with the ID specified has been deleted
+    responses:
+        200:
+            description: The meal with the ID specified has been deleted
     """
     access_token=request.headers.get('Authorization')
     if access_token:
@@ -456,16 +518,26 @@ def account_delete_meal(id):
 #menu routes
 @app.route('/api/v1/menu')
 def get_menu():
-    """Menu route.
-    get:
-        summary: An endpoint to get menu.
-        description: Get all items in the menu
-        parameters:
-        respnses:
-            400:
-                description: There is no menu present.
-            200:
-                description: The menu has successfully been returned.
+    """
+    Menu route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    respnses:
+        400:
+            description: There is no menu present.
+        200:
+            description: The menu has successfully been returned.
     """
     access_token = request.headers.get('Authorization')
     if access_token:
@@ -492,14 +564,24 @@ def get_menu():
 
 @app.route('/api/v1/menu', methods=['POST'])
 def setup_menu():
-    """Menu route.
-    post:
-        summary: menu endpoint.
-        description: Get the menu present
-        parameters:
-        responses:
-            201:
-               description: The menu has been successfully returned.
+    """
+    Menu route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+        201:
+            description: The menu has been successfully returned.
     """
     access_token = request.headers.get('Authorization')
 
@@ -530,16 +612,26 @@ def setup_menu():
 
 @app.route('/api/v1/orders')
 def get_all_orders():
-    """Order route.
-    get:
-        summary: menu endpoint.
-        description: Get all orders present.
-        parameters:
-        responses:
-            200:
-                description: Successfully returned all the orders present.
-            400:
-                description: No orders present at the moment.
+    """
+    Orders route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
+    responses:
+        200:
+            description: Successfully returned all the orders present.
+        400:
+            description: No orders present at the moment.
     """
     access_token=request.headers.get('Authorization')
     if access_token:
@@ -565,21 +657,25 @@ def get_all_orders():
 
 @app.route('/api/v1/orders/<int:id>', methods=["DELETE"])
 def remove_order(id):
-    """Orders route.
+    """
+    Orders route
+    ---
+    tags:
+      - Book-A-Meal API
     delete:
         summary: Order endpoint.
         description: Delete an order with the specified ID from the database.
-        parameters:
-            - name: id
-              in: path
-              description: Order ID
-              type: integer
-              required: true
-        responses:
-            200:
-                description: The order has been deleted.
-            400:
-                description: The order specified is not present.
+    parameters:
+        - name: id
+        in: path
+        description: Order ID
+        type: integer
+        required: true
+    responses:
+        200:
+            description: The order has been deleted.
+        400:
+            description: The order specified is not present.
 
     """
                 
@@ -596,16 +692,7 @@ def remove_order(id):
                 "The order has been deleted", 200)
             return response
         else:
-            return jsonify(user_id)
-
-        
-with app.test_request_context():
-    spec.add_path(view=home)
-
-
-with open('swagger.json', 'w') as f:
-    json.dump(spec.to_dict(), f)
-    
+            return jsonify(user_id)    
 
 if __name__ == "__main__":
     # app.run(debug=True)
