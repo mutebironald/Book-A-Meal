@@ -11,19 +11,6 @@ import jwt
 
 from flasgger import Swagger
 
-
-#creating an APISpec
-# spec = APISpec(
-#     title='Book-A-Meal API',
-#     version='1.0.0',
-#     info=dict(
-#         description='A meal booking API'
-#         ),
-#     plugins=[
-#         'apispec.ext.flask'
-#         ],
-#     )
-
 app = FlaskAPI(__name__)
 app.config.from_object('config.ConfigDevelopment')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -36,7 +23,6 @@ db = SQLAlchemy(app)
 Swagger(app)
 
 #models start here
-
 class User(db.Model):
     """Defines the 'User' model mapped to database table 'user'."""
     id = db.Column(db.Integer, primary_key=True)
@@ -78,7 +64,6 @@ class User(db.Model):
                 )
             return jwt_string
             
-
         except Exception as e:
             return str(e)
         
@@ -119,7 +104,6 @@ class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(46), nullable=False, unique=True)
     price = db.Column(db.Integer, nullable=False)
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
     menus = db.relationship('Menu', backref='meal')
 
     def save(self):
@@ -142,7 +126,6 @@ class Menu(db.Model):
     """Defines the 'Menu' model mapped to table 'menu'."""
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(40), nullable=False, unique=True)
-    #admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
     meal_id = db.Column(db.Integer, db.ForeignKey('meal.id'))
     day = db.Column(db.String(50), default=datetime.datetime.today())
     orders = db.relationship('Order', backref='menu')
@@ -162,9 +145,7 @@ class Menu(db.Model):
 class Order(db.Model):
     """Defines the 'Order' mapped to database table 'order'."""
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    #menu_name = db.Column(db.String(40), db.ForeignKey('menu.name'))
     menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
-    #admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
     order_time = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) 
 
@@ -697,4 +678,3 @@ def remove_order(id):
 if __name__ == "__main__":
     # app.run(debug=True)
     app.run(debug=True)
-
