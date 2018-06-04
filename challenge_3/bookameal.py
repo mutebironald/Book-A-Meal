@@ -79,25 +79,6 @@ class User(db.Model):
 
         except jwt.InvalidTokenError:
             return "Invalid token. Please register or login."
-                
-"""
-class Admin(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    email = db.Column(db.String(145), unique=True)
-    #user_id is it correct
-    user_id = db.Column(db.Integer)
-    admin = db.Column(db.Boolean, default=True)
-    meals = db.relationship('Meal', backref='admin')
-    #menu = db.relationship('Menu', backref='admin')
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def __repr__(self):
-        return "Admin(%d, %s, %s, %s, %s, %s)" %(
-            self.id, self.email, self.user_id, self.admin, self.meals, self.menu)
-"""
 
 class Meal(db.Model):
     """Defines the 'Meal' model mapped to database table 'meal'."""
@@ -105,6 +86,10 @@ class Meal(db.Model):
     name = db.Column(db.String(46), nullable=False, unique=True)
     price = db.Column(db.Integer, nullable=False)
     menus = db.relationship('Menu', backref='meal')
+
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
 
     def save(self):
         db.session.add(self)
@@ -130,6 +115,10 @@ class Menu(db.Model):
     day = db.Column(db.String(50), default=datetime.datetime.today())
     orders = db.relationship('Order', backref='menu')
 
+    def __init__(self, name, day):
+        self.name = name
+        self.day = day
+
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -148,6 +137,9 @@ class Order(db.Model):
     menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
     order_time = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) 
+
+    def __init__(self, order_time):
+        self.order_time = order_time
 
     def save(self):
         db.session.add(self)
@@ -468,15 +460,21 @@ def account_update_meal(id):
 
 @app.route('/api/v1/meals/<int:id>', methods=['DELETE'])
 def account_delete_meal(id):
-    """Meals route.
-    get:
-        summary: meals endpoint.
-        description: Delete a specific meal
-        parameters:
-            - name: id
-              in: path
-              type: integer
-              required: true
+    """
+    Meals route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: language
+        in: path
+        type: string
+        required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
     responses:
         200:
             description: The meal with the ID specified has been deleted
@@ -643,15 +641,16 @@ def remove_order(id):
     ---
     tags:
       - Book-A-Meal API
-    delete:
-        summary: Order endpoint.
-        description: Delete an order with the specified ID from the database.
     parameters:
-        - name: id
+      - name: language
         in: path
-        description: Order ID
-        type: integer
+        type: string
         required: true
+        description: The language name
+      - name: size
+        in: query
+        type: integer
+        description: size of awesomeness
     responses:
         200:
             description: The order has been deleted.
