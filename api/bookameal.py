@@ -27,9 +27,6 @@ def home():
         200:
             description: A welcome message appears 
     """
-    #if not current_user.is_admin():
-        #return 'sorry'
-    #else:
     return "Welcome to Book-A-Meal"
 
 @app.route('/api/v1/auth/signup', methods=["POST"])

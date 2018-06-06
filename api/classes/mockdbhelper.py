@@ -22,23 +22,6 @@ MOCK_ORDERS = [{
     "time": datetime.datetime.utcnow()
     }]
 
-#see this
-new_orders = [
-    {
-        '_id': 1,
-        'time': datetime.datetime.utcnow(),
-        'menu': [
-            {
-            'id': 1,
-            'meal_name': "Beef with rice",
-     'price': 3000,
-            'owner': 'ronald@gmail.com'
-            },
-        ]
-    },
-]
-#end
-
 new_menu =[
     {
         'id': 1,
@@ -120,10 +103,9 @@ class MockDBHelper:
     def add_order(self, meal_id, time):
         """Enables customer to make an order."""
         meal = self.get_menu(meal_id)
-        print(meal)
         if meal:
             MOCK_ORDERS.append({
-                '_id':meal_id, 
+                '_id':MOCK_ORDERS[-1]['_id'] + 1, 
                 "meal_name": meal["meal_name"], 
                 "meal_id": meal_id, 
                 "time": time
@@ -132,18 +114,15 @@ class MockDBHelper:
         else:
             return False
     
-    # def get_orders(self, owner_id):
-    #     """Returns all orders belonging to a particular caterer"""
-    #     return MOCK_ORDERS
     def get_orders(self, owner_id):
         """Returns all orders belonging to a particular caterer"""
         return MOCK_ORDERS
 
     def delete_order( self, order_id):
         """Enables the caterer to resolve/remove orders"""
-        order = [(i, order) for i, order in enumerate(new_orders) if order['_id'] == order_id]
+        order = [(i, order) for i, order in enumerate(MOCK_ORDERS) if order['_id'] == order_id]
         if order:
-            new_orders.remove(new_orders[order[0][0]])
+            MOCK_ORDERS.remove(MOCK_ORDERS[order[0][0]])
             return True
         return False
         
