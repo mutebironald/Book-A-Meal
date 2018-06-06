@@ -1,8 +1,8 @@
 from flask import  request, jsonify, make_response, json
 from flask_login import  login_user, logout_user, current_user
-from .classes.mockdbhelper import MOCK_USERS, MOCK_MEALS, MOCK_ORDERS, new_menu
+from .classes.mockdbhelper import Users, Meals, Menu, Orders
 from .classes.user import User
-from . import app, PH, DB, basic_auth
+from . import app, PH, basic_auth
 from . import login_manager
 import datetime
 import re
@@ -10,11 +10,11 @@ from flasgger import Swagger
 
 Swagger(app)
 
-@login_manager.user_loader
-def load_user(user_id):
-    user_password = DB.get_user(user_id)
-    if user_password:
-        return User(user_id)
+# @login_manager.user_loader
+# def load_user(user_id):
+#     user_password = DB.get_user(user_id)
+#     if user_password:
+#         return User(user_id)
 
 @app.route('/')
 def home():
@@ -28,6 +28,8 @@ def home():
             description: A welcome message appears 
     """
     return "Welcome to Book-A-Meal"
+
+users= Users()
 
 @app.route('/api/v1/auth/signup', methods=["POST"])
 def register():
@@ -66,11 +68,11 @@ def register():
         return make_response("You must enter a password", 400)
     if len(password) < 5:
         return jsonify({"message": "Password too short"})
-    if DB.get_user(email):
+    if users.get_user(email):
         return make_response("The email already exists", 409)
     salt = PH.get_salt()
     hashed = PH.get_hash(str(password) + str(salt))
-    DB.add_user(email, salt, hashed)
+    users.add_user(email, salt, hashed)
     return make_response("You are now registered", 201)
     
 @app.route('/api/v1/auth/login', methods=['POST'])
@@ -105,7 +107,8 @@ def login():
     if email:
         password = data['password']
         if password:
-            stored_user = DB.get_user(email)
+            stored_user = users.get_user(email)
+            print(stored_user)
             if stored_user and PH.validate_password(password, stored_user['salt'], stored_user['hashed']):
                 user = User(email)
                 login_user(user)
@@ -114,6 +117,7 @@ def login():
         return make_response("You must enter a password", 400)
     return make_response("Your email field is empty", 400)
 
+meals2 = Meals()
 @app.route('/api/v1/meals')
 @basic_auth.required
 def account_get_meals():
@@ -137,47 +141,52 @@ def account_get_meals():
         description: Meals present are successfully returned
     """
     """Enables meal retrieval for authenticated user""" 
-    meals = DB.get_meals(current_user.get_id())
-    return make_response(jsonify({'MOCK_MEALS': meals}), 200)
+    meals = meals2.get_meals()
+    return make_response(jsonify({'Meals': meals}), 200)
 
 
 @app.route('/api/v1/meals', methods=['POST'])
 @basic_auth.required
 def account_create_meal():
-    """
-    Meals route
-    ---
-    tags:
-      - Book-A-Meal API
-    parameters:
-      - name: language
-        in: path
-        type: string
-        required: true
-        description: The language name
-      - name: size
-        in: query
-        type: integer
-        description: size of awesomeness
-    responses:
-      200:
-        description: Meal is successfully created
-      400:
-        description: No mealname or price
-    """
-    """Enables meal retrieval for authenticated user""" 
+  """
+  Meals route
+  ---
+  tags:
+    - Book-A-Meal API
+  parameters:
+    - name: language
+      in: path
+      type: string
+      required: true
+      description: The language name
+    - name: size
+      in: query
+      type: integer
+      description: size of awesomeness
+  responses:
+    200:
+      description: Meal is successfully created
+    400:
+      description: No mealname or price
+  """
+  """Enables meal retrieval for authenticated user""" 
 
-    """Enables Authenticated user to create meals"""
-    data = request.get_json()
-    meal_name = data['meal_name']
-    price = data['price']
-    if meal_name and price:
-        meal_id = DB.add_meal(meal_name, price, current_user.get_id())
-        DB.update_meal(meal_id, meal_name, price)
-        return make_response("You successfully created a meal", 200)
- 
+  """Enables Authenticated user to create meals"""
+  data = request.get_json()
+  meal_name = data['meal_name']
+  price = data['price']
+  if meal_name and price:
+    meal = meals2.add_meal(meal_name, price)
+    if meal:
+      print(meal)
+      # DB.update_meal(meal_id, meal_name, price)
+      return make_response("You successfully created a meal", 200)
     else:
-        return make_response('Please enter a meal_name and price', 400)
+      print('yes')
+      
+
+  else:
+      return make_response('Please enter a meal_name and price', 400)
 
 @app.route('/api/v1/meals/<meal_id>', methods=["PUT"])
 @basic_auth.required
@@ -209,8 +218,9 @@ def account_update_meal(meal_id):
     meal_name = data['meal_name']
     price = data['price']
     if meal_name:
-        DB.update_meal(meal_id, meal_name, price)
-        return jsonify({'meals': MOCK_MEALS}), 200
+        meals2.update_meal(meal_id, meal_name, price)
+        update = meals2.get_meal(meal_id)
+        return jsonify({'meal': update}), 200
 
     else:
         return make_response('Please enter a meal name', 400)
@@ -238,9 +248,11 @@ def account_delete_meal(meal_id):
         description: The meal has been deleted
     """
     """Authenticated user is able to delete particular meal"""
-    DB.delete_meal(meal_id)
+    meals2.delete_meal(meal_id)
     return make_response("The meal has been deleted", 202)
 
+
+orders2 = Orders()
 @app.route('/api/v1/orders', methods=['POST'])
 @basic_auth.required
 def new_order():
@@ -267,7 +279,7 @@ def new_order():
     data = request.get_json()
     meal_id = data["meal_id"]
     #meal_name = data['meal_name']
-    DB.add_order(meal_id, datetime.datetime.utcnow())
+    orders2.add_order(meal_id, datetime.datetime.utcnow())
     return "Your order has been logged and a you will be served shortly"
 
 @app.route('/api/v1/orders')
@@ -294,7 +306,7 @@ def get_all_orders():
     """
     """Enables Authenticated caterer is able to get all orders""" 
     now = datetime.datetime.utcnow()
-    orders = DB.get_orders(current_user.get_id())
+    orders = orders2.get_orders()
     for order in orders:
         deltaseconds = (now - order['time']).seconds
         order['wait_minutes'] = "{}.{}".format((deltaseconds/60),
@@ -326,9 +338,10 @@ def remove_order(order_id):
         description: The meal option entered is not valid
     """
     """Enables caterer to remove a particular order."""
-    if(DB.delete_order(order_id)):
+    if(orders2.delete_order(order_id)):
         return make_response("The order has been successfully removed", 202)
     return make_response("Please enter a valid meal option", 404)
+
 
 @app.route('/api/v1/menu')
 def get_menu():

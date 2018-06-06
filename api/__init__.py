@@ -2,7 +2,7 @@ import os, binascii
 from flask import Flask
 from flask_basicauth import BasicAuth
 from .classes.passwordhelper import PasswordHelper
-from .classes.mockdbhelper import MockDBHelper as DBHelper
+# from .classes.mockdbhelper import MockDBHelper as DBHelper
 from flask_login import LoginManager
 
 app = Flask(__name__)
@@ -15,6 +15,6 @@ basic_auth = BasicAuth(app)
 login_manager = LoginManager(app)
 
 PH = PasswordHelper()
-DB = DBHelper()
+# DB = DBHelper()
 
 from . import bookameal
