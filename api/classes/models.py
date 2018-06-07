@@ -7,7 +7,6 @@ class Users:
         self.users = []
         self.id = 1
 
-
     def get_user(self, email):
         """Helps am already registered user to log in."""
         available_user = [user for user in self.users if user["email"] == email]
@@ -89,12 +88,17 @@ class Menu:
 meals = Meals()
 class Orders:
     """A class to represent a customers/users orders"""
-    def __init__(self, ):
+    def __init__(self, menu=[]):
         self.orders = []
+        self.menu = menu
         self.id = 1
 
     def add_order(self, meal_id, time):
         """Enables customer to make an order."""
+        my_menu = self.menu
+
+
+
         self.orders.append({ 
             "meal": meals.get_meal(meal_id), 
             "time": time,
@@ -103,7 +107,6 @@ class Orders:
         self.id =+ 1
         return self.orders
         
-    
     def get_orders(self):
         """Returns all orders belonging to a particular caterer"""
         return self.orders

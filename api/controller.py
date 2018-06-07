@@ -1,20 +1,12 @@
 from flask import  request, jsonify, make_response, json
-# from flask_login import  login_user, logout_user, current_user
-from .classes.mockdbhelper import Users, Meals, Menu, Orders
+from .classes.models import Users, Meals, Menu, Orders
 from .classes.user import User
 from . import app, PH, basic_auth
-# from . import login_manager
 import datetime
 import re
 from flasgger import Swagger
 
 Swagger(app)
-
-# @login_manager.user_loader
-# def load_user(user_id):
-#     user_password = DB.get_user(user_id)
-#     if user_password:
-#         return User(user_id)
 
 @app.route('/')
 def home():
@@ -141,7 +133,6 @@ def account_get_meals():
     """Enables meal retrieval for authenticated user""" 
     meals = meals2.get_meals()
     return make_response(jsonify({'Meals': meals}), 200)
-
 
 @app.route('/api/v1/meals', methods=['POST'])
 @basic_auth.required
