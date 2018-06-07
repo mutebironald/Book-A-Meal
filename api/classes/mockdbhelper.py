@@ -1,40 +1,5 @@
 import datetime
 
-# MOCK_USERS = [
-#     {
-#     "email": "ronald@gmail.com",
-#     "role": "Admin",
-#     "salt": "8Fb23mMNHD5Zb8pr2qWA3PE9bH0=",
-#     "hashed": "1736f83698df3f8153c1fbd6ce2840f8aace4f200771a46672635374073cc876cf0aa6a31f780e576578f791b5555b50df46303f0c3a7f2d21f91aa1429ac22e"
-#      }]
-
-# MOCK_MEALS = [{
-#     '_id': 1,
-#     'meal_name': 'Beef with Rice',
-#     'price': 3000,
-#     'owner':'ronald@gmail.com'
-#     }]
-
-# MOCK_ORDERS = [{
-#     "_id": 1,
-#     "meal_name": "Beef with Rice", 
-#     "meal_id": "1", 
-#     "time": datetime.datetime.utcnow()
-#     }]
-
-# new_menu =[
-#     {
-#         'id': 1,
-#         'day': 'monday',
-#         'meal':{
-#             'id': 3,
-#             'name': 'matooke',
-#             'price': 'UGX 15,000'
-#         }
-        
-#     }
-# ]
-
 class Users:
     """A class for all users"""
     
@@ -105,23 +70,20 @@ class Meals:
 
 class Menu:
     """A class to represent the Menu of meals for a particular day"""
-    def __init__(self, meal_name):
+    def __init__(self):
         self.menus = []
-        self.meal_name = meal_name
         self.id = 1
 
     def get_menu(self):
         for menu in self.menus:
             return menu
 
-    def setup_menu(self, meal_name, day, price):
+    def setup_menu(self, meal_name, price):
         self.menus.append(
-            {
-                'meal': {
+                {
                     'name': meal_name,
                     'price': price
                 }
-            }
         )
         self.id =+ 1
         return self.menus
