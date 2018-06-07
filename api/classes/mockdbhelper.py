@@ -61,12 +61,20 @@ class Meals:
 
     def delete_meal( self, meal_id):
         """Enables the caterer to resolve/remove orders"""
-        meal = [(i, meal) for i, meal in enumerate(self.meals) if meal['id'] == meal_id]
-        if meal:
-            self.meals.remove(self.meals[meal[0][0]])
-            return True
-        else:
-            return False
+        c = 0
+        for meal in self.meals:
+            if meal['id'] == meal_id:
+                del self.meals[c]
+                return True
+            c =+ 1
+        return False
+        # meal = [(i, meal) for i, meal in enumerate(self.meals) if meal['id'] == meal_id]
+        # print(meal)
+        # if meal:
+        #     del self.meals[meal[0][0]]
+        #     return True
+        # else:
+        #     return False
 
 class Menu:
     """A class to represent the Menu of meals for a particular day"""
