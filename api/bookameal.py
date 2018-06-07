@@ -1,9 +1,9 @@
 from flask import  request, jsonify, make_response, json
-from flask_login import  login_user, logout_user, current_user
+# from flask_login import  login_user, logout_user, current_user
 from .classes.mockdbhelper import Users, Meals, Menu, Orders
 from .classes.user import User
 from . import app, PH, basic_auth
-from . import login_manager
+# from . import login_manager
 import datetime
 import re
 from flasgger import Swagger
@@ -110,8 +110,6 @@ def login():
             stored_user = users.get_user(email)
             print(stored_user)
             if stored_user and PH.validate_password(password, stored_user['salt'], stored_user['hashed']):
-                user = User(email)
-                login_user(user)
                 return make_response("success!!, you are now logged in", 200)
             return make_response("Your email does not exist", 401)
         return make_response("You must enter a password", 400)
@@ -176,15 +174,8 @@ def account_create_meal():
   meal_name = data['meal_name']
   price = data['price']
   if meal_name and price:
-    meal = meals2.add_meal(meal_name, price)
-    if meal:
-      print(meal)
-      # DB.update_meal(meal_id, meal_name, price)
-      return make_response("You successfully created a meal", 200)
-    else:
-      print('yes')
-      
-
+    meals2.add_meal(meal_name, price)
+    return make_response("You successfully created a meal", 200)
   else:
       return make_response('Please enter a meal_name and price', 400)
 
@@ -225,6 +216,7 @@ def account_update_meal(meal_id):
     else:
         return make_response('Please enter a meal name', 400)
 
+#delete not working rightfully
 @app.route('/api/v1/meals/<meal_id>', methods=["DELETE"])
 @basic_auth.required
 def account_delete_meal(meal_id):
@@ -279,7 +271,9 @@ def new_order():
     data = request.get_json()
     meal_id = data["meal_id"]
     #meal_name = data['meal_name']
+    print(orders2)
     orders2.add_order(meal_id, datetime.datetime.utcnow())
+    print(orders2)
     return "Your order has been logged and a you will be served shortly"
 
 @app.route('/api/v1/orders')
@@ -313,9 +307,9 @@ def get_all_orders():
             str(deltaseconds % 60).zfill(2))
     return jsonify({"orders": orders}), 200
 
-@app.route('/api/v1/orders/<int:order_id>', methods=['DELETE'])
+@app.route('/api/v1/orders/<int:id>', methods=['DELETE'])
 @basic_auth.required
-def remove_order(order_id):
+def remove_order(id):
     """
     Orders route
     ---
@@ -338,11 +332,11 @@ def remove_order(order_id):
         description: The meal option entered is not valid
     """
     """Enables caterer to remove a particular order."""
-    if(orders2.delete_order(order_id)):
+    if(orders2.delete_order(id)):
         return make_response("The order has been successfully removed", 202)
-    return make_response("Please enter a valid meal option", 404)
+    return make_response("Please enter a valid order id", 404)
 
-
+menus = Menu() 
 @app.route('/api/v1/menu')
 def get_menu():
     """
@@ -365,7 +359,11 @@ def get_menu():
         description: menu returned successfully
     """
     """Returns the menu"""
-    return jsonify({"MENU":new_menu }), 200
+    menu = menus.get_menu()
+    if menu:
+      return jsonify({"MENU":menu }), 
+    else:
+      return make_response("The menu has not yet been set")
     
 @app.route('/api/v1/menu', methods=["post"])
 @basic_auth.required
@@ -392,10 +390,9 @@ def setup_menu():
     """Enables caterer to setup menu"""
     data =request.get_json()
     meal_name = data['meal_name']
-    day = data['day']
     price = data['price']
-    DB.setup_menu(meal_name, day, price)
-    return jsonify({"MENU": new_menu}), 201
+    menus.setup_menu(meal_name, price)
+    return jsonify({"MENU": menus}), 201
 
 if __name__ == "__main__":
     app.run(debug=True)
