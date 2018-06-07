@@ -15,5 +15,4 @@ basic_auth = BasicAuth(app)
 
 PH = PasswordHelper()
 
-
 from . import bookameal
