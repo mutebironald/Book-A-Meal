@@ -216,8 +216,7 @@ def account_update_meal(meal_id):
     else:
         return make_response('Please enter a meal name', 400)
 
-#delete not working rightfully
-@app.route('/api/v1/meals/<meal_id>', methods=["DELETE"])
+@app.route('/api/v1/meals/<int:meal_id>', methods=["DELETE"])
 @basic_auth.required
 def account_delete_meal(meal_id):
     """
@@ -240,9 +239,11 @@ def account_delete_meal(meal_id):
         description: The meal has been deleted
     """
     """Authenticated user is able to delete particular meal"""
-    meals2.delete_meal(meal_id)
-    return make_response("The meal has been deleted", 202)
-
+    meal = meals2.delete_meal(meal_id)
+    if meal:
+      return make_response("The meal has been deleted", 202)
+    else:
+      return make_response("The meal specified is not present")
 
 orders2 = Orders()
 @app.route('/api/v1/orders', methods=['POST'])
