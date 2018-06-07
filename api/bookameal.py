@@ -337,7 +337,7 @@ def remove_order(id):
         return make_response("The order has been successfully removed", 202)
     return make_response("Please enter a valid order id", 404)
 
-menus = Menu() 
+menus = Menu(meals2) 
 @app.route('/api/v1/menu')
 def get_menu():
     """
@@ -390,10 +390,12 @@ def setup_menu():
     """
     """Enables caterer to setup menu"""
     data =request.get_json()
-    meal_name = data['meal_name']
-    price = data['price']
-    menus.setup_menu(meal_name, price)
-    return jsonify({"MENU": menus}), 201
+    meal_id = data['meal_id']
+    output = menus.setup_menu(meal_id)
+    if output:
+      return jsonify({"MENU": output}), 201
+    else:
+      return make_response("Incorrect meal option")
 
 if __name__ == "__main__":
     app.run(debug=True)
