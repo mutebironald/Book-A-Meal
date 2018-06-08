@@ -6,7 +6,13 @@ import datetime
 import re
 from flasgger import Swagger
 
+# from . import auth
+
 Swagger(app)
+users= Users()
+meals2 = Meals()
+menus = Menu(meals2)
+orders2 = Orders()
 
 @app.route('/')
 def home():
@@ -21,7 +27,7 @@ def home():
     """
     return "Welcome to Book-A-Meal"
 
-users= Users()
+
 
 @app.route('/api/v1/auth/signup', methods=["POST"])
 def register():
@@ -107,13 +113,12 @@ def login():
         return make_response("You must enter a password", 400)
     return make_response("Your email field is empty", 400)
 
-meals2 = Meals()
+
 @app.route('/api/v1/meals')
 @basic_auth.required
 def account_get_meals():
     """
     Meals route
-    ---
     tags:
       - Book-A-Meal API
     parameters:
@@ -236,7 +241,7 @@ def account_delete_meal(meal_id):
     else:
       return make_response("The meal specified is not present")
 
-orders2 = Orders()
+
 @app.route('/api/v1/orders', methods=['POST'])
 @basic_auth.required
 def new_order():
@@ -328,7 +333,7 @@ def remove_order(id):
         return make_response("The order has been successfully removed", 202)
     return make_response("Please enter a valid order id", 404)
 
-menus = Menu(meals2) 
+ 
 @app.route('/api/v1/menu')
 def get_menu():
     """
