@@ -6,7 +6,8 @@ import datetime
 import re
 from flasgger import Swagger
 
-# from . import auth
+from . import authentication
+auth = authentication.Tokens()
 
 Swagger(app)
 users= Users()
@@ -106,16 +107,22 @@ def login():
         password = data['password']
         if password:
             stored_user = users.get_user(email)
-            print(stored_user)
+            print("Here is the answer " + str(stored_user))
+            print(stored_user['id'])
             if stored_user and PH.validate_password(password, stored_user['salt'], stored_user['hashed']):
-                return make_response("success!!, you are now logged in", 200)
+              access_token = "{}".format(
+                auth.generate_token(stored_user['id'])
+              )
+              return make_response(jsonify({"token": access_token,
+              "message": "success!!, you are now logged in"}), 200)
+                # return make_response("success!!, you are now logged in", 200)
             return make_response("Your email does not exist", 401)
         return make_response("You must enter a password", 400)
     return make_response("Your email field is empty", 400)
 
 
 @app.route('/api/v1/meals')
-@basic_auth.required
+# @basic_auth.required
 def account_get_meals():
     """
     Meals route
@@ -136,8 +143,18 @@ def account_get_meals():
         description: Meals present are successfully returned
     """
     """Enables meal retrieval for authenticated user""" 
-    meals = meals2.get_meals()
-    return make_response(jsonify({'Meals': meals}), 200)
+    access_token = request.headers.get("Authorization")
+    print (access_token)
+    if access_token:
+      user_id = auth.decode_token(access_token)
+      print(user_id)
+      if not isinstance (user_id, str):
+        meals = meals2.get_meals()
+        return make_response(jsonify({'Meals': meals}), 200)
+      else:
+        return "it is a string"
+    else:
+      "no access token"
 
 @app.route('/api/v1/meals', methods=['POST'])
 @basic_auth.required
