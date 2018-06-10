@@ -1,5 +1,8 @@
 import datetime
 
+# meals = Meals()
+# menu = Menu(meals)
+
 class Users:
     """A class for all users"""
     
@@ -43,7 +46,7 @@ class Meals:
     def update_meal(self, _id, meal_name, price):
         """Enables caterer to change a specific meal option"""
         for meal in self.meals:
-            if u"{}".format(meal.get('id')) == _id:
+            if meal['id'] == _id:
                 meal['meal_name'] = meal_name
                 meal['price'] = price
                 break
@@ -55,8 +58,9 @@ class Meals:
     def get_meal(self, meal_id):
         """To get meals from meal options"""
         for meal in self.meals:
-            if u"{}".format(meal.get('id')) == meal_id:
+            if meal['id'] == meal_id:
                 return meal
+            
 
     def delete_meal( self, meal_id):
         """Enables the caterer to resolve/remove orders"""
@@ -65,12 +69,11 @@ class Meals:
             if meal['id'] == meal_id:
                 del self.meals[c]
                 return True
-            c =+ 1
-            return False
+            c += 1
 
 class Menu:
     """A class to represent the Menu of meals for a particular day"""
-    def __init__(self, meals=[]):
+    def __init__(self, meals):
         self.menu = []
         self.meals = meals
 
@@ -78,38 +81,45 @@ class Menu:
         return self.menu
 
     def setup_menu(self, meal_id):
-        meal = self.meals.get_meal(meal_id)
-        if meal:
-            self.menu.append(meal)
-            return self.menu
+        meal_get = self.meals.get_meals()
+        for meal in meal_get:
+            if meal['id'] == int(meal_id):
+                print(meal)
+                self.menu.append(meal)
+                return self.menu
         return False
 
-
-meals = Meals()
 class Orders:
     """A class to represent a customers/users orders"""
-    def __init__(self, menu=[]):
+    def __init__(self, menu):
         self.orders = []
         self.menu = menu
         self.id = 1
 
     def add_order(self, meal_id, time):
         """Enables customer to make an order."""
-        my_menu = self.menu
-
-
-
-        self.orders.append({ 
-            "meal": meals.get_meal(meal_id), 
-            "time": time,
-            "cleared": False
-            })
-        self.id =+ 1
-        return self.orders
-        
+        menu_returned = self.menu.get_menu()
+        for meal in menu_returned:
+            if meal['id'] == int(meal_id):
+                self.orders.append({
+                    "id": self.id,
+                    'meal': meal,
+                    'time': time,
+                    'cleared': False
+                })
+                self.id += 1
+                print(self.id)
+                return self.orders
+            
     def get_orders(self):
         """Returns all orders belonging to a particular caterer"""
         return self.orders
+
+    #getting an order
+    def get_order(self, order_id):
+        for order in self.orders:
+            if order['id'] == order_id:
+                return order
 
     def delete_order( self, order_id):
         """Enables the caterer to resolve/remove orders"""
@@ -118,5 +128,5 @@ class Orders:
             if order['id'] == order_id:
                 del self.orders[c]
                 return True
-            c =+ 1
-            return False
+            c += 1
+            
