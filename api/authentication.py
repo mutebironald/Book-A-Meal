@@ -33,3 +33,4 @@ class Tokens:
 
         except jwt.InvalidTokenError:
             return "Invalid token. Please register or login."
+            
