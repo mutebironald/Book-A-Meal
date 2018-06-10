@@ -1,14 +1,18 @@
 import datetime
 
-# meals = Meals()
-# menu = Menu(meals)
+ACCESS = {
+    'guest': 0,
+    'user': 1,
+    'admin': 2
+}
 
 class Users:
     """A class for all users"""
     
-    def __init__(self):
+    def __init__(self, access=ACCESS['user']):
         self.users = []
         self.id = 1
+        self.access = access
 
     def get_user(self, email):
         """Helps am already registered user to log in."""
@@ -26,6 +30,12 @@ class Users:
             "hashed":hashed
             })
         self.id += 1
+        
+    def is_admin(self):
+        return self.access == ACCESS['admin']
+
+    def allowed(self, access_level):
+        return self.access >= access_level
 
 class Meals:
     """A class to represent the meals"""
@@ -61,7 +71,6 @@ class Meals:
             if meal['id'] == meal_id:
                 return meal
             
-
     def delete_meal( self, meal_id):
         """Enables the caterer to resolve/remove orders"""
         c = 0
@@ -115,7 +124,6 @@ class Orders:
         """Returns all orders belonging to a particular caterer"""
         return self.orders
 
-    #getting an order
     def get_order(self, order_id):
         for order in self.orders:
             if order['id'] == order_id:
@@ -129,4 +137,3 @@ class Orders:
                 del self.orders[c]
                 return True
             c += 1
-            
