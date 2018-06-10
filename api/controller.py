@@ -5,10 +5,9 @@ from . import app, PH
 import datetime
 import re
 from flasgger import Swagger
-
 from . import authentication
-auth = authentication.Tokens()
 
+auth = authentication.Tokens()
 Swagger(app)
 users= Users()
 meals2 = Meals()
@@ -27,8 +26,6 @@ def home():
             description: A welcome message appears 
     """
     return "Welcome to Book-A-Meal"
-
-
 
 @app.route('/api/v1/auth/signup', methods=["POST"])
 def register():
@@ -136,7 +133,7 @@ def login():
 
 @app.route('/api/v1/meals', methods=["GET"])
 def account_get_meals():
-    """
+  """
     Meals route
     ---
     tags:
@@ -149,20 +146,49 @@ def account_get_meals():
           access-token:
             type: "string"
     responses:
-      200:
-        description: Meals present are successfully returned
-   
-    """
-    """Enables meal retrieval for authenticated user""" 
-    access_token = request.headers.get("Authorization")
-    if access_token:
-      user_id = auth.decode_token(access_token)
-      if not isinstance (user_id, str):
-        meals = meals2.get_meals()
-        return make_response(jsonify({'Meals': meals}), 200)
+        200:
+            description: Meals present are successfully returned
+  """  
+  """Enables meal retrieval for authenticated user""" 
+  access_token = request.headers.get("Authorization")
+  if access_token:
+    user_id = auth.decode_token(access_token)
+    if not isinstance (user_id, str):
+      meals = meals2.get_meals()
+      return make_response(jsonify({'Meals': meals}), 200)
 
 @app.route('/api/v1/meals/<int:id>', methods=["GET"])
 def get_meal(id):
+  """
+    Meals route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: access-token
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+            - "email"
+            - "password"
+          properties:
+            email:
+              type: "string"
+              example: "zeroberto@gmail.com"
+            password:
+              type: "string"
+              format: password
+              example: "1234567"
+    responses:
+        200:
+            description: A successfully logged user 
+        401:
+            description: A user with wrong log inexistent email is informed
+        400:
+            description: A user trying to gain access without either an email or password
+  """
   access_token = request.headers.get("Authorization")
   if access_token:
     user_id = auth.decode_token(access_token)
@@ -170,32 +196,9 @@ def get_meal(id):
       meals = meals2.get_meal(id)
       return make_response(jsonify({'Meal': meals}), 200)
 
-
 @app.route('/api/v1/meals', methods=['POST'])
 def account_create_meal():
   """
-  Meals route
-  ---
-  tags:
-    - Book-A-Meal API
-  parameters:
-    - name: body
-      in: body
-      required: true
-      schema:
-	  	type: oject
-		required:
-			- "meal_name"
-			- "price"
-		properties:
-			meal_name:
-				type: "string"
-				example: "Buffet"
-			price:
-				type: "int"
-				example: 15000
-
-		
   responses:
     200:
       description: Meal is successfully created
@@ -288,7 +291,6 @@ def account_delete_meal(meal_id):
           return make_response("The meal has been deleted", 202)
         else:
           return make_response("The meal specified is not present")
-
 
 @app.route('/api/v1/orders', methods=['POST'])
 def new_order():
@@ -383,15 +385,10 @@ def get_order(id):
     if access_token:
       user_id = auth.decode_token(access_token)
       if not isinstance (user_id, str):
-        orders = orders2.get_orders()
-        for order in orders:
-          if order['id'] == id:
-            return orders
-          break
-        # if(orders2.delete_order(id)):
-        #     return make_response("The order has been successfully removed", 202)
-        # return make_response("Please enter a valid order id", 404)
- 
+        order = orders2.get_order(id)
+        print(order)
+        return jsonify({"order": order}), 200
+      
 @app.route('/api/v1/menu')
 def get_menu():
     """
@@ -459,6 +456,5 @@ def setup_menu():
         else:
           return make_response("Incorrect meal option")
   
-
 if __name__ == "__main__":
     app.run(debug=True)
