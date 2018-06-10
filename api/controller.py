@@ -1,7 +1,7 @@
 from flask import  request, jsonify, make_response, json
 from .classes.models import Users, Meals, Menu, Orders
 from .classes.user import User
-from . import app, PH, basic_auth
+from . import app, PH
 import datetime
 import re
 from flasgger import Swagger
@@ -13,7 +13,7 @@ Swagger(app)
 users= Users()
 meals2 = Meals()
 menus = Menu(meals2)
-orders2 = Orders()
+orders2 = Orders(menus)
 
 @app.route('/')
 def home():
@@ -38,23 +38,34 @@ def register():
     tags:
       - Book-A-Meal API
     parameters:
-      - name: email
-        in: query
-        type: string
+      - name: body
+        in: body
         required: true
-        description: your email address
-      - name: Password
-        in: query
-        type: string
-        required: true
-        description: your password
+        schema:
+          type: object
+          required:
+            - "email"
+            - "password"
+          properties:
+            email:
+              type: "string"
+              example: "zeroberto@gmail.com"
+            password:
+              type: "string"
+              format: password
+              example: "1234567"
     responses:
         201:
             description: Successfull registration of user
+            schema:
+              type: object
+            examples:
+              { "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1Mjg1NDc5NzEsInN1YiI6MX0._A9-QMDV1nL7AW5BXAAvqJw3C2E1pNJVcdUSGo2Njs8"}
         401:
             description: Unsuccessful user registration
         202:
             description: Double signup rejection
+		
 
     """
     """Facilitates user registration"""
@@ -82,16 +93,22 @@ def login():
     tags:
       - Book-A-Meal API
     parameters:
-      - name: email
-        in: query
-        type: string
+      - name: body
+        in: body
         required: true
-        description: your email address
-      - name: Password
-        in: query
-        type: string
-        required: true
-        description: your password
+        schema:
+          type: object
+          required:
+            - "email"
+            - "password"
+          properties:
+            email:
+              type: "string"
+              example: "zeroberto@gmail.com"
+            password:
+              type: "string"
+              format: password
+              example: "1234567"
     responses:
         200:
             description: A successfully logged user 
@@ -107,57 +124,54 @@ def login():
         password = data['password']
         if password:
             stored_user = users.get_user(email)
-            print("Here is the answer " + str(stored_user))
-            print(stored_user['id'])
             if stored_user and PH.validate_password(password, stored_user['salt'], stored_user['hashed']):
               access_token = "{}".format(
                 auth.generate_token(stored_user['id'])
               )
               return make_response(jsonify({"token": access_token,
               "message": "success!!, you are now logged in"}), 200)
-                # return make_response("success!!, you are now logged in", 200)
             return make_response("Your email does not exist", 401)
         return make_response("You must enter a password", 400)
     return make_response("Your email field is empty", 400)
 
-
-@app.route('/api/v1/meals')
-# @basic_auth.required
+@app.route('/api/v1/meals', methods=["GET"])
 def account_get_meals():
     """
     Meals route
+    ---
     tags:
       - Book-A-Meal API
     parameters:
-      - name: language
-        in: path
-        type: string
+      - name: access-token
+        in: header
         required: true
-        description: The language name
-      - name: size
-        in: query
-        type: integer
-        description: size of awesomeness
+        properties:
+          access-token:
+            type: "string"
     responses:
       200:
         description: Meals present are successfully returned
+   
     """
     """Enables meal retrieval for authenticated user""" 
     access_token = request.headers.get("Authorization")
-    print (access_token)
     if access_token:
       user_id = auth.decode_token(access_token)
-      print(user_id)
       if not isinstance (user_id, str):
         meals = meals2.get_meals()
         return make_response(jsonify({'Meals': meals}), 200)
-      else:
-        return "it is a string"
-    else:
-      "no access token"
+
+@app.route('/api/v1/meals/<int:id>', methods=["GET"])
+def get_meal(id):
+  access_token = request.headers.get("Authorization")
+  if access_token:
+    user_id = auth.decode_token(access_token)
+    if not isinstance (user_id, str):
+      meals = meals2.get_meal(id)
+      return make_response(jsonify({'Meal': meals}), 200)
+
 
 @app.route('/api/v1/meals', methods=['POST'])
-@basic_auth.required
 def account_create_meal():
   """
   Meals route
@@ -165,15 +179,23 @@ def account_create_meal():
   tags:
     - Book-A-Meal API
   parameters:
-    - name: language
-      in: path
-      type: string
+    - name: body
+      in: body
       required: true
-      description: The language name
-    - name: size
-      in: query
-      type: integer
-      description: size of awesomeness
+      schema:
+	  	type: oject
+		required:
+			- "meal_name"
+			- "price"
+		properties:
+			meal_name:
+				type: "string"
+				example: "Buffet"
+			price:
+				type: "int"
+				example: 15000
+
+		
   responses:
     200:
       description: Meal is successfully created
@@ -183,17 +205,20 @@ def account_create_meal():
   """Enables meal retrieval for authenticated user""" 
 
   """Enables Authenticated user to create meals"""
-  data = request.get_json()
-  meal_name = data['meal_name']
-  price = data['price']
-  if meal_name and price:
-    meals2.add_meal(meal_name, price)
-    return make_response("You successfully created a meal", 200)
-  else:
-      return make_response('Please enter a meal_name and price', 400)
+  access_token = request.headers.get("Authorization")
+  if access_token:
+    user_id = auth.decode_token(access_token)
+    if not isinstance (user_id, str):
+      data = request.get_json()
+      meal_name = data['meal_name']
+      price = data['price']
+      if meal_name and price:
+        meals2.add_meal(meal_name, price)
+        return make_response("You successfully created a meal", 200)
+      else:
+          return make_response('Please enter a meal_name and price', 400)
 
-@app.route('/api/v1/meals/<meal_id>', methods=["PUT"])
-@basic_auth.required
+@app.route('/api/v1/meals/<int:meal_id>', methods=["PUT"])
 def account_update_meal(meal_id):
     """
     Meals route
@@ -218,19 +243,21 @@ def account_update_meal(meal_id):
     """
     """Enables meal retrieval for authenticated user""" 
     """Authenticated user is able to update meal"""
-    data = request.get_json()
-    meal_name = data['meal_name']
-    price = data['price']
-    if meal_name:
-        meals2.update_meal(meal_id, meal_name, price)
-        update = meals2.get_meal(meal_id)
-        return jsonify({'meal': update}), 200
-
-    else:
-        return make_response('Please enter a meal name', 400)
+    access_token = request.headers.get("Authorization")
+    if access_token:
+      user_id = auth.decode_token(access_token)
+      if not isinstance (user_id, str):
+        data = request.get_json()
+        meal_name = data['meal_name']
+        price = data['price']
+        if meal_name:
+            meals2.update_meal(meal_id, meal_name, price)
+            update = meals2.get_meal(meal_id)
+            return jsonify({'meal': update}), 200
+        else:
+            return make_response('Please enter a meal name', 400)
 
 @app.route('/api/v1/meals/<int:meal_id>', methods=["DELETE"])
-@basic_auth.required
 def account_delete_meal(meal_id):
     """
     Meals route
@@ -252,15 +279,18 @@ def account_delete_meal(meal_id):
         description: The meal has been deleted
     """
     """Authenticated user is able to delete particular meal"""
-    meal = meals2.delete_meal(meal_id)
-    if meal:
-      return make_response("The meal has been deleted", 202)
-    else:
-      return make_response("The meal specified is not present")
+    access_token = request.headers.get("Authorization")
+    if access_token:
+      user_id = auth.decode_token(access_token)
+      if not isinstance (user_id, str):
+        meal = meals2.delete_meal(meal_id)
+        if meal:
+          return make_response("The meal has been deleted", 202)
+        else:
+          return make_response("The meal specified is not present")
 
 
 @app.route('/api/v1/orders', methods=['POST'])
-@basic_auth.required
 def new_order():
     """
     Orders route
@@ -282,16 +312,16 @@ def new_order():
         description: order received
     """
     """Enables customer to make an order"""
-    data = request.get_json()
-    meal_id = data["meal_id"]
-    #meal_name = data['meal_name']
-    print(orders2)
-    orders2.add_order(meal_id, datetime.datetime.utcnow())
-    print(orders2)
-    return "Your order has been logged and a you will be served shortly"
+    access_token = request.headers.get("Authorization")
+    if access_token:
+      user_id = auth.decode_token(access_token)
+      if not isinstance (user_id, str):
+        data = request.get_json()
+        meal_id = data["meal_id"]
+        orders2.add_order(meal_id, datetime.datetime.utcnow())
+        return "Your order has been logged and a you will be served shortly"
 
 @app.route('/api/v1/orders')
-@basic_auth.required
 def get_all_orders():
     """
     Orders route
@@ -313,17 +343,20 @@ def get_all_orders():
         description: orders retrieved successfully
     """
     """Enables Authenticated caterer is able to get all orders""" 
-    now = datetime.datetime.utcnow()
-    orders = orders2.get_orders()
-    for order in orders:
-        deltaseconds = (now - order['time']).seconds
-        order['wait_minutes'] = "{}.{}".format((deltaseconds/60),
-            str(deltaseconds % 60).zfill(2))
-    return jsonify({"orders": orders}), 200
-
-@app.route('/api/v1/orders/<int:id>', methods=['DELETE'])
-@basic_auth.required
-def remove_order(id):
+    access_token = request.headers.get("Authorization")
+    if access_token:
+      user_id = auth.decode_token(access_token)
+      if not isinstance (user_id, str):
+        now = datetime.datetime.utcnow()
+        orders = orders2.get_orders()
+        for order in orders:
+          deltaseconds = (now - order['time']).seconds
+          order['wait_minutes'] = "{}.{}".format((deltaseconds/60),
+                str(deltaseconds % 60).zfill(2))
+          return jsonify({"orders": orders}), 200
+        
+@app.route('/api/v1/orders/<int:id>')
+def get_order(id):
     """
     Orders route
     ---
@@ -346,10 +379,18 @@ def remove_order(id):
         description: The meal option entered is not valid
     """
     """Enables caterer to remove a particular order."""
-    if(orders2.delete_order(id)):
-        return make_response("The order has been successfully removed", 202)
-    return make_response("Please enter a valid order id", 404)
-
+    access_token = request.headers.get("Authorization")
+    if access_token:
+      user_id = auth.decode_token(access_token)
+      if not isinstance (user_id, str):
+        orders = orders2.get_orders()
+        for order in orders:
+          if order['id'] == id:
+            return orders
+          break
+        # if(orders2.delete_order(id)):
+        #     return make_response("The order has been successfully removed", 202)
+        # return make_response("Please enter a valid order id", 404)
  
 @app.route('/api/v1/menu')
 def get_menu():
@@ -373,14 +414,17 @@ def get_menu():
         description: menu returned successfully
     """
     """Returns the menu"""
-    menu = menus.get_menu()
-    if menu:
-      return jsonify({"MENU":menu }), 
-    else:
-      return make_response("The menu has not yet been set")
+    access_token = request.headers.get("Authorization")
+    if access_token:
+      user_id = auth.decode_token(access_token)
+      if not isinstance (user_id, str):
+        menu = menus.get_menu()
+        if menu:
+          return jsonify({"MENU":menu }), 
+        else:
+          return make_response("The menu has not yet been set")
     
 @app.route('/api/v1/menu', methods=["post"])
-@basic_auth.required
 def setup_menu():
     """
     Menu route
@@ -402,13 +446,19 @@ def setup_menu():
         description: Menu successfully created
     """
     """Enables caterer to setup menu"""
-    data =request.get_json()
-    meal_id = data['meal_id']
-    output = menus.setup_menu(meal_id)
-    if output:
-      return jsonify({"MENU": output}), 201
-    else:
-      return make_response("Incorrect meal option")
+    access_token = request.headers.get("Authorization")
+    if access_token:
+      user_id = auth.decode_token(access_token)
+      if not isinstance (user_id, str):
+        data =request.get_json()
+        meal_id = data['meal_id']
+        print(meal_id)
+        output = menus.setup_menu(meal_id)
+        if output:
+          return jsonify({"MENU": output}), 201
+        else:
+          return make_response("Incorrect meal option")
+  
 
 if __name__ == "__main__":
     app.run(debug=True)
