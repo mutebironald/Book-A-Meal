@@ -125,6 +125,7 @@ def login():
               access_token = "{}".format(
                 auth.generate_token(stored_user['id'])
               )
+              print(access_token)
               return make_response(jsonify({"token": access_token,
               "message": "success!!, you are now logged in"}), 200)
             return make_response("Your email does not exist", 401)
@@ -139,11 +140,11 @@ def account_get_meals():
     tags:
       - Book-A-Meal API
     parameters:
-      - name: access-token
+      - name: Authorization
         in: header
         required: true
         properties:
-          access-token:
+          Authorization:
             type: "string"
     responses:
         200:
@@ -165,30 +166,24 @@ def get_meal(id):
     tags:
       - Book-A-Meal API
     parameters:
-      - name: access-token
+      - name: Authorization
         in: header
         required: true
         properties:
-          access-token:
+          Authorization:
             type: "string"
-      - name: body
-        in: body
+      - name: id
+        in: path
         required: true
-        schema:
-          type: object
-          required:
-            - "meal_id"
-         
-              
-
+        properties:
+          id:
+            type: "int"
+        default: 1
     responses:
         200:
-            description: A successfully logged user 
-        401:
-            description: A user with wrong log inexistent email is informed
-        400:
-            description: A user trying to gain access without either an email or password
-  """
+            description: A successfully returned meal.
+  """ 
+  
   access_token = request.headers.get("Authorization")
   if access_token:
     user_id = auth.decode_token(access_token)
@@ -217,13 +212,13 @@ def account_create_meal():
               type: "string"
               example: "Indian potatoes with Ughali"
             price:
-              type: "int"
+              type: "string"
               example: "6000"
-      - name: access_token
+      - name: Authorization
         in: header
         required: true
         properties:
-          access_token:
+          Authorization:
             type: "string"
             
     responses:
@@ -236,6 +231,7 @@ def account_create_meal():
   """Enables Authenticated user to create meals"""
   access_token = request.headers.get("Authorization")
   if access_token:
+    print(access_token)
     user_id = auth.decode_token(access_token)
     if not isinstance (user_id, str):
       data = request.get_json()
@@ -246,6 +242,8 @@ def account_create_meal():
         return make_response("You successfully created a meal", 200)
       else:
           return make_response('Please enter a meal_name and price', 400)
+    return "id is a string"
+  return "no access-token"
 
 @app.route('/api/v1/meals/<int:meal_id>', methods=["PUT"])
 def account_update_meal(meal_id):
@@ -277,11 +275,11 @@ def account_update_meal(meal_id):
           meal_id:
             type: "int"
         default: 1
-      - name: access_token
+      - name: Authorization
         in: header
         required: true
         properties:
-          access_token:
+          Authorization:
             type: "string"
             
     responses:
@@ -316,21 +314,18 @@ def account_delete_meal(meal_id):
       - Book-A-Meal API
     parameters:
       - name: meal_id
-        in: body
+        in: path
         required: true
-        schema:
-          type: object
-          required:
-            - "email"
-            - "password"
-          properties:
-            email:
-              type: "string"
-              example: "zeroberto@gmail.com"
-            password:
-              type: "string"
-              format: password
-              example: "1234567"
+        properties:
+          meal_id:
+            type: "int"
+        default: 1
+      - name: Authorization
+        in: header
+        required: true
+        properties:
+          Authorization:
+            type: "string"
     responses:
         202:
             description: The meal has been deleted. 
@@ -356,19 +351,30 @@ def new_order():
     tags:
       - Book-A-Meal API
     parameters:
-      - name: language
-        in: path
-        type: string
+      - name: body
+        in: body
         required: true
-        description: The language name
-      - name: size
-        in: query
-        type: integer
-        description: size of awesomeness
+        schema:
+          type: object
+          required:
+            - "meal_id"
+          properties:
+            meal_id:
+              type: "string"
+              example: "1"
+      - name: Authorization
+        in: header
+        required: true
+        properties:
+          Authorization:
+            type: "string"
+            
     responses:
-      200:
-        description: order received
-    """
+        200:
+            description: order received
+        
+    """  
+  
     """Enables customer to make an order"""
     access_token = request.headers.get("Authorization")
     if access_token:
@@ -382,24 +388,22 @@ def new_order():
 @app.route('/api/v1/orders')
 def get_all_orders():
     """
-    Orders route
+    orders route
     ---
     tags:
       - Book-A-Meal API
     parameters:
-      - name: language
-        in: path
-        type: string
+      - name: Authorization
+        in: header
         required: true
-        description: The language name
-      - name: size
-        in: query
-        type: integer
-        description: size of awesomeness
+        properties:
+          Authorization:
+            type: "string"
     responses:
-      200:
-        description: orders retrieved successfully
-    """
+        200:
+            description: Orders retrieved successfully.
+    """  
+    
     """Enables Authenticated caterer is able to get all orders""" 
     access_token = request.headers.get("Authorization")
     if access_token:
@@ -421,21 +425,23 @@ def get_order(id):
     tags:
       - Book-A-Meal API
     parameters:
-      - name: language
-        in: path
-        type: string
+      - name: Authorization
+        in: header
         required: true
-        description: The language name
-      - name: size
-        in: query
-        type: integer
-        description: size of awesomeness
+        properties:
+          Authorization:
+            type: "string"
+      - name: id
+        in: path
+        required: true
+        properties:
+          id:
+            type: "int"
+        default: 1
     responses:
-      202:
-        description: The order has been successfully removed
-      404:
-        description: The meal option entered is not valid
-    """
+        200:
+            description: Orders retrieved successfully.
+    """  
     """Enables caterer to remove a particular order."""
     access_token = request.headers.get("Authorization")
     if access_token:
@@ -453,19 +459,18 @@ def get_menu():
     tags:
       - Book-A-Meal API
     parameters:
-      - name: language
-        in: path
-        type: string
+      - name: Authorization
+        in: header
         required: true
-        description: The language name
-      - name: size
-        in: query
-        type: integer
-        description: size of awesomeness
+        properties:
+          Authorization:
+            type: "string"
     responses:
-      200:
-        description: menu returned successfully
-    """
+        200:
+            description: Menu retrieved successfully.
+        404:
+            description: The menu has not been set.
+    """  
     """Returns the menu"""
     access_token = request.headers.get("Authorization")
     if access_token:
@@ -473,9 +478,9 @@ def get_menu():
       if not isinstance (user_id, str):
         menu = menus.get_menu()
         if menu:
-          return jsonify({"MENU":menu }), 
+          return jsonify({"MENU":menu }), 200
         else:
-          return make_response("The menu has not yet been set")
+          return make_response("The menu has not yet been set"), 404
     
 @app.route('/api/v1/menu', methods=["post"])
 def setup_menu():
@@ -485,19 +490,29 @@ def setup_menu():
     tags:
       - Book-A-Meal API
     parameters:
-      - name: language
-        in: path
-        type: string
+      - name: body
+        in: body
         required: true
-        description: The language name
-      - name: size
-        in: query
-        type: integer
-        description: size of awesomeness
+        schema:
+          type: object
+          required:
+            - "meal_id"
+          properties:
+            meal_id:
+              type: "string"
+              example: "1"
+      - name: Authorization
+        in: header
+        required: true
+        properties:
+          Authorization:
+            type: "string"
+            
     responses:
-      201:
-        description: Menu successfully created
-    """
+        201:
+            description: Menu successfully created.
+    """  
+   
     """Enables caterer to setup menu"""
     access_token = request.headers.get("Authorization")
     if access_token:
