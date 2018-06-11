@@ -199,13 +199,39 @@ def get_meal(id):
 @app.route('/api/v1/meals', methods=['POST'])
 def account_create_meal():
   """
-  responses:
-    200:
-      description: Meal is successfully created
-    400:
-      description: No mealname or price
-  """
-  """Enables meal retrieval for authenticated user""" 
+    Meals route
+    ---
+    tags:
+      - Book-A-Meal API
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+            - "meal_name"
+            - "price"
+          properties:
+            meal_name:
+              type: "string"
+              example: "Indian potatoes with Ughali"
+            price:
+              type: "int"
+              example: "6000"
+      - name: access_token
+        in: header
+        required: true
+        properties:
+          access_token:
+            type: "string"
+            
+    responses:
+        200:
+            description: Meal is successfully returned.
+        400:
+            description: No mealname or price.
+  """  
 
   """Enables Authenticated user to create meals"""
   access_token = request.headers.get("Authorization")
@@ -223,42 +249,63 @@ def account_create_meal():
 
 @app.route('/api/v1/meals/<int:meal_id>', methods=["PUT"])
 def account_update_meal(meal_id):
-    """
+  """
     Meals route
     ---
     tags:
       - Book-A-Meal API
     parameters:
-      - name: language
-        in: path
-        type: string
+      - name: body
+        in: body
         required: true
-        description: The language name
-      - name: size
-        in: query
-        type: integer
-        description: size of awesomeness
+        schema:
+          type: object
+          required:
+            - "meal_name"
+            - "price"
+          properties:
+            meal_name:
+              type: "string"
+              example: "Chicken na ketchup"
+            price:
+              type: "int"
+              example: "6000"
+      - name: meal_id
+        in: path
+        required: true
+        properties:
+          meal_id:
+            type: "int"
+        default: 1
+      - name: access_token
+        in: header
+        required: true
+        properties:
+          access_token:
+            type: "string"
+            
     responses:
-      200:
-        description: The specified Meal has been updated
-      400:
-        description: The user tries updating without a meal name 
-    """
-    """Enables meal retrieval for authenticated user""" 
-    """Authenticated user is able to update meal"""
-    access_token = request.headers.get("Authorization")
-    if access_token:
-      user_id = auth.decode_token(access_token)
-      if not isinstance (user_id, str):
-        data = request.get_json()
-        meal_name = data['meal_name']
-        price = data['price']
-        if meal_name:
-            meals2.update_meal(meal_id, meal_name, price)
-            update = meals2.get_meal(meal_id)
-            return jsonify({'meal': update}), 200
-        else:
-            return make_response('Please enter a meal name', 400)
+        200:
+            description: The specified meal has been updated.
+        400:
+            description: The user tries updating without a meal name.
+  """  
+    
+     
+  """Authenticated user is able to update meal"""
+  access_token = request.headers.get("Authorization")
+  if access_token:
+    user_id = auth.decode_token(access_token)
+    if not isinstance (user_id, str):
+      data = request.get_json()
+      meal_name = data['meal_name']
+      price = data['price']
+      if meal_name:
+        meals2.update_meal(meal_id, meal_name, price)
+        update = meals2.get_meal(meal_id)
+        return jsonify({'meal': update}), 200
+      else:
+        return make_response('Please enter a meal name', 400)
 
 @app.route('/api/v1/meals/<int:meal_id>', methods=["DELETE"])
 def account_delete_meal(meal_id):
