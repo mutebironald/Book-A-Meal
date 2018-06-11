@@ -166,21 +166,21 @@ def get_meal(id):
       - Book-A-Meal API
     parameters:
       - name: access-token
+        in: header
+        required: true
+        properties:
+          access-token:
+            type: "string"
+      - name: body
         in: body
         required: true
         schema:
           type: object
           required:
-            - "email"
-            - "password"
-          properties:
-            email:
-              type: "string"
-              example: "zeroberto@gmail.com"
-            password:
-              type: "string"
-              format: password
-              example: "1234567"
+            - "meal_id"
+         
+              
+
     responses:
         200:
             description: A successfully logged user 
