@@ -315,19 +315,28 @@ def account_delete_meal(meal_id):
     tags:
       - Book-A-Meal API
     parameters:
-      - name: language
-        in: path
-        type: string
+      - name: meal_id
+        in: body
         required: true
-        description: The language name
-      - name: size
-        in: query
-        type: integer
-        description: size of awesomeness
+        schema:
+          type: object
+          required:
+            - "email"
+            - "password"
+          properties:
+            email:
+              type: "string"
+              example: "zeroberto@gmail.com"
+            password:
+              type: "string"
+              format: password
+              example: "1234567"
     responses:
-      202:
-        description: The meal has been deleted
+        202:
+            description: The meal has been deleted. 
+        
     """
+
     """Authenticated user is able to delete particular meal"""
     access_token = request.headers.get("Authorization")
     if access_token:
