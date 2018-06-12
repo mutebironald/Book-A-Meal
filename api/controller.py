@@ -122,11 +122,10 @@ def login():
         if password:
             stored_user = users.get_user(email)
             if stored_user and PH.validate_password(password, stored_user['salt'], stored_user['hashed']):
-              access_token = "{}".format(
-                auth.generate_token(stored_user['id'])
-              )
+              access_token = auth.generate_token(stored_user['id'])
+              
               print(access_token)
-              return make_response(jsonify({"token": access_token,
+              return make_response(jsonify({"token": access_token.decode('utf-8'),
               "message": "success!!, you are now logged in"}), 200)
             return make_response("Your email does not exist", 401)
         return make_response("You must enter a password", 400)
@@ -520,12 +519,11 @@ def setup_menu():
       if not isinstance (user_id, str):
         data =request.get_json()
         meal_id = data['meal_id']
-        print(meal_id)
         output = menus.setup_menu(meal_id)
         if output:
           return jsonify({"MENU": output}), 201
         else:
-          return make_response("Incorrect meal option")
+          return make_response("Incorrect meal option"), 404
   
 if __name__ == "__main__":
     app.run(debug=True)
