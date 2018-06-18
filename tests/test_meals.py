@@ -27,7 +27,6 @@ class TestMeals(unittest.TestCase):
         data = json.loads(response.data)
         token = data['token']
         response = self.client.get('/api/v1/meals', content_type='application/json', headers={'Authorization': token})
-        print(token)
         self.assertEqual(response.status_code, 200)
 
     def test_account_create_meal(self):
