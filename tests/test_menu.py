@@ -34,9 +34,9 @@ class TestMeals(unittest.TestCase):
         token = data['token']
         response = self.client.post('/api/v1/meals', data=json.dumps(meal), content_type='application/json',  headers={'Authorization': token})
         self.assertEqual(response.status_code, 200)
-        # response = self.client.post('/api/v1/menu', content_type = "application/json", data=json.dumps(content),  headers={
-        #         'Authorization': token})
-        # self.assertEqual(response.status_code, 201)
+        response = self.client.post('/api/v1/menu', content_type = "application/json", data=json.dumps(content),  headers={
+                'Authorization': token})
+        self.assertEqual(response.status_code, 201)
         # response = self.client.get('/api/v1/menu' , headers={'Authorization': token})
         # self.assertEqual(response.status_code, 200)
         
