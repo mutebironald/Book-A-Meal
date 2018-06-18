@@ -92,11 +92,13 @@ class Menu:
     def setup_menu(self, meal_id):
         meal_get = self.meals.get_meals()
         for meal in meal_get:
+            print (meal_get)
             if meal['id'] == int(meal_id):
                 print(meal)
                 self.menu.append(meal)
                 return self.menu
-        return False
+            else:
+                return False
 
 class Orders:
     """A class to represent a customers/users orders"""
