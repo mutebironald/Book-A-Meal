@@ -15,7 +15,7 @@ class Tokens:
                 app.config['SECRET_KEY'],
                 algorithm='HS256'
                 )
-            return jwt_string
+            return str(jwt_string)
 
         except Exception as e:
             return str(e)    
