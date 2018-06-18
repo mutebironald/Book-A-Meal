@@ -16,7 +16,7 @@ class TestMeals(unittest.TestCase):
 
     def test_get_menu(self):
         user = {
-            "email": "roni@gmail.com",
+            "email": "rteroni@gmail.com",
             "password": "1234567"
         }
         content = {
