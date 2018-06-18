@@ -123,8 +123,6 @@ def login():
             stored_user = users.get_user(email)
             if stored_user and PH.validate_password(password, stored_user['salt'], stored_user['hashed']):
               access_token = auth.generate_token(stored_user['id'])
-              
-              print(access_token)
               return make_response(jsonify({"token": access_token.decode('utf-8'),
               "message": "success!!, you are now logged in"}), 200)
             return make_response("Your email does not exist", 401)
