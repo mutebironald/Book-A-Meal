@@ -20,7 +20,7 @@ class TestMeals(unittest.TestCase):
             "password": "1234567"
         }
         content = {
-            'meal_id':'1'
+            'meal_id':'2'
         }
         meal = {
             'meal_name':'Katogo',
@@ -34,8 +34,13 @@ class TestMeals(unittest.TestCase):
         token = data['token']
         response = self.client.post('/api/v1/meals', data=json.dumps(meal), content_type='application/json',  headers={'Authorization': token})
         self.assertEqual(response.status_code, 200)
-        # response = self.client.post('/api/v1/menu', content_type = "application/json", data=json.dumps(content),  headers={
-        #         'Authorization': token})
+        response = self.client.get('/api/v1/meals', content_type='application/json', headers={'Authorization': token})
+        self.assertEqual(response.status_code, 200)
+
+
+        response = self.client.post('/api/v1/menu', content_type = "application/json", data=json.dumps(content),  headers={
+                'Authorization': token})
+        
         # self.assertEqual(response.status_code, 201)
         # response = self.client.get('/api/v1/menu' , headers={'Authorization': token})
         # self.assertEqual(response.status_code, 200)
@@ -46,7 +51,7 @@ class TestMeals(unittest.TestCase):
             'price': 4000
         }
         content = {
-            'meal_id':'1'
+            'meal_id':'2'
         }
         user = {
             "email": "mroni@gmail.com",

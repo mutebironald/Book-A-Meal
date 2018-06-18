@@ -17,14 +17,14 @@ class TestMeals(unittest.TestCase):
 
     def test_new_order(self):
         order = {
-            "meal_id": "1"
+            "meal_id": "2"
         }
         user = {
-            "email": "roni@gmail.com",
+            "email": "ytroni@gmail.com",
             "password": "1234567"
         }
         content = {
-            'meal_id':'1'
+            'meal_id':'2'
         }
         meal = {
             'meal_name':'Katogo',
@@ -47,14 +47,14 @@ class TestMeals(unittest.TestCase):
         
     def test_get_all_orders(self):
         order = {
-            "meal_id": "1"
+            "meal_id": "2"
         }
         user = {
             "email": "groni@gmail.com",
             "password": "1234567"
         }
         content = {
-            'meal_id':'1'
+            'meal_id':'2'
         }
         meal = {
             'meal_name':'Katogo',
@@ -80,14 +80,14 @@ class TestMeals(unittest.TestCase):
 
     def test_get_order(self):
         order = {
-            "meal_id": "1"
+            "meal_id": "2"
         }
         user = {
             "email": "jejinga@gmail.com",
             "password": "1234567"
         }
         content = {
-            'meal_id':'1'
+            'meal_id':'2'
         }
         meal = {
             'meal_name':'Katogo',
