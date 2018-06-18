@@ -518,7 +518,6 @@ def setup_menu():
         data =request.get_json()
         meal_id = data['meal_id']
         output = menus.setup_menu(meal_id)
-        print(output)
         if output:
           return jsonify({"MENU": output}), 201
         else:
