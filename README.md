@@ -45,7 +45,4 @@ c) Activate virtual environment env\Scripts\activate
 (http://localhost:5000)
 
 
-### Todos.
 
- - Write MORE Tests
- - Improve my models
