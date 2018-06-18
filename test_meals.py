@@ -24,7 +24,7 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(signup.status_code, 201)
         response = self.client.post('/api/v1/auth/login', content_type='application/json', data = json.dumps(user))
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.get_data())
+        data = json.loads(response.data)
         token = data['token']
         response = self.client.get('/api/v1/meals', content_type='application/json', headers={'Authorization': token})
         print(token)
