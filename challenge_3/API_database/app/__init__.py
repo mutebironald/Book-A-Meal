@@ -25,23 +25,13 @@ def create_app(config_name):
     @app.route('/')
     def home():
         """
-        Home route
+        Home/welcome
         ---
         tags:
-        - Book-A-Meal API
-        parameters:
-        - name: language
-            in: path
-            type: string
-            required: true
-            description: The language name
-        - name: size
-            in: query
-            type: integer
-            description: size of awesomeness
+        - Welcoming our users
         responses:
-                200:
-                    description: Receives welcome message.
+            200:
+                description: A welcome message appears 
         """
         
         """Starting point of the API"""
@@ -56,15 +46,12 @@ def create_app(config_name):
         tags:
         - Book-A-Meal API
         parameters:
-        - name: language
-            in: path
-            type: string
+        - name: Authorization
+            in: header
             required: true
-            description: The language name
-        - name: size
-            in: query
-            type: integer
-            description: size of awesomeness
+            properties:
+            Authorization:
+                type: "string"
         responses:
             400:
                 description: No meals present
@@ -72,13 +59,10 @@ def create_app(config_name):
                 description: Meals are present
         """
         auth_header = request.headers.get('Authorization')
-        
         access_token = auth_header
         if access_token:
             user_id = User.decode_token(access_token)
             if not isinstance(user_id, str):
-
-        
                 meals = Meal.get_meals()
                 if not meals:
                     return make_response("No meals present", 400)
@@ -106,21 +90,25 @@ def create_app(config_name):
         tags:
         - Book-A-Meal API
         parameters:
-        - name: language
-            in: path
-            type: string
+        - name: Authorization
+            in: header
             required: true
-            description: The language name
-        - name: size
-            in: query
-            type: integer
-            description: size of awesomeness
+            properties:
+            Authorization:
+                type: "string"
+        - name: id
+            in: path
+            required: true
+            properties:
+            id:
+                type: "int"
+            default: 1
         responses:
             400:
                 description: The meal with the specified id is absent
             200:
                 description: The meal is successfully returned.
-        """
+        """ 
         meal = Meal.query.filter_by(id=id).first()
         if not meal:
             return make_response("That meal is not present", 400)
@@ -141,19 +129,32 @@ def create_app(config_name):
         tags:
         - Book-A-Meal API
         parameters:
-        - name: language
-            in: path
-            type: string
+        - name: body
+            in: body
             required: true
-            description: The language name
-        - name: size
-            in: query
-            type: integer
-            description: size of awesomeness
+            schema:
+            type: object
+            required:
+                - "meal_name"
+                - "price"
+            properties:
+                meal_name:
+                type: "string"
+                example: "Indian potatoes with Ughali"
+                price:
+                type: "string"
+                example: "6000"
+        - name: Authorization
+            in: header
+            required: true
+            properties:
+            Authorization:
+                type: "string"
+                
         responses:
             201:
                 description: The meal has been created.
-        """
+        """ 
         access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
@@ -183,21 +184,41 @@ def create_app(config_name):
         tags:
         - Book-A-Meal API
         parameters:
-        - name: language
-            in: path
-            type: string
+        - name: body
+            in: body
             required: true
-            description: The language name
-        - name: size
-            in: query
-            type: integer
-            description: size of awesomeness
+            schema:
+            type: object
+            required:
+                - "meal_name"
+                - "price"
+            properties:
+                meal_name:
+                type: "string"
+                example: "Chicken na ketchup"
+                price:
+                type: "int"
+                example: "6000"
+        - name: meal_id
+            in: path
+            required: true
+            properties:
+            meal_id:
+                type: "int"
+            default: 1
+        - name: Authorization
+            in: header
+            required: true
+            properties:
+            Authorization:
+                type: "string"
+                
         responses:
             404:
                 description: The meal you want to update is not in the database.
             200:
                 description: The meal has been successfully updated.
-        """
+        """  
         access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
@@ -232,18 +253,23 @@ def create_app(config_name):
         tags:
         - Book-A-Meal API
         parameters:
-        - name: language
+        - name: meal_id
             in: path
-            type: string
             required: true
-            description: The language name
-        - name: size
-            in: query
-            type: integer
-            description: size of awesomeness
+            properties:
+            meal_id:
+                type: "int"
+            default: 1
+        - name: Authorization
+            in: header
+            required: true
+            properties:
+            Authorization:
+                type: "string"
         responses:
             200:
                 description: The meal with the ID specified has been deleted
+        
         """
         access_token=request.headers.get('Authorization')
         if access_token:
@@ -269,21 +295,18 @@ def create_app(config_name):
         tags:
         - Book-A-Meal API
         parameters:
-        - name: language
-            in: path
-            type: string
+        - name: Authorization
+            in: header
             required: true
-            description: The language name
-        - name: size
-            in: query
-            type: integer
-            description: size of awesomeness
-        respnses:
+            properties:
+            Authorization:
+                type: "string"
+        responses:
             400:
                 description: There is no menu present.
             200:
                 description: The menu has successfully been returned.
-        """
+        """ 
         access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
@@ -315,19 +338,28 @@ def create_app(config_name):
         tags:
         - Book-A-Meal API
         parameters:
-        - name: language
-            in: path
-            type: string
+        - name: body
+            in: body
             required: true
-            description: The language name
-        - name: size
-            in: query
-            type: integer
-            description: size of awesomeness
+            schema:
+            type: object
+            required:
+                - "meal_id"
+            properties:
+                meal_id:
+                type: "string"
+                example: "1"
+        - name: Authorization
+            in: header
+            required: true
+            properties:
+            Authorization:
+                type: "string"
+                
         responses:
             201:
                 description: The menu has been successfully returned.
-        """
+        """ 
         access_token = request.headers.get('Authorization')
 
         if access_token:
@@ -358,26 +390,23 @@ def create_app(config_name):
     @app.route('/api/v1/orders')
     def get_all_orders():
         """
-        Orders route
+        orders route
         ---
         tags:
         - Book-A-Meal API
         parameters:
-        - name: language
-            in: path
-            type: string
+        - name: Authorization
+            in: header
             required: true
-            description: The language name
-        - name: size
-            in: query
-            type: integer
-            description: size of awesomeness
+            properties:
+            Authorization:
+                type: "string"
         responses:
             200:
                 description: Successfully returned all the orders present.
             400:
                 description: No orders present at the moment.
-        """
+        """ 
         access_token=request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
