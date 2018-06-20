@@ -8,22 +8,22 @@ Our application is a meal booking app that allows customers to make food orders 
 
 
 # Functions
-Sign in User
-Sign up User
-Create Menu
-Add meals to Menu
-Edit order
-Delete Meal
+Sign in User<br/>
+Sign up User<br/>
+Create Menu<br/>
+Add meals to Menu<br/>
+Edit order<br/>
+Delete Meal<br/>
 
 ### Tech
 
 Book-A-Meal uses a number of open source technologies:
-a)HTML
-b)CSS
-c)Git
-d)python 2.7 or higher
-e)Flask
-f)PostgreSQL
+a)HTML<br/>
+b)CSS<br/>
+c)Git<br/>
+d)python 2.7 or higher</br>
+e)Flask<br/>
+f)PostgreSQL<br/>
 
 ### Installation
 
@@ -37,9 +37,9 @@ pip install -r requirements
 Here  [Click Me](https://mutebironald4.github.io/index.html)
 
 ### Create a virtualenv, and activate it:
-a) To install virtual environment pip install virtualenv for python 2.x pip3 install virtualenv
-b) Setup virtual environment virtualenv env
-c) Activate virtual environment env\Scripts\activate
+a) To install virtual environment pip install virtualenv for python 2.x pip3 install virtualenv<br/>
+b) Setup virtual environment virtualenv env<br/>
+c) Activate virtual environment env\Scripts\activate<br/>
 
 ### To see the application, access this url in your browser:
 (http://localhost:5000)
