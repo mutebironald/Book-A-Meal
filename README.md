@@ -17,7 +17,7 @@ Delete Meal<br/>
 
 ### Tech
 
-Book-A-Meal uses a number of open source technologies:
+Book-A-Meal uses a number of open source technologies:<br/>
 a)HTML<br/>
 b)CSS<br/>
 c)Git<br/>
