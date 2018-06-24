@@ -1,7 +1,11 @@
 import jwt
 import datetime
-from .controller import app
-class Tokens:
+from . import app
+
+from functools import wraps
+from flask import  request
+
+class Token:
     def generate_token(self, user_id):
         """Generates the access token"""
         try:
@@ -27,9 +31,17 @@ class Tokens:
             payload = jwt.decode(token, app.config['SECRET_KEY'])
             return payload['sub']
 
-        except jwt.ExpiredSignatureError:
-            return "Expired token. Please login to get a new token."
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+            return False
 
-        except jwt.InvalidTokenError:
-            return "Invalid token. Please register or login."
+    @staticmethod
+    def login_required(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            access_token = request.headers.get("Authorization")
+            if access_token:
+                print(access_token)
+                user_id = Token.decode_token(access_token)
+            return f(*args, **kwargs)
+        return decorated_function
             
