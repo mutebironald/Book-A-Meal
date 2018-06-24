@@ -8,7 +8,7 @@ from api import app
 
 class TestUser(unittest.TestCase):
     def setUp(self):
-        """Method which i run before every test"""
+        """This is run before every test"""
         self.client = app.test_client(self)
 
     def tearDown(self):
@@ -29,7 +29,17 @@ class TestUser(unittest.TestCase):
         response = self.client.post('/api/v1/auth/signup', content_type = 'application/json', data=json.dumps(user))
         self.assertEqual(b"You are now registered", response.data)
         self.assertEqual(response.status_code, 201)
-        
+
+    def test_double_signup(self):
+        """Tests for double registration"""
+        user = {
+            "email":"muhghtebi@gmail.com",
+            "password":"lanternas1"
+        }
+        self.client.post('/api/v1/auth/signup', content_type = 'application/json', data=json.dumps(user))
+        result = self.client.post('/api/v1/auth/signup', content_type = 'application/json', data=json.dumps(user))
+        self.assertEqual(b"User already exists", result.data)
+        self.assertEqual(result.status_code, 400)
         
     def test_signup_with_invalid_email(self):
         """Tests if a user is signing up without data in fields"""
@@ -38,6 +48,7 @@ class TestUser(unittest.TestCase):
             "password":"rtr"
          }
         response = self.client.post('/api/v1/auth/signup', content_type = 'application/json', data=json.dumps(user))
+        self.assertEqual(b"Email or password Invalid", response.data)
         self.assertEqual(response.status_code, 400)
 
     def test_signup_with_password_field_empty(self):
@@ -47,7 +58,7 @@ class TestUser(unittest.TestCase):
             "password": " "
         }
         response = self.client.post('/api/v1/auth/signup', content_type = 'application/json', data=json.dumps(user))
-        self.assertEqual(b"You must enter a password", response.data)
+        self.assertEqual(b"Email or password Invalid", response.data)
         self.assertEqual(response.status_code, 400)
 
     def test_signup_with_email_field_empty(self):
@@ -68,7 +79,7 @@ class TestUser(unittest.TestCase):
         self.client.post('/api/v1/auth/signup', content_type = 'application/json', data=json.dumps(user))
         response = self.client.post('/api/v1/auth/login', content_type='application/json', data = json.dumps(user))
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"success!!, you are now logged in", response.data)
+        self.assertIn(b"You are now logged in", response.data)
         
 
     def test_login_with_non_existent_email(self):
@@ -105,8 +116,19 @@ class TestUser(unittest.TestCase):
              "email":"",
              "password":""
          }
+        self.client.post('/api/v1/auth/signup', content_type = 'application/json', data=json.dumps(user))
         response = self.client.post('/api/v1/auth/login', content_type='application/json', data = json.dumps(user))
         self.assertEqual(response.status_code, 400)
+
+    def test_login_without_registration(self):
+        """Tests login before registration"""
+        user = {
+             "email":"mutkejlebi@gmail.com",
+             "password":"rgrji48b4k@#"
+         }
+        response = self.client.post('/api/v1/auth/login', content_type = 'application/json', data=json.dumps(user))
+        self.assertEqual(b"Please register then login" ,response.data)
+
 
 if __name__ == "__main__":
     unittest.main()
