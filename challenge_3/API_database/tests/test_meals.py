@@ -41,10 +41,10 @@ class MealsTestCase(unittest.TestCase):
     def test_meal_creation(self):
         """Test API can create a meal"""
         #First signup
-        response = self.client().post('/api/v1/auth/signup', data=self.user_data)
+        response = self.client().post('/auth/register', data=self.user_data)
         self.assertEqual(response.status_code, 201)
         #login
-        login_response = self.client().post('/api/v1/auth/login', data=self.user_data)
+        login_response = self.client().post('/auth/login', data=self.user_data)
         self.assertEqual(login_response.status_code, 200)
         result = json.loads(login_response.data.decode())
         self.assertTrue(result['access_token'])
@@ -55,10 +55,10 @@ class MealsTestCase(unittest.TestCase):
 
     def test_api_can_get_all_meals(self):
         """Test API can get a meal"""
-        response = self.client().post('/api/v1/auth/signup', data=self.user_data)
+        response = self.client().post('/auth/register', data=self.user_data)
         self.assertEqual(response.status_code, 201)
         #login
-        login_response = self.client().post('/api/v1/auth/login', data=self.user_data)
+        login_response = self.client().post('/auth/login', data=self.user_data)
         self.assertEqual(login_response.status_code, 200)
         result = json.loads(login_response.data.decode())
         self.assertTrue(result['access_token'])
@@ -72,10 +72,10 @@ class MealsTestCase(unittest.TestCase):
     def test_api_can_get_meal_by_id(self):
         """Test API can get particular meal"""
         #First signup
-        response = self.client().post('/api/v1/auth/signup', data=self.user_data)
+        response = self.client().post('/auth/register', data=self.user_data)
         self.assertEqual(response.status_code, 201)
         #login
-        login_response = self.client().post('/api/v1/auth/login', data=self.user_data)
+        login_response = self.client().post('/auth/login', data=self.user_data)
         self.assertEqual(login_response.status_code, 200)
         result = json.loads(login_response.data.decode())
         self.assertTrue(result['access_token'])
@@ -88,10 +88,10 @@ class MealsTestCase(unittest.TestCase):
     def test_meal_can_be_edited(self):
         """Test API can edit an existing meal"""
         #First signup
-        response = self.client().post('/api/v1/auth/signup', data=self.user_data)
+        response = self.client().post('/auth/register', data=self.user_data)
         self.assertEqual(response.status_code, 201)
         #login
-        login_response = self.client().post('/api/v1/auth/login', data=self.user_data)
+        login_response = self.client().post('/auth/login', data=self.user_data)
         self.assertEqual(login_response.status_code, 200)
         result = json.loads(login_response.data.decode())
         self.assertTrue(result['access_token'])
@@ -111,10 +111,10 @@ class MealsTestCase(unittest.TestCase):
     def test_meal_can_be_deleted(self):
         """Test API can delete an existing meal"""
         #First signup
-        response = self.client().post('/api/v1/auth/signup', data=self.user_data)
+        response = self.client().post('/auth/register', data=self.user_data)
         self.assertEqual(response.status_code, 201)
         #login
-        login_response = self.client().post('/api/v1/auth/login', data=self.user_data)
+        login_response = self.client().post('/auth/login', data=self.user_data)
         self.assertEqual(login_response.status_code, 200)
         result = json.loads(login_response.data.decode())
         self.assertTrue(result['access_token'])

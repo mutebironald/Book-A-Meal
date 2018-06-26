@@ -23,10 +23,10 @@ class MenuTestCase(unittest.TestCase):
 
     def test_setup_menu(self):
         #signup
-        response = self.client().post('/api/v1/auth/signup', data=self.user_data)
+        response = self.client().post('/auth/register', data=self.user_data)
         self.assertEqual(response.status_code, 201)
         #login
-        login_response = self.client().post('/api/v1/auth/login', data=self.user_data)
+        login_response = self.client().post('/auth/login', data=self.user_data)
         self.assertEqual(login_response.status_code, 200)
         result = json.loads(login_response.data.decode())
         self.assertTrue(result['access_token'])
@@ -38,10 +38,10 @@ class MenuTestCase(unittest.TestCase):
 
     def test_get_menu(self):
         #signup
-        response = self.client().post('/api/v1/auth/signup', data=self.user_data)
+        response = self.client().post('/auth/register', data=self.user_data)
         self.assertEqual(response.status_code, 201)
         #login
-        login_response = self.client().post('/api/v1/auth/login', data=self.user_data)
+        login_response = self.client().post('/auth/login', data=self.user_data)
         self.assertEqual(login_response.status_code, 200)
         result = json.loads(login_response.data.decode())
         self.assertTrue(result['access_token'])
