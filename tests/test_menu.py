@@ -9,6 +9,7 @@ class TestMeals(unittest.TestCase):
     def setUp(self):
         """Method which i run before every test"""
         self.client = app.test_client(self)
+        
 
     def tearDown(self):
         """Called after each test method."""
