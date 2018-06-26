@@ -121,7 +121,6 @@ class Meal:
         else:
           return make_response("The meal specified is not present", 400)
 
-
 class Menu:
     """A class to represent the Menu of meals for a particular day"""
 

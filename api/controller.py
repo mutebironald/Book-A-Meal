@@ -11,7 +11,6 @@ from . import authentication
 auth = authentication.Token()
 # login = authentication.Token.login_required()
 
-
 Swagger(app)
 users= User()
 meals2 = Meal()
