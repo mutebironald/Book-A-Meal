@@ -10,7 +10,6 @@ db = SQLAlchemy()
 secret = binascii.hexlify(os.urandom(24))
 
 def create_app(config_name):
-    # from app.models import User, Meal, Menu, Order
     from app.models import User, Meal, Menu, Order
 
     app = FlaskAPI(__name__, instance_relative_config=True)
@@ -20,7 +19,6 @@ def create_app(config_name):
     app.config['SECRET_KEY'] = secret
     with app.app_context():
         db.init_app(app)
-
     
     @app.route('/')
     def home():
@@ -37,7 +35,7 @@ def create_app(config_name):
         """Starting point of the API"""
         return "Welcome to Book-A-Meal."
 
-    #meals routes
+
     @app.route('/api/v1/meals')
     def account_get_meals():
         """
@@ -62,23 +60,8 @@ def create_app(config_name):
         access_token = auth_header
         if access_token:
             user_id = User.decode_token(access_token)
-            if not isinstance(user_id, str):
-                meals = Meal.get_meals()
-                if not meals:
-                    return make_response("No meals present", 400)
-                results = []
-
-                for meal in meals:
-                    obj = {
-                        'id': meal.id,
-                        'name': meal.name,
-                        'price': meal.price,
-                        #'admin_id': meal.admin_id
-                        }
-                    results.append(obj)
-                response = jsonify(results)
-                response.status_code = 200
-                return response
+            if isinstance(user_id, int):
+                return Meal.get_meals()
             else:
                 return jsonify(user_id)
 
@@ -159,7 +142,7 @@ def create_app(config_name):
         if access_token:
             user_id = User.decode_token(access_token)
             print(user_id)
-            if not isinstance(user_id, str):
+            if isinstance(user_id, int):
                 name = str(request.data.get('name', ''))
                 price = int(request.data.get('price', ''))
                 if name and price:
@@ -222,7 +205,7 @@ def create_app(config_name):
         access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
-            if not isinstance(user_id, str):
+            if isinstance(user_id, int):
         
                 meal = Meal.query.filter_by(id=id).first()
                 if not meal:
@@ -274,7 +257,7 @@ def create_app(config_name):
         access_token=request.headers.get('Authorization')
         if access_token:
             user_id=User.decode_token(access_token)
-            if not isinstance(user_id, str):
+            if isinstance(user_id, int):
                 
                 meal = Meal.query.filter_by(id=id).first()
                 Meal.delete(meal)
@@ -285,8 +268,6 @@ def create_app(config_name):
                 return jsonify(user_id)
 
 
-
-    #menu routes
     @app.route('/api/v1/menu')
     def get_menu():
         """
@@ -311,7 +292,7 @@ def create_app(config_name):
         if access_token:
             user_id = User.decode_token(access_token)
             
-            if not isinstance(user_id, str):
+            if isinstance(user_id, int):
 
                 menus = Menu.get_all_menu()
                 if not menus:
@@ -364,7 +345,7 @@ def create_app(config_name):
 
         if access_token:
             user_id = User.decode_token(access_token)
-            if not isinstance(user_id, str):
+            if isinstance(user_id, int):
                 name = str(request.data.get('name', ''))
                 day = str(request.data.get('day', ''))
                 if name and day:
@@ -410,7 +391,7 @@ def create_app(config_name):
         access_token=request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
-            if not isinstance(user_id, str):
+            if isinstance(user_id, int):
                 orders = Order.get_all_orders()
                 if orders:
                     results = []
@@ -457,11 +438,10 @@ def create_app(config_name):
         access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
-            if not isinstance(user_id, str):
+            if isinstance(user_id, int):
                 order = Order.query.filter_by(id=id).first()
                 if not order:
                     return make_response("The order specified is not present"), 400
-                #Meal.delete(order)
                 Order.session.delete(order)
                 response = make_response(
                     "The order has been deleted", 200)

@@ -1,8 +1,9 @@
 from flask_bcrypt import Bcrypt
 import jwt
 from datetime import datetime, timedelta
+from flask import jsonify
 
-from app import db, secret
+from app.__init__ import db, secret
 import datetime
 
 from app import db
@@ -66,6 +67,8 @@ class User(db.Model):
         except jwt.InvalidTokenError:
             return "Invalid token. Please register or login."
 
+
+
 class Meal(db.Model):
     """Defines the 'Meal' model mapped to database table 'meal'."""
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -91,7 +94,22 @@ class Meal(db.Model):
     @staticmethod
     def get_meals():
         """Retrieves all meals present in the meal table"""
-        return Meal.query.all()
+        # return Meal.query.all()
+        results = []
+        meals = Meal.query.all()
+        if meals:
+            for meal in meals:
+                obj = {
+                    "id": meal.id,
+                    "name": meal.name,
+                    "price": meal.price,
+                }
+                results.append(obj)
+            response = jsonify(results)
+            response.status_code = 200
+            return response
+        else:
+            return "No meals present", 400
 
     def __repr__(self):
         """Returns a representation of the meals"""
