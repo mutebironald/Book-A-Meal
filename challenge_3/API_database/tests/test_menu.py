@@ -22,6 +22,7 @@ class MenuTestCase(unittest.TestCase):
             db.create_all()
 
     def test_setup_menu(self):
+        """Tests menu setup"""
         self.client().post('/auth/register', data=self.user_data)
         login_response = self.client().post('/auth/login', data=self.user_data)
         result = json.loads(login_response.data.decode())
@@ -32,6 +33,7 @@ class MenuTestCase(unittest.TestCase):
 
 
     def test_get_menu(self):
+        """Test menu retrieval"""
         self.client().post('/auth/register', data=self.user_data)
         login_response = self.client().post('/auth/login', data=self.user_data)
         result = json.loads(login_response.data.decode())

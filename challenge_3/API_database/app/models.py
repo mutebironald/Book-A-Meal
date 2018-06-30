@@ -1,11 +1,7 @@
-# from flask_sqlalchemy import SQLAlchemy
-
-# # from app import db
 from flask_bcrypt import Bcrypt
 import jwt
 from datetime import datetime, timedelta
 
-# db = SQLAlchemy()
 from app import db, secret
 import datetime
 
@@ -29,6 +25,7 @@ class User(db.Model):
         return Bcrypt().check_password_hash(self.password, password)
 
     def __repr__(self):
+        """Returns a User model representation"""
         return "User (%d, %s, %s, %s)" %(
             self.id, self.email, self.admin, self.orders)
 
@@ -77,22 +74,27 @@ class Meal(db.Model):
     menus = db.relationship('Menu', backref='meal')
 
     def __init__(self, name, price):
+        """Initialises the meal model"""
         self.name = name
         self.price = price
 
     def save(self):
+        """Saves item to the Meal table"""
         db.session.add(self)
         db.session.commit()
 
     def delete(self):
+        """Removes item from meal table"""
         db.session.delete(self)
         db.session.commit()
 
     @staticmethod
     def get_meals():
+        """Retrieves all meals present in the meal table"""
         return Meal.query.all()
 
     def __repr__(self):
+        """Returns a representation of the meals"""
         return "Meal (%d, %s, %s )" %(
             self.id, self.name, self.price)
 
@@ -105,15 +107,18 @@ class Menu(db.Model):
     orders = db.relationship('Order', backref='menu')
 
     def __init__(self, name, day):
+        """Initialises the menu model"""
         self.name = name
         self.day = day
 
     def save(self):
+        """Saves items to the menu table"""
         db.session.add(self)
         db.session.commit()
 
     @staticmethod
     def get_all_menu():
+        """Retrieves all the menu items"""
         return Menu.query.all()
 
     def __repr__(self):
@@ -128,20 +133,25 @@ class Order(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) 
 
     def __init__(self, order_time):
+        """Initialises the order tables"""
         self.order_time = order_time
 
     def save(self):
+        """Saves items to the order table"""
         db.session.add(self)
         db.session.commit()
 
     def delete(self, x):
+        """Removes items from the order table"""
         db.session.delete(x)
         db.session.commit()
 
     @staticmethod
     def get_all_orders():
+        """Retrieves all orders present"""
         return Order.query.all()
 
     def __repr__(self):
+        """Returns a string representation of the order table"""
         return "Order(%d, %s, %s, %s, %s )" %(
             self.id, self.menu_name, self.admin_id, self.order_time, self.user_id)
