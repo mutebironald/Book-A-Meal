@@ -30,19 +30,15 @@ class AuthTestCase(unittest.TestCase):
 
     def test_already_registered_user(self):
         """Test that a user cannot be registered twice."""
+        self.client().post('/auth/register', data=self.user_data)
         response = self.client().post('/auth/register', data=self.user_data)
-        self.assertEqual(response.status_code, 201)
-        response = self.client().post('/auth/register', data=self.user_data)
-        self.assertEqual(response.status_code, 202)
         result = json.loads(response.data.decode())
         self.assertEqual(result['message'], "User already exists. Please login.")
         
     def test_user_login(self):
         """Test registered user can login."""
-        response = self.client().post('/auth/register', data=self.user_data)
-        self.assertEqual(response.status_code, 201)
+        self.client().post('/auth/register', data=self.user_data)
         login_response = self.client().post('/auth/login', data=self.user_data)
-
         result = json.loads(login_response.data.decode())
         self.assertEqual(result['message'], "You logged in successfully.")
         self.assertEqual(login_response.status_code, 200)

@@ -22,32 +22,21 @@ class MenuTestCase(unittest.TestCase):
             db.create_all()
 
     def test_setup_menu(self):
-        #signup
-        response = self.client().post('/auth/register', data=self.user_data)
-        self.assertEqual(response.status_code, 201)
-        #login
+        self.client().post('/auth/register', data=self.user_data)
         login_response = self.client().post('/auth/login', data=self.user_data)
-        self.assertEqual(login_response.status_code, 200)
         result = json.loads(login_response.data.decode())
         self.assertTrue(result['access_token'])
-        
         response = self.client().post('/api/v1/menu', data=self.menu, headers={"Authorization": result['access_token'] })
         self.assertEqual(response.status_code, 201)
 
 
 
     def test_get_menu(self):
-        #signup
-        response = self.client().post('/auth/register', data=self.user_data)
-        self.assertEqual(response.status_code, 201)
-        #login
+        self.client().post('/auth/register', data=self.user_data)
         login_response = self.client().post('/auth/login', data=self.user_data)
-        self.assertEqual(login_response.status_code, 200)
         result = json.loads(login_response.data.decode())
         self.assertTrue(result['access_token'])
-        
-        response = self.client().post('/api/v1/menu', data=self.menu, headers={"Authorization": result['access_token'] })
-        self.assertEqual(response.status_code, 201)
+        self.client().post('/api/v1/menu', data=self.menu, headers={"Authorization": result['access_token'] })
         response = self.client().get('/api/v1/menu', headers={"Authorization": result['access_token'] })
         self.assertEqual(response.status_code, 200)
 
