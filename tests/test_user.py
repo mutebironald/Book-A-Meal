@@ -42,7 +42,7 @@ class TestUser(unittest.TestCase):
         self.assertEqual(result.status_code, 400)
         
     def test_signup_with_invalid_email(self):
-        """Tests if a user is signing up without data in fields"""
+        """Tests if a user is signing up with invalid email"""
         user = {
             "email":"mutegi @gmail.com",
             "password":"rtr"

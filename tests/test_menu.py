@@ -16,6 +16,7 @@ class TestMeals(unittest.TestCase):
         pass
 
     def test_get_menu(self):
+        """Tests menu retrieval"""
         user = {
             "email": "rteroni@gmail.com",
             "password": "1234567"
@@ -44,6 +45,7 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_get_menu_without_token(self):
+        """Test get menu without token."""
         user = {
             "email": "barcaroni@gmail.com",
             "password": "1234567"
@@ -72,6 +74,7 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(response.status_code, 500)
 
     def test_get_menu_without_signup(self):
+        """Test get menu without registration"""
         content = {
             "meal_id":"2"
         }
@@ -86,6 +89,7 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(response.status_code, 500)
         
     def test_setup_menu(self):
+        """"Test menu creation"""
         meal = {
             "meal_name":"Katogo",
             "price": 4000

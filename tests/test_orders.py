@@ -16,6 +16,7 @@ class TestMeals(unittest.TestCase):
         pass
 
     def test_new_order(self):
+        """tests ability to make a new order"""
         order = {
             "meal_id": "2"
         }
@@ -46,6 +47,7 @@ class TestMeals(unittest.TestCase):
         self.assertIn(b"Your order has been logged and a you will be served shortly", response.data)
         
     def test_get_all_orders(self):
+        """Tests ability to get all orders present"""
         order = {
             "meal_id": "2"
         }
@@ -79,6 +81,7 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_get_order(self):
+        """Tests ability to get a particular order"""
         order = {
             "meal_id": "2"
         }
