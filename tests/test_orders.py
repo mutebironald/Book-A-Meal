@@ -31,17 +31,13 @@ class TestMeals(unittest.TestCase):
             "meal_name":"Katogo",
             "price": 4000
         }
-        signup = self.client.post('/api/v1/auth/signup', content_type='application/json', data=json.dumps(user) )
-        self.assertEqual(signup.status_code, 201)
+        self.client.post('/api/v1/auth/signup', content_type='application/json', data=json.dumps(user) )
         response = self.client.post('/api/v1/auth/login', content_type='application/json', data = json.dumps(user))
-        self.assertEqual(response.status_code, 200)
         data = json.loads(response.get_data())
         token = data['token']
-        response = self.client.post('/api/v1/meals', data=json.dumps(meal), content_type='application/json',  headers={'Authorization': token})
-        self.assertEqual(response.status_code, 200)
-        response = self.client.post('/api/v1/menu', content_type = "application/json", data=json.dumps(content),  headers={
+        self.client.post('/api/v1/meals', data=json.dumps(meal), content_type='application/json',  headers={'Authorization': token})
+        self.client.post('/api/v1/menu', content_type = "application/json", data=json.dumps(content),  headers={
                 'Authorization': token})
-        self.assertEqual(response.status_code, 201)
         response = self.client.post('/api/v1/orders', data=json.dumps(order),content_type = 'application/json', headers={
                 'Authorization': token})
         self.assertIn(b"Your order has been logged and a you will be served shortly", response.data)
@@ -62,20 +58,15 @@ class TestMeals(unittest.TestCase):
             "meal_name":"Katogo",
             "price": 4000
         }
-        signup = self.client.post('/api/v1/auth/signup', content_type='application/json', data=json.dumps(user) )
-        self.assertEqual(signup.status_code, 201)
+        self.client.post('/api/v1/auth/signup', content_type='application/json', data=json.dumps(user) )
         response = self.client.post('/api/v1/auth/login', content_type='application/json', data = json.dumps(user))
-        self.assertEqual(response.status_code, 200)
         data = json.loads(response.get_data())
         token = data['token']
-        response = self.client.post('/api/v1/meals', data=json.dumps(meal), content_type='application/json',  headers={'Authorization': token})
-        self.assertEqual(response.status_code, 200)
-        response = self.client.post('/api/v1/menu', content_type = "application/json", data=json.dumps(content),  headers={
+        self.client.post('/api/v1/meals', data=json.dumps(meal), content_type='application/json',  headers={'Authorization': token})
+        self.client.post('/api/v1/menu', content_type = "application/json", data=json.dumps(content),  headers={
                 'Authorization': token})
-        self.assertEqual(response.status_code, 201)
-        response = self.client.post('/api/v1/orders', data=json.dumps(order),content_type = 'application/json', headers={
+        self.client.post('/api/v1/orders', data=json.dumps(order),content_type = 'application/json', headers={
                 'Authorization': token})
-        self.assertIn(b"Your order has been logged and a you will be served shortly", response.data)
         response = self.client.get('/api/v1/orders', headers={
                 'Authorization': token})
         self.assertEqual(response.status_code, 200)
@@ -96,20 +87,15 @@ class TestMeals(unittest.TestCase):
             "meal_name":"Katogo",
             "price": 4000
         }
-        signup = self.client.post('/api/v1/auth/signup', content_type='application/json', data=json.dumps(user) )
-        self.assertEqual(signup.status_code, 201)
+        self.client.post('/api/v1/auth/signup', content_type='application/json', data=json.dumps(user) )
         response = self.client.post('/api/v1/auth/login', content_type='application/json', data = json.dumps(user))
-        self.assertEqual(response.status_code, 200)
         data = json.loads(response.get_data())
         token = data['token']
-        response = self.client.post('/api/v1/meals', data=json.dumps(meal), content_type='application/json',  headers={'Authorization': token})
-        self.assertEqual(response.status_code, 200)
-        response = self.client.post('/api/v1/menu', content_type = "application/json", data=json.dumps(content),  headers={
+        self.client.post('/api/v1/meals', data=json.dumps(meal), content_type='application/json',  headers={'Authorization': token})
+        self.client.post('/api/v1/menu', content_type = "application/json", data=json.dumps(content),  headers={
                 'Authorization': token})
-        self.assertEqual(response.status_code, 201)
-        response = self.client.post('/api/v1/orders', data=json.dumps(order),content_type = 'application/json', headers={
+        self.client.post('/api/v1/orders', data=json.dumps(order),content_type = 'application/json', headers={
                 'Authorization': token})
-        self.assertIn(b"Your order has been logged and a you will be served shortly", response.data)
         response = self.client.get('/api/v1/orders/1', headers={
                 'Authorization': token
             })
