@@ -61,6 +61,7 @@ class Meal:
         self.id = 1
     
     def account_update_meal(self, meal_id, meal_name, price):
+        """Implements the update meal logic"""
         if isinstance(price, int) and meal_name:
             self.update_meal(meal_id, meal_name, price)
             update = self.get_meal(meal_id)
@@ -134,6 +135,7 @@ class Menu:
         return self.menu
 
     def account_get_menu(self):
+        """Implements get meal logic"""
         menu = self.get_menu()
         if menu:
             return jsonify({"MENU":menu }), 200
@@ -149,6 +151,7 @@ class Menu:
           return make_response("Incorrect meal option"), 404
 
     def setup_menu(self, meal_id):
+        """Implements menu creation"""
         meal_get = self.meals.get_meals()
         for meal in meal_get:
             if meal['id'] == int(meal_id):
@@ -167,6 +170,7 @@ class Order:
         self.id = 1
 
     def new_order(self, meal_id):
+        """Helps in making a new order"""
         self.add_order(meal_id, datetime.datetime.utcnow())
         return "Your order has been logged and a you will be served shortly"
 
