@@ -21,11 +21,11 @@ class TestMeals(unittest.TestCase):
             "password": "1234567"
         }
         content = {
-            'meal_id':'2'
+            "meal_id":"2"
         }
         meal = {
-            'meal_name':'Katogo',
-            'price': 4000
+            "meal_name":"Katogo",
+            "price": 4000
         }
         signup = self.client.post('/api/v1/auth/signup', content_type='application/json', data=json.dumps(user) )
         self.assertEqual(signup.status_code, 201)
@@ -49,11 +49,11 @@ class TestMeals(unittest.TestCase):
             "password": "1234567"
         }
         content = {
-            'meal_id':'2'
+            "meal_id":"2"
         }
         meal = {
-            'meal_name':'Katogo',
-            'price': 4000
+            "meal_name":"Katogo",
+            "price": 4000
         }
         signup = self.client.post('/api/v1/auth/signup', content_type='application/json', data=json.dumps(user) )
         self.assertEqual(signup.status_code, 201)
@@ -73,11 +73,11 @@ class TestMeals(unittest.TestCase):
 
     def test_get_menu_without_signup(self):
         content = {
-            'meal_id':'2'
+            "meal_id":"2"
         }
         meal = {
-            'meal_name':'Katogo',
-            'price': 4000
+            "meal_name":"Katogo",
+            "price": 4000
         }
         response = self.client.post('/api/v1/meals', data=json.dumps(meal), content_type='application/json')
         response = self.client.get('/api/v1/meals', content_type='application/json')
@@ -87,11 +87,11 @@ class TestMeals(unittest.TestCase):
         
     def test_setup_menu(self):
         meal = {
-            'meal_name':'Katogo',
-            'price': 4000
+            "meal_name":"Katogo",
+            "price": 4000
         }
         content = {
-            'meal_id':'2'
+            "meal_id":"2"
         }
         user = {
             "email": "mroni@gmail.com",

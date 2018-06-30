@@ -24,11 +24,11 @@ class TestMeals(unittest.TestCase):
             "password": "1234567"
         }
         content = {
-            'meal_id':'2'
+            "meal_id":"2"
         }
         meal = {
-            'meal_name':'Katogo',
-            'price': 4000
+            "meal_name":"Katogo",
+            "price": 4000
         }
         signup = self.client.post('/api/v1/auth/signup', content_type='application/json', data=json.dumps(user) )
         self.assertEqual(signup.status_code, 201)
@@ -54,11 +54,11 @@ class TestMeals(unittest.TestCase):
             "password": "1234567"
         }
         content = {
-            'meal_id':'2'
+            "meal_id":"2"
         }
         meal = {
-            'meal_name':'Katogo',
-            'price': 4000
+            "meal_name":"Katogo",
+            "price": 4000
         }
         signup = self.client.post('/api/v1/auth/signup', content_type='application/json', data=json.dumps(user) )
         self.assertEqual(signup.status_code, 201)
@@ -87,11 +87,11 @@ class TestMeals(unittest.TestCase):
             "password": "1234567"
         }
         content = {
-            'meal_id':'2'
+            "meal_id":"2"
         }
         meal = {
-            'meal_name':'Katogo',
-            'price': 4000
+            "meal_name":"Katogo",
+            "price": 4000
         }
         signup = self.client.post('/api/v1/auth/signup', content_type='application/json', data=json.dumps(user) )
         self.assertEqual(signup.status_code, 201)
