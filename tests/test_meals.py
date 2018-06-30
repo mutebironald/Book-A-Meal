@@ -16,6 +16,7 @@ class TestMeals(unittest.TestCase):
         pass
 
     def test_get_meal(self):
+        """Test wether API can get all meals"""
         user = {
             "email": "roni@gmail.com",
             "password": "1234567"
@@ -28,6 +29,7 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_get_meal_without_token(self):
+        """Tests get meal without token"""
         user = {
             "email": "cfconi@gmail.com",
             "password": "1234567"
@@ -45,6 +47,7 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(response.status_code, 500)
 
     def test_account_create_meal(self):
+        """Tests meal creation"""
         content = {
             "meal_name":"Katogo",
             "price": 4000
@@ -61,6 +64,7 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_account_create_meal_without_mealname(self):
+        """tests meal creation without meal name"""
         content = {
             "meal_name":"",
             "price":3000
@@ -79,6 +83,7 @@ class TestMeals(unittest.TestCase):
         self.assertIn(b"Enter a valid meal name and price", response.data)
 
     def test_account_create_meal_without_price(self):
+        """Tests meal creation without price"""
         content = {
             "meal_name":"resty",
             "price":"",
@@ -97,6 +102,7 @@ class TestMeals(unittest.TestCase):
         self.assertIn(b"Enter a valid meal name and price", response.data)
 
     def test_account_create_meal_without_data(self):
+        """Tests meal creation without meal name and price"""
         content = {
             "meal_name":"",
             "price":"",
@@ -115,6 +121,7 @@ class TestMeals(unittest.TestCase):
         self.assertIn(b"Enter a valid meal name and price", response.data)
 
     def test_account_create_meal_without_token(self):
+        """Tests meal creation without Token"""
         content = {
             "meal_name":"Katogo",
             "price": 4000
@@ -131,6 +138,7 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(response.status_code, 500)
  
     def test_account_update_meal(self):
+        """Tests meal update"""
         content = {
             "meal_name": "Rice with gnuts",
             "price": 2000
@@ -148,6 +156,7 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_account_update_meal_without_mealname(self):
+        """Tests meal update without meal name"""
  
         content = {
             "meal_name": "",
@@ -167,6 +176,7 @@ class TestMeals(unittest.TestCase):
         self.assertIn(b"Enter a valid meal name and price", response.data)
 
     def test_account_update_meal_without_price(self):
+        """Tests meal update without price"""
         
         content = {
             "meal_name": "kikajjo",
@@ -186,6 +196,7 @@ class TestMeals(unittest.TestCase):
         self.assertIn(b"Enter a valid meal name and price", response.data)
 
     def test_account_update_meal_without_data(self):
+        """Tests meal update without meal name and price"""
         
         content = {
             "meal_name": "",
@@ -205,6 +216,7 @@ class TestMeals(unittest.TestCase):
         self.assertIn(b"Enter a valid meal name and price", response.data)
 
     def test_account_update_meal_without_token(self):
+        """Tests meal update without token"""
         content = {
             "meal_name": "Rice with gnuts",
             "price": 2000
@@ -221,6 +233,7 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(response.status_code, 500)
 
     def test_account_delete_meal(self):
+        """tests meal deletion"""
         user = {
             "email": "herart@gmail.com",
             "password": "1234567"
@@ -239,6 +252,7 @@ class TestMeals(unittest.TestCase):
         self.assertIn(b"The meal has been deleted", response.data)
 
     def test_account_delete_meal_twice(self):
+        """"Tests double meal deletion"""
         user = {
             "email": "manuart@gmail.com",
             "password": "1234567"
@@ -258,6 +272,7 @@ class TestMeals(unittest.TestCase):
         self.assertIn(b"The meal specified is not present", response.data)
 
     def test_account_delete_nonexistent_meal(self):
+        """Tests deletion of non existent meal"""
         user = {
             "email": "rherart@gmail.com",
             "password": "1234567"
@@ -276,6 +291,7 @@ class TestMeals(unittest.TestCase):
         self.assertIn(b"The meal specified is not present", response.data)
 
     def test_account_delete_meal_without_token(self):
+        """Tests deletion of meal without token"""
         user = {
             "email": "csabaart@gmail.com",
             "password": "1234567"
