@@ -135,8 +135,9 @@ def create_app(config_name):
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
-                name = str(request.data.get('name', ''))
-                price = int(request.data.get('price', ''))
+                data = request.get_json()
+                name = data['name']
+                price = data['price']
                 return Meal.create_meal(name, price)
 
     @app.route('/api/v1/meals/<int:id>', methods=['PUT'])
@@ -246,7 +247,6 @@ def create_app(config_name):
         access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
-            
             if isinstance(user_id, int):
                 return Menu.get_menu()
 

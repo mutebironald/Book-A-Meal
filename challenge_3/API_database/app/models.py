@@ -87,7 +87,7 @@ class Meal(db.Model):
     def delete(self):
         """Removes item from meal table"""
         db.session.delete(self)
-        db.session.commit()
+        db.session.commit()    
 
     @staticmethod
     def get_meals():
