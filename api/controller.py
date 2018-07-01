@@ -9,7 +9,6 @@ from . import authentication
 
 
 auth = authentication.Token()
-# login = authentication.Token.login_required()
 
 Swagger(app)
 users= User()
@@ -74,7 +73,6 @@ def register():
     password = data['password']
     if not User.validate_email_and_password(email, password):
       return make_response("Email or password Invalid", 400)
-
     salt = PH.get_salt()
     hashed = PH.get_hash(str(password) + str(salt))
     new_user = users.add_user(email, salt, hashed)
@@ -118,7 +116,6 @@ def login():
     data = request.get_json()
     email = data['email']
     password = data['password']
-
     if not User.validate_email_and_password(email, password):
       return make_response("Email or password Invalid", 400)
     return users.verify_login(email, password)
@@ -282,7 +279,6 @@ def account_update_meal(meal_id):
       data = request.get_json()
       meal_name = data['meal_name']
       price = data['price']
-
       return meals2.account_update_meal(meal_id, meal_name, price)
 
 @app.route('/api/v1/meals/<int:meal_id>', methods=["DELETE"])
