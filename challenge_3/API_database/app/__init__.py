@@ -62,8 +62,6 @@ def create_app(config_name):
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
                 return Meal.get_meals()
-            else:
-                return jsonify(user_id)
 
     @app.route('/api/v1/meals/<int:id>', methods=['GET'])
     def account_get_specific_meal(id):
@@ -92,17 +90,12 @@ def create_app(config_name):
             200:
                 description: The meal is successfully returned.
         """ 
-        meal = Meal.query.filter_by(id=id).first()
-        if not meal:
-            return make_response("That meal is not present", 400)
-        results = []
-        obj = {
-            'id': meal.id,
-            'name': meal.name,
-            'price': meal.price
-            }
-        results.append(obj)
-        return make_response(jsonify(results), 200)
+        access_token = request.headers.get('Authorization')
+        if access_token:
+            user_id = User.decode_token(access_token)
+            if isinstance(user_id, int):
+                return Meal.get_meal(id)
+        
 
     @app.route('/api/v1/meals', methods=['POST'])
     def account_create_meal():
@@ -141,23 +134,10 @@ def create_app(config_name):
         access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
-            print(user_id)
             if isinstance(user_id, int):
                 name = str(request.data.get('name', ''))
                 price = int(request.data.get('price', ''))
-                if name and price:
-                    meal = Meal(name=name, price=price)
-                    meal.save()
-                    response = jsonify({
-                        'id': meal.id,
-                        'name': meal.name,
-                        'price': meal.price,
-                        #'admin_id': meal.admin_id
-                        })
-                    response.status_code = 201
-                    return response
-            else:
-                return jsonify(user_id)
+                return Meal.create_meal(name, price)
 
     @app.route('/api/v1/meals/<int:id>', methods=['PUT'])
     def account_update_meal(id):
@@ -206,28 +186,10 @@ def create_app(config_name):
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
-        
-                meal = Meal.query.filter_by(id=id).first()
-                if not meal:
-                    abort(404)
-            
-                name = str(request.data.get('name', ''))
-                price = int(request.data.get('price', ''))
-                meal.name = name
-                meal.price = price
-                meal.save()
-                response = jsonify({
-                    'id': meal.id,
-                    'name': meal.name,
-                    'price': meal.price
-                    })
-            
-                response.status_code = 200
-                return response
-            else:
-                return jsonify(user_id)
+                name = str(request.data.get('name'))
+                price = int(request.data.get('price'))
+                return Meal.update_meal(id, name, price)
     
-
     @app.route('/api/v1/meals/<int:id>', methods=['DELETE'])
     def account_delete_meal(id):
         """
@@ -258,14 +220,7 @@ def create_app(config_name):
         if access_token:
             user_id=User.decode_token(access_token)
             if isinstance(user_id, int):
-                
-                meal = Meal.query.filter_by(id=id).first()
-                Meal.delete(meal)
-                response = make_response(
-                    'The meal has been deleted', 200)
-                return response
-            else:
-                return jsonify(user_id)
+                return Meal.delete_meal(id)
 
 
     @app.route('/api/v1/menu')
@@ -293,23 +248,7 @@ def create_app(config_name):
             user_id = User.decode_token(access_token)
             
             if isinstance(user_id, int):
-
-                menus = Menu.get_all_menu()
-                if not menus:
-                    return make_response("No menu present", 400)
-                results = []
-                for menu in menus:
-                    obj={
-                        'id': menu.id,
-                        'name': menu.name,
-                        'day': menu.day
-                        }
-                    results.append(obj)
-                response = jsonify(results)
-                response.status_code = 200
-                return response
-            else:
-                return jsonify(user_id)
+                return Menu.get_menu()
 
     @app.route('/api/v1/menu', methods=['POST'])
     def setup_menu():
@@ -346,20 +285,21 @@ def create_app(config_name):
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
-                name = str(request.data.get('name', ''))
-                day = str(request.data.get('day', ''))
-                if name and day:
-                    menu = Menu(name=name, day=day)
-                    menu.save()
-                    response=jsonify({
-                        'id': menu.id,
-                        'name': menu.name,
-                        'day': menu.day
-                        })
-                    response.status_code=201
-                    return response
-            else:
-                return jsonify(user_id)
+                id = int(request.data.get('meal_id'))
+                if id:
+                    return Menu.setup_menu(id)
+            #     if name and day:
+            #         menu = Menu(name=name, day=day)
+            #         menu.save()
+            #         response=jsonify({
+            #             'id': menu.id,
+            #             'name': menu.name,
+            #             'day': menu.day
+            #             })
+            #         response.status_code=201
+            #         return response
+            # else:
+            #     return jsonify(user_id)
 
 
     #orders routes

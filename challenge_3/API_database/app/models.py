@@ -1,7 +1,7 @@
 from flask_bcrypt import Bcrypt
 import jwt
 from datetime import datetime, timedelta
-from flask import jsonify
+from flask import jsonify, make_response
 
 from app.__init__ import db, secret
 import datetime
@@ -71,7 +71,7 @@ class User(db.Model):
 
 class Meal(db.Model):
     """Defines the 'Meal' model mapped to database table 'meal'."""
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(46), nullable=False, unique=True)
     price = db.Column(db.Integer, nullable=False)
     menus = db.relationship('Menu', backref='meal')
@@ -111,6 +111,61 @@ class Meal(db.Model):
         else:
             return "No meals present", 400
 
+    @staticmethod
+    def get_meal(id):
+        meal = Meal.query.filter_by(id=id).first()
+        if not meal:
+            return make_response("That meal is not present", 400)
+        results = []
+        obj = {
+            'id': meal.id,
+            'name': meal.name,
+            'price': meal.price
+            }
+        results.append(obj)
+        return make_response(jsonify(results), 200)
+
+    @staticmethod
+    def create_meal(name, price):
+        meal = Meal(name, price)
+        meal.save()
+        response = jsonify({
+            'id': meal.id,
+            'name': meal.name,
+            'price': meal.price,
+            })
+        response.status_code = 201
+        return response
+
+    @staticmethod
+    def update_meal(id, name, price):
+        meal = Meal.query.filter_by(id=id).first()
+        if not meal:
+            abort(404)
+
+        meal.name = name
+        meal.price = price
+        meal.save()
+        response = jsonify({
+            'id': meal.id,
+            'name': meal.name,
+            'price': meal.price
+            })
+    
+        response.status_code = 200
+        return response
+
+    @staticmethod
+    def delete_meal(id):
+        meal = Meal.query.filter_by(id=id).first()
+        if meal:
+            Meal.delete(meal)
+            response = make_response(
+                'The meal has been deleted', 200)
+            return response
+        return "The meal specified is not present", 400
+    
+
     def __repr__(self):
         """Returns a representation of the meals"""
         return "Meal (%d, %s, %s )" %(
@@ -118,7 +173,7 @@ class Meal(db.Model):
 
 class Menu(db.Model):
     """Defines the 'Menu' model mapped to table 'menu'."""
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(40), nullable=False, unique=True)
     meal_id = db.Column(db.Integer, db.ForeignKey('meal.id'))
     day = db.Column(db.String(50), default=datetime.datetime.today())
@@ -139,13 +194,65 @@ class Menu(db.Model):
         """Retrieves all the menu items"""
         return Menu.query.all()
 
+    @staticmethod
+    def get_menu():
+        menus = Menu.get_all_menu()
+        if not menus:
+            return make_response("No menu present", 400)
+        results = []
+        for menu in menus:
+            obj={
+                'id': menu.id,
+                'name': menu.name,
+                'day': menu.day
+                }
+            results.append(obj)
+        response = jsonify(results)
+        response.status_code = 200
+        return response
+
+    @staticmethod
+    def setup_menu(id):
+        meal = Meal.query.filter_by(id=id).first()
+        print("reaching here")
+        print(id)
+        print(meal)
+        if meal:
+            print("memem----")
+            print(meal)
+            menu = Menu(meal.name, meal.price)
+            menu.save()
+            print("now here")
+            # print(menu.price)
+            print("haha")
+            print(menu.id)
+            print("heroku")
+            return jsonify({
+                'id': menu.id,
+                'name': menu.name,
+                'price': meal.price,
+                'day': datetime.datetime.utcnow()
+            }), 201
+
+        # menu = Menu(name=name, day=day)
+        # menu.save()
+        # print("meee")
+        # print(menu)
+        # response=jsonify({
+        #     'id': menu.id,
+        #     'name': menu.name,
+        #     'day': menu.day
+        #     })
+        # response.status_code=201
+        # return response
+
     def __repr__(self):
         return "Menu (%d,%s, %s, %s, %s )" %(
             self.id, self.name, self.admin_id, self.meal_id, self.day)
 
 class Order(db.Model):
     """Defines the 'Order' mapped to database table 'order'."""
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
     order_time = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) 
