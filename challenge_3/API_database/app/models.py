@@ -67,8 +67,6 @@ class User(db.Model):
         except jwt.InvalidTokenError:
             return "Invalid token. Please register or login."
 
-
-
 class Meal(db.Model):
     """Defines the 'Meal' model mapped to database table 'meal'."""
     id = db.Column(db.Integer, primary_key=True)
