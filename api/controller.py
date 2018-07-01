@@ -69,8 +69,8 @@ def register():
     """
     """Facilitates user registration"""
     data = request.get_json()
-    email = data['email']
-    password = data['password']
+    email = data["email"]
+    password = data["password"]
     if not User.validate_email_and_password(email, password):
       return make_response("Email or password Invalid", 400)
     salt = PH.get_salt()
@@ -114,8 +114,8 @@ def login():
     """
     """Facilitates user registration."""
     data = request.get_json()
-    email = data['email']
-    password = data['password']
+    email = data["email"]
+    password = data["password"]
     if not User.validate_email_and_password(email, password):
       return make_response("Email or password Invalid", 400)
     return users.verify_login(email, password)
@@ -143,7 +143,7 @@ def account_get_meals():
   if access_token:
     if auth.decode_token(access_token):
       meals = meals2.get_meals()
-      return make_response(jsonify({'Meals': meals}), 200)
+      return make_response(jsonify({"Meals": meals}), 200)
 
 @app.route('/api/v1/meals/<int:id>', methods=["GET"])
 def get_meal(id):
@@ -176,7 +176,7 @@ def get_meal(id):
     user_id = auth.decode_token(access_token)
     if not isinstance (user_id, str):
       meals = meals2.get_meal(id)
-      return make_response(jsonify({'Meal': meals}), 200)
+      return make_response(jsonify({"Meal": meals}), 200)
 
 @app.route('/api/v1/meals', methods=['POST'])
 def account_create_meal():
@@ -222,8 +222,8 @@ def account_create_meal():
     user_id = auth.decode_token(access_token)
     if not isinstance (user_id, str):
       data = request.get_json()
-      meal_name = data['meal_name']
-      price = data['price']
+      meal_name = data["meal_name"]
+      price = data["price"]
       return meals2.create_meal(meal_name, price)
 
 @app.route('/api/v1/meals/<int:meal_id>', methods=["PUT"])
@@ -277,8 +277,8 @@ def account_update_meal(meal_id):
     user_id = auth.decode_token(access_token)
     if not isinstance (user_id, str):
       data = request.get_json()
-      meal_name = data['meal_name']
-      price = data['price']
+      meal_name = data["meal_name"]
+      price = data["price"]
       return meals2.account_update_meal(meal_id, meal_name, price)
 
 @app.route('/api/v1/meals/<int:meal_id>', methods=["DELETE"])
@@ -479,7 +479,7 @@ def setup_menu():
       user_id = auth.decode_token(access_token)
       if not isinstance (user_id, str):
         data =request.get_json()
-        meal_id = data['meal_id']
+        meal_id = data["meal_id"]
         return menus.account_setup_menu(meal_id)
   
 if __name__ == "__main__":

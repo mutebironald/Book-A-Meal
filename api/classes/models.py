@@ -27,8 +27,8 @@ class User:
         response_code = 200
         absent_code = 401
         stored_user = self.get_user(email)
-        if stored_user and PH.validate_password(password, stored_user['salt'], stored_user['hashed']):
-            access_token = Token().generate_token(stored_user['id'])
+        if stored_user and PH.validate_password(password, stored_user["salt"], stored_user["hashed"]):
+            access_token = Token().generate_token(stored_user["id"])
             return make_response(jsonify({"token": access_token, "message":response_message}), response_code)
         return make_response("Please register then login", absent_code)
 
@@ -65,7 +65,7 @@ class Meal:
         if isinstance(price, int) and meal_name:
             self.update_meal(meal_id, meal_name, price)
             update = self.get_meal(meal_id)
-            return jsonify({'meal': update}), 200
+            return jsonify({"meal": update}), 200
         else:
             return make_response("Enter a valid meal name and price", 400)
 
@@ -73,8 +73,8 @@ class Meal:
         """Enables caterer to add a meal option"""
         self.meals.append({
             "id": self.id,
-            'meal_name': meal_name,
-            'price': price
+            "meal_name": meal_name,
+            "price": price
         })
         self.id += 1
         return meal_name
@@ -90,9 +90,9 @@ class Meal:
     def update_meal(self, _id, meal_name, price):
         """Enables caterer to change a specific meal option"""
         for meal in self.meals:
-            if meal['id'] == _id:
-                meal['meal_name'] = meal_name
-                meal['price'] = price
+            if meal["id"] == _id:
+                meal["meal_name"] = meal_name
+                meal["price"] = price
                 break
 
     def get_meals(self):
@@ -102,14 +102,14 @@ class Meal:
     def get_meal(self, meal_id):
         """To get meals from meal options"""
         for meal in self.meals:
-            if meal['id'] == meal_id:
+            if meal["id"] == meal_id:
                 return meal
 
     def delete_meal(self, meal_id):
         """Enables the caterer to resolve/remove meal options"""
         c = 0
         for meal in self.meals:
-            if meal['id'] == meal_id:
+            if meal["id"] == meal_id:
                 del self.meals[c]
                 return True
             c += 1
@@ -154,7 +154,7 @@ class Menu:
         """Implements menu creation"""
         meal_get = self.meals.get_meals()
         for meal in meal_get:
-            if meal['id'] == int(meal_id):
+            if meal["id"] == int(meal_id):
                 self.menu.append(meal)
                 return self.menu
             else:
@@ -178,12 +178,12 @@ class Order:
         """Enables customer to make an order."""
         menu_returned = self.menu.get_menu()
         for meal in menu_returned:
-            if meal['id'] == int(meal_id):
+            if meal["id"] == int(meal_id):
                 self.orders.append({
                     "id": self.id,
-                    'meal': meal,
-                    'time': time,
-                    'cleared': False
+                    "meal": meal,
+                    "time": time,
+                    "cleared": False
                 })
                 self.id += 1
                 print(self.id)
@@ -194,8 +194,8 @@ class Order:
         now = datetime.datetime.utcnow()
         orders = self.get_orders()
         for order in orders:
-          deltaseconds = (now - order['time']).seconds
-          order['wait_minutes'] = "{}.{}".format((deltaseconds/60),
+          deltaseconds = (now - order["time"]).seconds
+          order["wait_minutes"] = "{}.{}".format((deltaseconds/60),
                 str(deltaseconds % 60).zfill(2))
           return jsonify({"orders": orders}), 200
 
@@ -205,14 +205,14 @@ class Order:
 
     def get_order(self, order_id):
         for order in self.orders:
-            if order['id'] == order_id:
+            if order["id"] == order_id:
                 return order
 
     def delete_order(self, order_id):
         """Enables the caterer to resolve/remove orders"""
         c = 0
         for order in self.orders:
-            if order['id'] == order_id:
+            if order["id"] == order_id:
                 del self.orders[c]
                 return True
             c += 1
