@@ -188,17 +188,20 @@ class Menu(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get_all_menu():
-        """Retrieves all the menu items"""
-        return Menu.query.all()
-
-    @staticmethod
     def get_menu():
-        menus = Menu.get_all_menu()
+        """Retrieves all the menu items"""
+        menus = Menu.query.all()
         if not menus:
             return make_response("No menu present", 400)
         results = []
+        print("hshs----")
+        # print(menus)
         for menu in menus:
+            print("check this")
+            print(menu.day)
+            print(menu)
+            print(menu.price)
+            print("now done")
             obj={
                 'id': menu.id,
                 'name': menu.name,
@@ -212,24 +215,17 @@ class Menu(db.Model):
     @staticmethod
     def setup_menu(id):
         meal = Meal.query.filter_by(id=id).first()
-        print("reaching here")
-        print(id)
-        print(meal)
+        # meal = Menu.query.filter_by(meal_id=id).first()
         if meal:
-            print("memem----")
-            print(meal)
             menu = Menu(meal.name, meal.price)
             menu.save()
-            print("now here")
-            # print(menu.price)
-            print("haha")
-            print(menu.id)
-            print("heroku")
-            return jsonify({
+            return make_response(
+                {"MENU": {
                 'id': menu.id,
                 'name': menu.name,
                 'price': meal.price,
                 'day': datetime.datetime.utcnow()
+            }
             }), 201
 
         # menu = Menu(name=name, day=day)

@@ -288,19 +288,6 @@ def create_app(config_name):
                 id = int(request.data.get('meal_id'))
                 if id:
                     return Menu.setup_menu(id)
-            #     if name and day:
-            #         menu = Menu(name=name, day=day)
-            #         menu.save()
-            #         response=jsonify({
-            #             'id': menu.id,
-            #             'name': menu.name,
-            #             'day': menu.day
-            #             })
-            #         response.status_code=201
-            #         return response
-            # else:
-            #     return jsonify(user_id)
-
 
     #orders routes
     #@app.route('/api/v1/orders')
