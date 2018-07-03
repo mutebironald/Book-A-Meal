@@ -8,6 +8,7 @@ import datetime
 
 from app import db
 
+
 class User(db.Model):
     """Defines the 'User' model mapped to database table 'user'."""
     id = db.Column(db.Integer, primary_key=True)
@@ -27,7 +28,7 @@ class User(db.Model):
 
     def __repr__(self):
         """Returns a User model representation"""
-        return "User (%d, %s, %s, %s)" %(
+        return "User (%d, %s, %s, %s)" % (
             self.id, self.email, self.admin, self.orders)
 
     def save(self):
@@ -39,21 +40,21 @@ class User(db.Model):
         """Generates the access token"""
         try:
             payload = {
-                'exp':datetime.datetime.utcnow()  + timedelta(minutes=60),
+                'exp': datetime.datetime.utcnow() + timedelta(minutes=60),
                 'sub': user_id
-                }
-            
+            }
+
             jwt_string = jwt.encode(
                 payload,
                 secret,
                 algorithm='HS256'
-                )
+            )
 
             return jwt_string
-            
+
         except Exception as e:
             return str(e)
-        
+
     @staticmethod
     def decode_token(token):
         """Decodes the access token from the Authorization header."""
@@ -66,6 +67,7 @@ class User(db.Model):
 
         except jwt.InvalidTokenError:
             return "Invalid token. Please register or login."
+
 
 class Meal(db.Model):
     """Defines the 'Meal' model mapped to database table 'meal'."""
@@ -87,12 +89,11 @@ class Meal(db.Model):
     def delete(self):
         """Removes item from meal table"""
         db.session.delete(self)
-        db.session.commit()    
+        db.session.commit()
 
     @staticmethod
     def get_meals():
         """Retrieves all meals present in the meal table"""
-        # return Meal.query.all()
         results = []
         meals = Meal.query.all()
         if meals:
@@ -119,7 +120,7 @@ class Meal(db.Model):
             'id': meal.id,
             'name': meal.name,
             'price': meal.price
-            }
+        }
         results.append(obj)
         return make_response(jsonify(results), 200)
 
@@ -131,7 +132,7 @@ class Meal(db.Model):
             'id': meal.id,
             'name': meal.name,
             'price': meal.price,
-            })
+        })
         response.status_code = 201
         return response
 
@@ -148,8 +149,8 @@ class Meal(db.Model):
             'id': meal.id,
             'name': meal.name,
             'price': meal.price
-            })
-    
+        })
+
         response.status_code = 200
         return response
 
@@ -162,30 +163,32 @@ class Meal(db.Model):
                 'The meal has been deleted', 200)
             return response
         return "The meal specified is not present", 400
-    
 
     def __repr__(self):
         """Returns a representation of the meals"""
-        return "Meal (%d, %s, %s )" %(
+        return "Meal (%d, %s, %s )" % (
             self.id, self.name, self.price)
+
 
 class Menu(db.Model):
     """Defines the 'Menu' model mapped to table 'menu'."""
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(40), nullable=False, unique=True)
     meal_id = db.Column(db.Integer, db.ForeignKey('meal.id'))
-    day = db.Column(db.String(50), default=datetime.datetime.today())
+    day = db.Column(db.DateTime, default=datetime.datetime.today())
     orders = db.relationship('Order', backref='menu')
 
-    def __init__(self, name, day):
+    def __init__(self, meal_id):
         """Initialises the menu model"""
-        self.name = name
-        self.day = day
+        self.meal_id = meal_id
 
     def save(self):
         """Saves items to the menu table"""
+        self.day = datetime.datetime.today()
         db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except BaseException:
+            db.session.rollback()
 
     @staticmethod
     def get_menu():
@@ -194,19 +197,13 @@ class Menu(db.Model):
         if not menus:
             return make_response("No menu present", 400)
         results = []
-        print("hshs----")
-        # print(menus)
         for menu in menus:
-            print("check this")
-            print(menu.day)
-            print(menu)
-            print(menu.price)
-            print("now done")
-            obj={
+            obj = {
                 'id': menu.id,
-                'name': menu.name,
+                'name': menu.meal.name,
+                'price': menu.meal.price,
                 'day': menu.day
-                }
+            }
             results.append(obj)
         response = jsonify(results)
         response.status_code = 200
@@ -214,63 +211,73 @@ class Menu(db.Model):
 
     @staticmethod
     def setup_menu(id):
-        meal = Meal.query.filter_by(id=id).first()
-        # meal = Menu.query.filter_by(meal_id=id).first()
-        if meal:
-            menu = Menu(meal.name, meal.price)
-            menu.save()
-            return make_response(
-                {"MENU": {
+        menu = Menu(meal_id=id)
+        menu.save()
+        return make_response(
+            {"MENU": {
                 'id': menu.id,
-                'name': menu.name,
-                'price': meal.price,
+                'name': menu.meal.name,
+                'price': menu.meal.price,
                 'day': datetime.datetime.utcnow()
             }
             }), 201
 
-        # menu = Menu(name=name, day=day)
-        # menu.save()
-        # print("meee")
-        # print(menu)
-        # response=jsonify({
-        #     'id': menu.id,
-        #     'name': menu.name,
-        #     'day': menu.day
-        #     })
-        # response.status_code=201
-        # return response
-
     def __repr__(self):
-        return "Menu (%d,%s, %s, %s, %s )" %(
-            self.id, self.name, self.admin_id, self.meal_id, self.day)
+        return "Menu (%d,%s, %s, %s, %s )" % (
+            self.id, self.name, self.meal_id, self.day)
+
 
 class Order(db.Model):
     """Defines the 'Order' mapped to database table 'order'."""
     id = db.Column(db.Integer, primary_key=True)
     menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
-    order_time = db.Column(db.String)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id')) 
+    order_time = db.Column(db.DateTime, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, order_time):
+    def __init__(self, user_id, menu_id):
         """Initialises the order tables"""
-        self.order_time = order_time
+        self.user_id = user_id
+        self.menu_id = menu_id
 
-    def save(self):
+    def add_order(self):
         """Saves items to the order table"""
+        self.order_time = datetime.datetime.now()
         db.session.add(self)
-        db.session.commit()
+        return Order.save()
 
     def delete(self, x):
         """Removes items from the order table"""
         db.session.delete(x)
-        db.session.commit()
+        Order.save()
+
+    @staticmethod
+    def save():
+        try:
+            db.session.commit()
+            return True
+        except BaseException:
+            db.session.rollback()
+            return False
 
     @staticmethod
     def get_all_orders():
         """Retrieves all orders present"""
-        return Order.query.all()
+        orders = []
+        raw_orders = Order.query.all()
+        for order in raw_orders:
+            orders.append(order.to_dictionary())
+        return orders
+
+    def to_dictionary(self):
+        """Return a dictionary representation of the order"""
+        return dict(
+            order_id=self.id,
+            user_id=self.user_id,
+            meal=self.menu.meal.name,
+            price=self.menu.meal.price,
+            order_time=self.order_time)
 
     def __repr__(self):
         """Returns a string representation of the order table"""
-        return "Order(%d, %s, %s, %s, %s )" %(
+        return "Order(%d, %s, %s, %s, %s )" % (
             self.id, self.menu_name, self.admin_id, self.order_time, self.user_id)
