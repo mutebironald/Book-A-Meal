@@ -6,11 +6,11 @@ from app import create_app, db
 
 class OrderTestCase(unittest.TestCase):
     """This class represents the order test case"""
+
     def setUp(self):
         self.app = create_app(config_name=os.getenv('APP_SETTINGS'))
         self.client = self.app.test_client
-        self.order 
-
+        self.order
 
     def setUp(self):
         """Defines the test variables and initializes the app."""
@@ -21,15 +21,13 @@ class OrderTestCase(unittest.TestCase):
         self.user_data = {
             'email': 'mutebi@gmail.com',
             'password': 'hack_it'
-            }
+        }
 
         with self.app.app_context():
-            #create all tables
+            # create all tables
             db.session.close()
             db.drop_all()
             db.create_all()
-
-
 
     def test_get_all_orders(self):
         """tests api ability to retrieve orders"""
@@ -45,6 +43,6 @@ class OrderTestCase(unittest.TestCase):
             db.session.remove()
             db.drop_all()
 
+
 if __name__ == "__main__":
     unittest.main()
-                  

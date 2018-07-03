@@ -5,6 +5,7 @@ from flask import make_response, request, jsonify
 from app.models import User
 import re
 
+
 class RegistrationView(MethodView):
     """This class registers a new user."""
 
@@ -20,7 +21,8 @@ class RegistrationView(MethodView):
                 email = post_data['email']
                 password = post_data['password']
                 if email and password:
-                    if not re.match(r"([\w\.-]+)@([\w\.-]+)(\.[\w\.]+$)", email):
+                    if not re.match(
+                            r"([\w\.-]+)@([\w\.-]+)(\.[\w\.]+$)", email):
                         return message, status_code
                     if password.strip() == "":
                         return message, status_code
@@ -32,21 +34,20 @@ class RegistrationView(MethodView):
                         'message': 'You registered successfully.'
                     }
                     return make_response(jsonify(response)), 201
-            
             except Exception as e:
                 response = {
                     'message': str(e)
                 }
                 return make_response(jsonify(response)), 401
-
         else:
             response = {
                 'message': 'User already exists. Please login.'
             }
-
             return make_response(jsonify(response)), 202
 
+
 registration_view = RegistrationView.as_view('register_view')
+
 
 class LoginView(MethodView):
     """This class-based view handles user login and access token generation."""
@@ -65,16 +66,17 @@ class LoginView(MethodView):
                     }
                     return make_response(jsonify(response)), 200
             else:
-                response ={
+                response = {
                     'message': 'Invalid email or password, Please try again'
                 }
                 return make_response(jsonify(response)), 401
-        
+
         except Exception as e:
             response = {
                 'message': str(e)
             }
             return make_response(jsonify(response)), 500
+
 
 registration_view = RegistrationView.as_view('registration_view')
 login_view = LoginView.as_view('login_view')
@@ -84,7 +86,7 @@ auth_blueprint.add_url_rule(
     '/auth/register',
     view_func=registration_view,
     methods=['POST']
-    )
+)
 
 auth_blueprint.add_url_rule(
     '/auth/login',

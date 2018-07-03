@@ -2,12 +2,14 @@ from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 from flask import request, jsonify, abort, make_response
 
-import os, binascii
+import os
+import binascii
 
 from instance.config import app_config
 
 db = SQLAlchemy()
 secret = binascii.hexlify(os.urandom(24))
+
 
 def create_app(config_name):
     from app.models import User, Meal, Menu, Order
@@ -19,7 +21,7 @@ def create_app(config_name):
     app.config['SECRET_KEY'] = secret
     with app.app_context():
         db.init_app(app)
-    
+
     @app.route('/')
     def home():
         """
@@ -29,12 +31,11 @@ def create_app(config_name):
         - Welcoming our users
         responses:
             200:
-                description: A welcome message appears 
+                description: A welcome message appears
         """
-        
+
         """Starting point of the API"""
         return "Welcome to Book-A-Meal."
-
 
     @app.route('/api/v1/meals')
     def account_get_meals():
@@ -89,13 +90,12 @@ def create_app(config_name):
                 description: The meal with the specified id is absent
             200:
                 description: The meal is successfully returned.
-        """ 
+        """
         access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
                 return Meal.get_meal(id)
-        
 
     @app.route('/api/v1/meals', methods=['POST'])
     def account_create_meal():
@@ -126,11 +126,11 @@ def create_app(config_name):
             properties:
             Authorization:
                 type: "string"
-                
+
         responses:
             201:
                 description: The meal has been created.
-        """ 
+        """
         access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
@@ -176,13 +176,13 @@ def create_app(config_name):
             properties:
             Authorization:
                 type: "string"
-                
+
         responses:
             404:
                 description: The meal you want to update is not in the database.
             200:
                 description: The meal has been successfully updated.
-        """  
+        """
         access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
@@ -190,7 +190,7 @@ def create_app(config_name):
                 name = str(request.data.get('name'))
                 price = int(request.data.get('price'))
                 return Meal.update_meal(id, name, price)
-    
+
     @app.route('/api/v1/meals/<int:id>', methods=['DELETE'])
     def account_delete_meal(id):
         """
@@ -215,14 +215,13 @@ def create_app(config_name):
         responses:
             200:
                 description: The meal with the ID specified has been deleted
-        
+
         """
-        access_token=request.headers.get('Authorization')
+        access_token = request.headers.get('Authorization')
         if access_token:
-            user_id=User.decode_token(access_token)
+            user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
                 return Meal.delete_meal(id)
-
 
     @app.route('/api/v1/menu')
     def get_menu():
@@ -243,7 +242,7 @@ def create_app(config_name):
                 description: There is no menu present.
             200:
                 description: The menu has successfully been returned.
-        """ 
+        """
         access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
@@ -275,11 +274,11 @@ def create_app(config_name):
             properties:
             Authorization:
                 type: "string"
-                
+
         responses:
             201:
                 description: The menu has been successfully returned.
-        """ 
+        """
         access_token = request.headers.get('Authorization')
 
         if access_token:
@@ -289,11 +288,10 @@ def create_app(config_name):
                 if id:
                     return Menu.setup_menu(id)
 
-    #orders routes
-    #@app.route('/api/v1/orders')
-    #def add_order():
-        #pass
-    
+    # orders routes
+    # @app.route('/api/v1/orders')
+    # def add_order():
+        # pass
 
     @app.route('/api/v1/orders')
     def get_all_orders():
@@ -314,8 +312,8 @@ def create_app(config_name):
                 description: Successfully returned all the orders present.
             400:
                 description: No orders present at the moment.
-        """ 
-        access_token=request.headers.get('Authorization')
+        """
+        access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
@@ -326,16 +324,15 @@ def create_app(config_name):
                         obj = {
                             'id': order.id,
                             'order_time': order.order_time
-                            }
+                        }
                         results.append(obj)
                     response = jsonify(results)
-                    response.status_code=200
+                    response.status_code = 200
                     return response
                 else:
                     return make_response("No orders present", 400)
             else:
                 return jsonify(user_id)
-
 
     @app.route('/api/v1/orders/<int:id>', methods=["DELETE"])
     def remove_order(id):
@@ -361,20 +358,21 @@ def create_app(config_name):
                 description: The order specified is not present.
 
         """
-                    
+
         access_token = request.headers.get('Authorization')
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
                 order = Order.query.filter_by(id=id).first()
                 if not order:
-                    return make_response("The order specified is not present"), 400
+                    return make_response(
+                        "The order specified is not present"), 400
                 Order.session.delete(order)
                 response = make_response(
                     "The order has been deleted", 200)
                 return response
             else:
-                return jsonify(user_id)   
+                return jsonify(user_id)
 
     from .auth import auth_blueprint
     app.register_blueprint(auth_blueprint)
