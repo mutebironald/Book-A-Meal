@@ -288,11 +288,6 @@ def create_app(config_name):
                 if id:
                     return Menu.setup_menu(id)
 
-    # orders routes
-    # @app.route('/api/v1/orders')
-    # def add_order():
-        # pass
-
     @app.route('/api/v1/orders')
     def get_all_orders():
         """
