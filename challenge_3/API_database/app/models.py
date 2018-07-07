@@ -80,7 +80,7 @@ class Meal(db.Model):
         """Initialises the meal model"""
         self.name = name
         self.price = price
-
+ 
     def save(self):
         """Saves item to the Meal table"""
         db.session.add(self)
