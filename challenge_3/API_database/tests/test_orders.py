@@ -14,13 +14,13 @@ class OrderTestCase(unittest.TestCase):
 
     def setUp(self):
         """Defines the test variables and initializes the app."""
-        self.app = create_app(config_name=os.getenv('APP_SETTINGS'))
+        self.app = create_app(config_name=os.getenv("APP_SETTINGS"))
         self.client = self.app.test_client
         # self.meal = {'name':'bae', 'price':'3000'}
         # self.menu = {'name': 'local foods', 'day': 'Monday'}
         self.user_data = {
-            'email': 'mutebi@gmail.com',
-            'password': 'hack_it'
+            "email": "mutebi@gmail.com",
+            "password": "hack_it"
         }
 
         with self.app.app_context():

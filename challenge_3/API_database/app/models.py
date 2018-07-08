@@ -7,20 +7,21 @@ from app.__init__ import db, secret
 import datetime
 
 from app import db
+import re
 
 
 class User(db.Model):
     """Defines the 'User' model mapped to database table 'user'."""
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
     email = db.Column(db.String(145), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
     admin = db.Column(db.Boolean, default=False)
-    orders = db.relationship('Order', backref='user')
+    orders = db.relationship("Order", backref="user")
 
     def __init__(self, email, password):
         """Initialize the user with an email and a password."""
         self.email = email
-        self.password = Bcrypt().generate_password_hash(password).decode('utf-8')
+        self.password = Bcrypt().generate_password_hash(password).decode("utf-8")
 
     def password_is_valid(self, password):
         """Checks the password against its hash to validate the user's password"""
@@ -40,14 +41,14 @@ class User(db.Model):
         """Generates the access token"""
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + timedelta(minutes=60),
-                'sub': user_id
+                "exp": datetime.datetime.utcnow() + timedelta(minutes=60),
+                "sub": user_id
             }
 
             jwt_string = jwt.encode(
                 payload,
                 secret,
-                algorithm='HS256'
+                algorithm="HS256"
             )
 
             return jwt_string
@@ -60,7 +61,7 @@ class User(db.Model):
         """Decodes the access token from the Authorization header."""
         try:
             payload = jwt.decode(token, secret)
-            return payload['sub']
+            return payload["sub"]
 
         except jwt.ExpiredSignatureError:
             return "Expired token. Please login to get a new token."
@@ -71,25 +72,30 @@ class User(db.Model):
 
 class Meal(db.Model):
     """Defines the 'Meal' model mapped to database table 'meal'."""
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.String(46), nullable=False, unique=True)
     price = db.Column(db.Integer, nullable=False)
-    menus = db.relationship('Menu', backref='meal')
+    menus = db.relationship("Menu", backref="meal")
 
     def __init__(self, name, price):
         """Initialises the meal model"""
         self.name = name
         self.price = price
- 
-    def save(self):
-        """Saves item to the Meal table"""
-        db.session.add(self)
-        db.session.commit()
+
+    @staticmethod
+    def save():
+        try:
+            db.session.commit()
+            return True
+        except BaseException:
+            db.session.rollback()
+            return False
 
     def delete(self):
         """Removes item from meal table"""
         db.session.delete(self)
         db.session.commit()
+        Meal.save()
 
     @staticmethod
     def get_meals():
@@ -117,38 +123,55 @@ class Meal(db.Model):
             return make_response("That meal is not present", 400)
         results = []
         obj = {
-            'id': meal.id,
-            'name': meal.name,
-            'price': meal.price
+            "id": meal.id,
+            "name": meal.name,
+            "price": meal.price
         }
         results.append(obj)
         return make_response(jsonify(results), 200)
 
     @staticmethod
     def create_meal(name, price):
-        meal = Meal(name, price)
-        meal.save()
-        response = jsonify({
-            'id': meal.id,
-            'name': meal.name,
-            'price': meal.price,
-        })
-        response.status_code = 201
-        return response
+        # if not re.match("/^[a-zA-Z]+$/", name):
+        #     return "Meal must be text only", 400
+        try:
+            if len(name) < 8 or len(name) > 50:
+                raise AssertionError(
+                    'Meal name must be between 8 and 50 characters')
+            price = int(price)
+            if not isinstance(price, int):
+                return "Invalid Price"
+
+        except Exception as e:
+            return "Invalid data"
+
+        else:
+
+            meal = Meal(name, price)
+            meal.save()
+            response = jsonify({
+                "id": meal.id,
+                "name": meal.name,
+                "price": meal.price,
+            })
+            response.status_code = 201
+            print(response)
+            return response
 
     @staticmethod
     def update_meal(id, name, price):
         meal = Meal.query.filter_by(id=id).first()
         if not meal:
             abort(404)
-
+        if not isinstance(price, int):
+            return "Invalid Price"
         meal.name = name
         meal.price = price
         meal.save()
         response = jsonify({
-            'id': meal.id,
-            'name': meal.name,
-            'price': meal.price
+            "id": meal.id,
+            "name": meal.name,
+            "price": meal.price
         })
 
         response.status_code = 200
@@ -160,7 +183,7 @@ class Meal(db.Model):
         if meal:
             Meal.delete(meal)
             response = make_response(
-                'The meal has been deleted', 200)
+                "The meal has been deleted", 200)
             return response
         return "The meal specified is not present", 400
 
@@ -172,10 +195,10 @@ class Meal(db.Model):
 
 class Menu(db.Model):
     """Defines the 'Menu' model mapped to table 'menu'."""
-    id = db.Column(db.Integer, primary_key=True)
-    meal_id = db.Column(db.Integer, db.ForeignKey('meal.id'))
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    meal_id = db.Column(db.Integer, db.ForeignKey("meal.id"))
     day = db.Column(db.DateTime, default=datetime.datetime.today())
-    orders = db.relationship('Order', backref='menu')
+    orders = db.relationship("Order", backref="menu")
 
     def __init__(self, meal_id):
         """Initialises the menu model"""
@@ -199,10 +222,10 @@ class Menu(db.Model):
         results = []
         for menu in menus:
             obj = {
-                'id': menu.id,
-                'name': menu.meal.name,
-                'price': menu.meal.price,
-                'day': menu.day
+                "id": menu.id,
+                "name": menu.meal.name,
+                "price": menu.meal.price,
+                "day": menu.day
             }
             results.append(obj)
         response = jsonify(results)
@@ -215,10 +238,10 @@ class Menu(db.Model):
         menu.save()
         return make_response(
             {"MENU": {
-                'id': menu.id,
-                'name': menu.meal.name,
-                'price': menu.meal.price,
-                'day': datetime.datetime.utcnow()
+                "id": menu.id,
+                "name": menu.meal.name,
+                "price": menu.meal.price,
+                "day": datetime.datetime.utcnow()
             }
             }), 201
 
@@ -229,10 +252,10 @@ class Menu(db.Model):
 
 class Order(db.Model):
     """Defines the 'Order' mapped to database table 'order'."""
-    id = db.Column(db.Integer, primary_key=True)
-    menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
-    order_time = db.Column(db.DateTime, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    menu_id = db.Column(db.Integer, db.ForeignKey("menu.id"))
+    order_time = db.Column(db.DateTime, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
     def __init__(self, user_id, menu_id):
         """Initialises the order tables"""

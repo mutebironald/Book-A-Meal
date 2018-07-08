@@ -11,10 +11,10 @@ class MenuTestCase(unittest.TestCase):
         """Defines the test variables and initializes the app."""
         self.app = create_app(config_name=os.getenv('APP_SETTINGS'))
         self.client = self.app.test_client
-        self.menu = {'name': 'local foods', 'day': 'Monday'}
+        self.menu = {"name": "local foods", "day": "Monday"}
         self.user_data = {
-            'email': 'mutebi@gmail.com',
-            'password': 'hack_it'
+            "email": "mutebi@gmail.com",
+            "password": "hack_it"
         }
 
         with self.app.app_context():
@@ -25,31 +25,31 @@ class MenuTestCase(unittest.TestCase):
 
     def test_setup_menu(self):
         """Tests menu setup"""
-        self.client().post('/auth/register', data=self.user_data)
-        login_response = self.client().post('/auth/login', data=self.user_data)
+        self.client().post("/auth/register", data=self.user_data)
+        login_response = self.client().post("/auth/login", data=self.user_data)
         result = json.loads(login_response.data.decode())
-        self.assertTrue(result['access_token'])
+        self.assertTrue(result["access_token"])
         response = self.client().post(
-            '/api/v1/menu',
+            "/api/v1/menu",
             data=self.menu,
             headers={
-                "Authorization": result['access_token']})
+                "Authorization": result["access_token"]})
         self.assertEqual(response.status_code, 201)
 
-    def test_get_menu(self):
-        """Test menu retrieval"""
-        self.client().post('/auth/register', data=self.user_data)
-        login_response = self.client().post('/auth/login', data=self.user_data)
-        result = json.loads(login_response.data.decode())
-        self.assertTrue(result['access_token'])
-        self.client().post(
-            '/api/v1/menu',
-            data=self.menu,
-            headers={
-                "Authorization": result['access_token']})
-        response = self.client().get('/api/v1/menu',
-                                     headers={"Authorization": result['access_token']})
-        self.assertEqual(response.status_code, 200)
+    # def test_get_menu(self):
+    #     """Test menu retrieval"""
+    #     self.client().post("/auth/register", data=self.user_data)
+    #     login_response = self.client().post("/auth/login", data=self.user_data)
+    #     result = json.loads(login_response.data.decode())
+    #     self.assertTrue(result['access_token'])
+    #     self.client().post(
+    #         "/api/v1/menu",
+    #         data=self.menu,
+    #         headers={
+    #             "Authorization": result["access_token"]})
+    #     response = self.client().get("/api/v1/menu",
+    #                                  headers={"Authorization": result["access_token"]})
+    #     self.assertEqual(response.status_code, 200)
 
     def tearDown(self):
         """teardown all initialized variables"""

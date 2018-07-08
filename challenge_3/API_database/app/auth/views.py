@@ -24,16 +24,26 @@ class RegistrationView(MethodView):
                     if not re.match(
                             r"([\w\.-]+)@([\w\.-]+)(\.[\w\.]+$)", email):
                         return message, status_code
+
                     if password.strip() == "":
                         return message, status_code
-                    if len(password) < 5:
-                        return "Password should be more than 5 characters"
+
+                    if not re.match('\d.*[A-Z]|[A-Z].*\d', password):
+                        raise AssertionError(
+                            'Password must contain 1 capital letter and 1 number')
+
+                    if len(password) < 8 or len(password) > 50:
+                        raise AssertionError(
+                            'Password must be between 8 and 50 characters')
+
                     user = User(email=email, password=password)
                     user.save()
                     response = {
                         'message': 'You registered successfully.'
                     }
                     return make_response(jsonify(response)), 201
+                return message, 404
+
             except Exception as e:
                 response = {
                     'message': str(e)

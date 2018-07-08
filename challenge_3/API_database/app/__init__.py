@@ -16,13 +16,13 @@ def create_app(config_name):
 
     app = FlaskAPI(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
-    app.config.from_pyfile('config.py')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SECRET_KEY'] = secret
+    app.config.from_pyfile("config.py")
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SECRET_KEY"] = secret
     with app.app_context():
         db.init_app(app)
 
-    @app.route('/')
+    @app.route("/")
     def home():
         """
         Home/welcome
@@ -37,7 +37,7 @@ def create_app(config_name):
         """Starting point of the API"""
         return "Welcome to Book-A-Meal."
 
-    @app.route('/api/v1/meals')
+    @app.route("/api/v1/meals")
     def account_get_meals():
         """
         Meals route
@@ -57,14 +57,14 @@ def create_app(config_name):
             200:
                 description: Meals are present
         """
-        auth_header = request.headers.get('Authorization')
+        auth_header = request.headers.get("Authorization")
         access_token = auth_header
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
                 return Meal.get_meals()
 
-    @app.route('/api/v1/meals/<int:id>', methods=['GET'])
+    @app.route("/api/v1/meals/<int:id>", methods=["GET"])
     def account_get_specific_meal(id):
         """
         Meals route
@@ -91,13 +91,13 @@ def create_app(config_name):
             200:
                 description: The meal is successfully returned.
         """
-        access_token = request.headers.get('Authorization')
+        access_token = request.headers.get("Authorization")
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
                 return Meal.get_meal(id)
 
-    @app.route('/api/v1/meals', methods=['POST'])
+    @app.route("/api/v1/meals", methods=["POST"])
     def account_create_meal():
         """
         Meals route
@@ -128,19 +128,20 @@ def create_app(config_name):
                 type: "string"
 
         responses:
-            201:
+            200:
                 description: The meal has been created.
         """
-        access_token = request.headers.get('Authorization')
+        access_token = request.headers.get("Authorization")
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
-                data = request.get_json()
-                name = data['name']
-                price = data['price']
+                data = request.data
+                name = data["name"]
+                price = data["price"]
                 return Meal.create_meal(name, price)
+        return "nope"
 
-    @app.route('/api/v1/meals/<int:id>', methods=['PUT'])
+    @app.route("/api/v1/meals/<int:id>", methods=["PUT"])
     def account_update_meal(id):
         """
         Meals route
@@ -183,15 +184,17 @@ def create_app(config_name):
             200:
                 description: The meal has been successfully updated.
         """
-        access_token = request.headers.get('Authorization')
+        access_token = request.headers.get("Authorization")
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
-                name = str(request.data.get('name'))
-                price = int(request.data.get('price'))
+                name = request.data["name"]
+                price = request.data["price"]
                 return Meal.update_meal(id, name, price)
+            return "me"
+        return "you"
 
-    @app.route('/api/v1/meals/<int:id>', methods=['DELETE'])
+    @app.route("/api/v1/meals/<int:id>", methods=["DELETE"])
     def account_delete_meal(id):
         """
         Meals route
@@ -217,13 +220,13 @@ def create_app(config_name):
                 description: The meal with the ID specified has been deleted
 
         """
-        access_token = request.headers.get('Authorization')
+        access_token = request.headers.get("Authorization")
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
                 return Meal.delete_meal(id)
 
-    @app.route('/api/v1/menu')
+    @app.route("/api/v1/menu")
     def get_menu():
         """
         Menu route
@@ -243,13 +246,13 @@ def create_app(config_name):
             200:
                 description: The menu has successfully been returned.
         """
-        access_token = request.headers.get('Authorization')
+        access_token = request.headers.get("Authorization")
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
                 return Menu.get_menu()
 
-    @app.route('/api/v1/menu', methods=['POST'])
+    @app.route("/api/v1/menu", methods=["POST"])
     def setup_menu():
         """
         Menu route
@@ -279,16 +282,16 @@ def create_app(config_name):
             201:
                 description: The menu has been successfully returned.
         """
-        access_token = request.headers.get('Authorization')
+        access_token = request.headers.get("Authorization")
 
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
-                id = int(request.data.get('meal_id'))
+                id = int(request.data.get("meal_id"))
                 if id:
                     return Menu.setup_menu(id)
 
-    @app.route('/api/v1/orders')
+    @app.route("/api/v1/orders")
     def get_all_orders():
         """
         orders route
@@ -308,7 +311,7 @@ def create_app(config_name):
             400:
                 description: No orders present at the moment.
         """
-        access_token = request.headers.get('Authorization')
+        access_token = request.headers.get("Authorization")
         if access_token:
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
@@ -317,8 +320,8 @@ def create_app(config_name):
                     results = []
                     for order in orders:
                         obj = {
-                            'id': order.id,
-                            'order_time': order.order_time
+                            "id": order.id,
+                            "order_time": order.order_time
                         }
                         results.append(obj)
                     response = jsonify(results)
@@ -329,7 +332,7 @@ def create_app(config_name):
             else:
                 return jsonify(user_id)
 
-    @app.route('/api/v1/orders/<int:id>', methods=["DELETE"])
+    @app.route("/api/v1/orders/<int:id>", methods=["DELETE"])
     def remove_order(id):
         """
         Orders route
