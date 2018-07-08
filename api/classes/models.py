@@ -16,20 +16,23 @@ class User:
 
     def get_user(self, email):
         """Retrieves a user from a list of users"""
-        available_user = [user for user in self.users if user["email"] == email]
+        available_user = [
+            user for user in self.users if user["email"] == email]
         if available_user:
             return available_user[0]
         return False
 
-    def verify_login(self,email, password):
+    def verify_login(self, email, password):
         """validates login details"""
         response_message = "You are now logged in"
         response_code = 200
         absent_code = 401
         stored_user = self.get_user(email)
-        if stored_user and PH.validate_password(password, stored_user["salt"], stored_user["hashed"]):
+        if stored_user and PH.validate_password(
+                password, stored_user["salt"], stored_user["hashed"]):
             access_token = Token().generate_token(stored_user["id"])
-            return make_response(jsonify({"token": access_token, "message":response_message}), response_code)
+            return make_response(
+                jsonify({"token": access_token, "message": response_message}), response_code)
         return make_response("Please register then login", absent_code)
 
     @staticmethod
@@ -47,10 +50,15 @@ class User:
         """Helps add a user to the list of users"""
         if self.get_user(email):
             return False
-        new_user = { "id": self.id, "email": email, "salt": salt, "hashed": hashed }
+        new_user = {
+            "id": self.id,
+            "email": email,
+            "salt": salt,
+            "hashed": hashed}
         self.users.append(new_user)
         self.id += 1
         return new_user
+
 
 class Meal:
     """A class to represent the meals"""
@@ -59,7 +67,7 @@ class Meal:
         """Initialises the meal class"""
         self.meals = []
         self.id = 1
-    
+
     def account_update_meal(self, meal_id, meal_name, price):
         """Implements the update meal logic"""
         if isinstance(price, int) and meal_name:
@@ -118,9 +126,10 @@ class Meal:
         """Enables meal deletion"""
         meal = self.delete_meal(meal_id)
         if meal:
-          return make_response("The meal has been deleted", 202)
+            return make_response("The meal has been deleted", 202)
         else:
-          return make_response("The meal specified is not present", 400)
+            return make_response("The meal specified is not present", 400)
+
 
 class Menu:
     """A class to represent the Menu of meals for a particular day"""
@@ -138,7 +147,7 @@ class Menu:
         """Implements get meal logic"""
         menu = self.get_menu()
         if menu:
-            return jsonify({"MENU":menu }), 200
+            return jsonify({"MENU": menu}), 200
         else:
             return make_response("The menu has not yet been set"), 404
 
@@ -146,9 +155,9 @@ class Menu:
         """Helps caterer to set the menu for a specific day"""
         output = self.setup_menu(meal_id)
         if output:
-          return jsonify({"MENU": output}), 201
+            return jsonify({"MENU": output}), 201
         else:
-          return make_response("Incorrect meal option"), 404
+            return make_response("Incorrect meal option"), 404
 
     def setup_menu(self, meal_id):
         """Implements menu creation"""
@@ -159,6 +168,7 @@ class Menu:
                 return self.menu
             else:
                 return False
+
 
 class Order:
     """A class to represent a customers/users orders"""
@@ -194,10 +204,10 @@ class Order:
         now = datetime.datetime.utcnow()
         orders = self.get_orders()
         for order in orders:
-          deltaseconds = (now - order["time"]).seconds
-          order["wait_minutes"] = "{}.{}".format((deltaseconds/60),
-                str(deltaseconds % 60).zfill(2))
-          return jsonify({"orders": orders}), 200
+            deltaseconds = (now - order["time"]).seconds
+            order["wait_minutes"] = "{}.{}".format(
+                (deltaseconds / 60), str(deltaseconds % 60).zfill(2))
+            return jsonify({"orders": orders}), 200
 
     def get_orders(self):
         """Returns all orders belonging to a particular caterer"""

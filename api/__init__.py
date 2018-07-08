@@ -1,4 +1,5 @@
-import os, binascii
+import os
+import binascii
 from flask import Flask
 from .classes.passwordhelper import PasswordHelper
 
