@@ -89,11 +89,15 @@ class Meal:
 
     def create_meal(self, meal_name, price):
         """Enables meal creation"""
-        if isinstance(price, int) and meal_name:
+    
+        try:
+            price = int(price)
+        except ValueError:
+            return make_response("Enter a valid meal name and price", 400)
+        else:
             self.add_meal(meal_name, price)
             return make_response("You successfully created a meal", 200)
-        else:
-            return make_response("Enter a valid meal name and price", 400)
+            
 
     def update_meal(self, _id, meal_name, price):
         """Enables caterer to change a specific meal option"""
@@ -112,6 +116,8 @@ class Meal:
         for meal in self.meals:
             if meal["id"] == meal_id:
                 return meal
+            
+        
 
     def delete_meal(self, meal_id):
         """Enables the caterer to resolve/remove meal options"""
