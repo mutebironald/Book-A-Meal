@@ -21,6 +21,7 @@ def create_app(config_name):
     app.config["SECRET_KEY"] = secret
     with app.app_context():
         db.init_app(app)
+        db.create_all()
 
     @app.route("/")
     def home():
@@ -136,9 +137,11 @@ def create_app(config_name):
             user_id = User.decode_token(access_token)
             if isinstance(user_id, int):
                 data = request.data
+
                 name = data["name"]
                 price = data["price"]
-                return Meal.create_meal(name, price)
+                meal = Meal(name, price)
+                return meal.create_meal()
         return "nope"
 
     @app.route("/api/v1/meals/<int:id>", methods=["PUT"])

@@ -72,7 +72,7 @@ class User(db.Model):
 
 class Meal(db.Model):
     """Defines the 'Meal' model mapped to database table 'meal'."""
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(46), nullable=False, unique=True)
     price = db.Column(db.Integer, nullable=False)
     menus = db.relationship("Menu", backref="meal")
@@ -82,14 +82,15 @@ class Meal(db.Model):
         self.name = name
         self.price = price
 
-    @staticmethod
-    def save():
+    def save(self):
         try:
+            db.session.add(self)
             db.session.commit()
             return True
-        except BaseException:
+        except :
             db.session.rollback()
             return False
+        # except 
 
     def delete(self):
         """Removes item from meal table"""
@@ -130,33 +131,38 @@ class Meal(db.Model):
         results.append(obj)
         return make_response(jsonify(results), 200)
 
-    @staticmethod
-    def create_meal(name, price):
+    def create_meal(self):
         # if not re.match("/^[a-zA-Z]+$/", name):
         #     return "Meal must be text only", 400
+        # try:
+        #     if len(name) < 8 or len(name) > 50:
+        #         raise AssertionError(
+        #             'Meal name must be between 8 and 50 characters')
+        #     price = int(price)
+        #     if not isinstance(price, int):
+        #         return "Invalid Price"
+
+        # except Exception as e:
+        #     return "Invalid data"
+
+        # else:
+
+        # meal = Meal(name, price)
+        # print(meal.id)
         try:
-            if len(name) < 8 or len(name) > 50:
-                raise AssertionError(
-                    'Meal name must be between 8 and 50 characters')
-            price = int(price)
-            if not isinstance(price, int):
-                return "Invalid Price"
-
-        except Exception as e:
-            return "Invalid data"
-
-        else:
-
-            meal = Meal(name, price)
-            meal.save()
+            self.save()
             response = jsonify({
-                "id": meal.id,
-                "name": meal.name,
-                "price": meal.price,
+                "id": self.id,
+                "name": self.name,
+                "price": self.price,
             })
             response.status_code = 201
             print(response)
             return response
+
+        except Exception as e:
+            return str(e)
+        # return "Invalid data"
 
     @staticmethod
     def update_meal(id, name, price):
