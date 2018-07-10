@@ -1,4 +1,9 @@
 from functools import wraps
+from flask import request,jsonify
+
+from . import authentication
+
+auth = authentication.Token()
 
 def login_required(f):
     @wraps(f)
@@ -18,4 +23,3 @@ def login_required(f):
                     return jsonify({"message": "Invalid token"}), 401
         return jsonify({"message": "Token is missing"}), 400
     return wrap
-    

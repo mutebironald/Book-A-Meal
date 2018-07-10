@@ -70,42 +70,35 @@ class Meal:
 
     def account_update_meal(self, meal_id, meal_name, price):
         """Implements the update meal logic"""
-        if isinstance(price, int) and meal_name:
-            self.update_meal(meal_id, meal_name, price)
+        if isinstance(price, int):
+            for meal in self.meals:
+                if meal["id"] == meal_id:
+                    meal["meal_name"] = meal_name
+                    meal["price"] = price
+                    break
+
             update = self.get_meal(meal_id)
             return jsonify({"meal": update}), 200
         else:
             return make_response("Enter a valid meal name and price", 400)
 
-    def add_meal(self, meal_name, price):
-        """Enables caterer to add a meal option"""
-        self.meals.append({
-            "id": self.id,
-            "meal_name": meal_name,
-            "price": price
-        })
-        self.id += 1
-        return meal_name
-
     def create_meal(self, meal_name, price):
         """Enables meal creation"""
-    
+
         try:
             price = int(price)
         except ValueError:
             return make_response("Enter a valid meal name and price", 400)
         else:
-            self.add_meal(meal_name, price)
-            return make_response("You successfully created a meal", 200)
-            
-
-    def update_meal(self, _id, meal_name, price):
-        """Enables caterer to change a specific meal option"""
-        for meal in self.meals:
-            if meal["id"] == _id:
-                meal["meal_name"] = meal_name
-                meal["price"] = price
-                break
+            self.meals.append({
+                "id": self.id,
+                "meal_name": meal_name,
+                "price": price
+            })
+            self.id += 1
+            response = jsonify(self.meals)
+            response.status_code = 201
+            return make_response(response, "You successfully created a meal")
 
     def get_meals(self):
         """Returns all available meal options"""
@@ -116,25 +109,16 @@ class Meal:
         for meal in self.meals:
             if meal["id"] == meal_id:
                 return meal
-            
-        
 
-    def delete_meal(self, meal_id):
-        """Enables the caterer to resolve/remove meal options"""
+    def account_delete_meal(self, meal_id):
+        """Enables meal deletion"""
         c = 0
         for meal in self.meals:
             if meal["id"] == meal_id:
                 del self.meals[c]
-                return True
+                return make_response("The meal has been deleted", 202)
             c += 1
-
-    def account_delete_meal(self, meal_id):
-        """Enables meal deletion"""
-        meal = self.delete_meal(meal_id)
-        if meal:
-            return make_response("The meal has been deleted", 202)
-        else:
-            return make_response("The meal specified is not present", 400)
+        return make_response("The meal specified is not present", 400)
 
 
 class Menu:
@@ -145,13 +129,9 @@ class Menu:
         self.menu = []
         self.meals = meals
 
-    def get_menu(self):
-        """Enables menu retrieval"""
-        return self.menu
-
     def account_get_menu(self):
         """Implements get meal logic"""
-        menu = self.get_menu()
+        menu = self.menu
         if menu:
             return jsonify({"MENU": menu}), 200
         else:
@@ -159,21 +139,13 @@ class Menu:
 
     def account_setup_menu(self, meal_id):
         """Helps caterer to set the menu for a specific day"""
-        output = self.setup_menu(meal_id)
-        if output:
-            return jsonify({"MENU": output}), 201
-        else:
-            return make_response("Incorrect meal option"), 404
-
-    def setup_menu(self, meal_id):
-        """Implements menu creation"""
         meal_get = self.meals.get_meals()
         for meal in meal_get:
             if meal["id"] == int(meal_id):
                 self.menu.append(meal)
-                return self.menu
+                return jsonify({"MENU": self.menu}), 201
             else:
-                return False
+                return make_response("Incorrect meal option"), 404
 
 
 class Order:
@@ -185,16 +157,18 @@ class Order:
         self.menu = menu
         self.id = 1
 
-    def new_order(self, meal_id):
-        """Helps in making a new order"""
-        self.add_order(meal_id, datetime.datetime.utcnow())
-        return "Your order has been logged and a you will be served shortly"
+    # def new_order(self, meal_id):
+    #     """Helps in making a new order"""
+    #     self.add_order(meal_id, datetime.datetime.utcnow())
+    #     return "Your order has been logged and a you will be served shortly"
 
     def add_order(self, meal_id, time):
         """Enables customer to make an order."""
-        menu_returned = self.menu.get_menu()
+        # menu_returned = self.menu.account_get_menu()
+        menu_returned = self.menu
+        print(self.menu)
         for meal in menu_returned:
-            if meal["id"] == int(meal_id):
+            if meal["id"] == meal_id:
                 self.orders.append({
                     "id": self.id,
                     "meal": meal,
@@ -202,22 +176,27 @@ class Order:
                     "cleared": False
                 })
                 self.id += 1
-                print(self.id)
-                return self.orders
+                # print(self.id)
+                # return self.orders
+                response = self.orders
+                response.status_code = 200
+                return make_response(jsonify(response), \
+                "Your order has been logged and a you will be served shortly")
 
     def get_all_orders(self):
         """Enables caterer to retrieve all orders"""
         now = datetime.datetime.utcnow()
-        orders = self.get_orders()
+        # orders = self.get_orders()
+        orders = self.orders
         for order in orders:
             deltaseconds = (now - order["time"]).seconds
             order["wait_minutes"] = "{}.{}".format(
                 (deltaseconds / 60), str(deltaseconds % 60).zfill(2))
             return jsonify({"orders": orders}), 200
 
-    def get_orders(self):
-        """Returns all orders belonging to a particular caterer"""
-        return self.orders
+    # def get_orders(self):
+    #     """Returns all orders belonging to a particular caterer"""
+    #     return self.orders
 
     def get_order(self, order_id):
         for order in self.orders:

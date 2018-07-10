@@ -9,7 +9,7 @@ from . import authentication
 from .decorators import login_required
 
 
-auth = authentication.Token
+auth = authentication.Token()
 
 Swagger(app)
 users = User()
@@ -345,7 +345,8 @@ def new_order():
     """Enables customer to make an order"""
     data = request.get_json()
     meal_id = data["meal_id"]
-    return orders2.new_order(meal_id)
+    # return orders2.new_order(meal_id)
+    return orders2.add_order(meal_id, time=datetime.datetime.utcnow())
 
 
 @app.route("/api/v1/orders")
@@ -460,7 +461,3 @@ def setup_menu():
     data = request.get_json()
     meal_id = data["meal_id"]
     return menus.account_setup_menu(meal_id)
-
-
-# if __name__ == "__main__":
-#     app.run(debug=True)
