@@ -1,17 +1,15 @@
-from flask import request, jsonify, make_response, json
-from .classes.models import User, Meal, Menu, Order
-
-from . import app, PH
 import datetime
 import re
 from flasgger import Swagger
-from . import authentication
+from flask import request, jsonify, make_response, json
 
-from functools import wraps
+from .models.model import User, Meal, Menu, Order
+from . import app, PH
+from . import authentication
+from .decorators import login_required
 
 
 auth = authentication.Token
-
 
 Swagger(app)
 users = User()
@@ -19,24 +17,6 @@ meals2 = Meal()
 menus = Menu(meals2)
 orders2 = Order(menus)
 
-def login_required(f):
-  @wraps(f)
-  def wrap(*args, **kwargs):
-      access_token = request.headers.get("Authorization")
-      if access_token:
-            try:
-              user_id = auth.decode_token(access_token)
-
-            except Exception as e:
-              return str(e)
-
-            else:
-              if isinstance (user_id, int):
-                return f(*args, **kwargs)
-              else:
-                return jsonify({"message":"Invalid token"}), 401
-      return jsonify({"message":"Token is missing"}), 400
-  return wrap
 
 @app.route("/")
 def home():
@@ -168,6 +148,7 @@ def account_get_meals():
     meals = meals2.get_meals()
     return make_response(jsonify({"Meals": meals}), 200)
 
+
 @app.route("/api/v1/meals/<int:id>", methods=["GET"])
 @login_required
 def get_meal(id):
@@ -195,7 +176,7 @@ def get_meal(id):
           200:
               description: A successfully returned meal.
     """
- 
+
     meals = meals2.get_meal(id)
     return make_response(jsonify({"Meal": meals}), 200)
 
@@ -481,5 +462,5 @@ def setup_menu():
     return menus.account_setup_menu(meal_id)
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
