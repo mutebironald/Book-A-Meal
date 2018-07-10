@@ -1,9 +1,8 @@
 import jwt
 import datetime
-from . import app
-
-from functools import wraps
 from flask import request
+
+from . import app
 
 
 class Token:
@@ -28,18 +27,8 @@ class Token:
         """Decodes the access token from the Authorization header."""
         try:
             payload = jwt.decode(token, app.config["SECRET_KEY"])
-            return payload["sub"]
+            # return payload["sub"]
+            return True
 
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
             return False
-
-    @staticmethod
-    def login_required(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            access_token = request.headers.get("Authorization")
-            if access_token:
-                print(access_token)
-                user_id = Token.decode_token(access_token)
-            return f(*args, **kwargs)
-        return decorated_function
