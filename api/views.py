@@ -315,6 +315,7 @@ def account_delete_meal(meal_id):
 
 
 @app.route("/api/v1/orders", methods=['POST'])
+@login_required
 def new_order():
     """
     Orders route
@@ -349,11 +350,12 @@ def new_order():
     """Enables customer to make an order"""
     data = request.get_json()
     meal_id = data["meal_id"]
-    # return orders2.new_order(meal_id)
+    
     return orders2.add_order(meal_id, time=datetime.datetime.utcnow())
 
 
 @app.route("/api/v1/orders")
+@login_required
 def get_all_orders():
     """
     orders route
@@ -377,6 +379,7 @@ def get_all_orders():
 
 
 @app.route("/api/v1/orders/<int:id>")
+@login_required
 def get_order(id):
     """
     Orders route
@@ -407,6 +410,7 @@ def get_order(id):
 
 
 @app.route("/api/v1/menu")
+@login_required
 def get_menu():
     """
     Menu route
@@ -431,6 +435,7 @@ def get_menu():
 
 
 @app.route("/api/v1/menu", methods=["post"])
+@login_required
 def setup_menu():
     """
     Menu route

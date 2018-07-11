@@ -11,7 +11,7 @@ class Meal:
 
     def account_update_meal(self, meal_id, meal_name, price):
         """Implements the update meal logic"""
-        if isinstance(price, int):
+        if isinstance(price, int) and meal_name:
             for meal in self.meals:
                 if meal["id"] == meal_id:
                     meal["meal_name"] = meal_name
