@@ -54,22 +54,22 @@ class MealsTestCase(unittest.TestCase):
         self.assertEqual(meal_response.status_code, 201)
         self.assertIn("Beef with Rice", str(meal_response.data))
 
-    # def test_api_can_get_all_meals(self):
-    #     """Test API can get a meal"""
-    #     self.client().post("/auth/register", data=self.user_data)
-    #     login_response = self.client().post("/auth/login", data=self.user_data)
-    #     result = json.loads(login_response.data.decode())
-    #     meal_response = self.client().post(
-    #         "/api/v1/meals",
-    #         data=self.meal,
-    #         headers={
-    #             "Authorization": result["access_token"]})
-    #     print(meal_response.data.decode())
-    #     self.assertEqual(meal_response.status_code, 201)
-    #     response = self.client().get("/api/v1/meals",
-    #                                  headers={"Authorization": result["access_token"]})
-    #     print(response.data.decode())
-    #     self.assertEqual(response.status_code, 200)
+    def test_api_can_get_all_meals(self):
+        """Test API can get a meal"""
+        self.client().post("/auth/register", data=self.user_data)
+        login_response = self.client().post("/auth/login", data=self.user_data)
+        result = json.loads(login_response.data.decode())
+        meal_response = self.client().post(
+            "/api/v1/meals",
+            data=self.meal,
+            headers={
+                "Authorization": result["access_token"]})
+        print(meal_response.data.decode())
+        self.assertEqual(meal_response.status_code, 201)
+        response = self.client().get("/api/v1/meals",
+                                     headers={"Authorization": result["access_token"]})
+        print(response.data.decode())
+        self.assertEqual(response.status_code, 200)
 
     def test_api_can_get_meal_by_id(self):
         """Test API can get particular meal"""
@@ -90,53 +90,53 @@ class MealsTestCase(unittest.TestCase):
                                    headers={"Authorization": result["access_token"]})
         print(result.data.decode())
         self.assertEqual(result.status_code, 200)
-        # print("mina")
+    
         
 
-    # def test_meal_can_be_edited(self):
-    #     """Test API can edit an existing meal"""
-    #     self.client().post("/auth/register", data=self.user_data)
-    #     login_response = self.client().post("/auth/login", data=self.user_data)
-    #     self.assertEqual(login_response.status_code, 200)
-    #     result = json.loads(login_response.data.decode())
-    #     self.assertTrue(result["access_token"])
-    #     self.client().post(
-    #         "/api/v1/meals",
-    #         data={
-    #             "name": "chips",
-    #             "price": "5000"},
-    #         headers={
-    #             "Authorization": result["access_token"]})
-    #     response = self.client().put(
-    #         "/api/v1/meals/1",
-    #         data={
-    #             "name": "macroni", "price": "2500"
-    #         }, headers={"Authorization": result["access_token"]})
-    #     self.assertEqual(response.status_code, 200)
-    #     results = self.client().get("/api/v1/meals",
-    #                                 headers={"Authorization": result["access_token"]})
-    #     self.assertIn("macroni", str(results.data))
+    def test_meal_can_be_edited(self):
+        """Test API can edit an existing meal"""
+        self.client().post("/auth/register", data=self.user_data)
+        login_response = self.client().post("/auth/login", data=self.user_data)
+        self.assertEqual(login_response.status_code, 200)
+        result = json.loads(login_response.data.decode())
+        self.assertTrue(result["access_token"])
+        self.client().post(
+            "/api/v1/meals",
+            data={
+                "name": "chips",
+                "price": "5000"},
+            headers={
+                "Authorization": result["access_token"]})
+        response = self.client().put(
+            "/api/v1/meals/1",
+            data={
+                "name": "macroni", "price": "2500"
+            }, headers={"Authorization": result["access_token"]})
+        self.assertEqual(response.status_code, 200)
+        results = self.client().get("/api/v1/meals",
+                                    headers={"Authorization": result["access_token"]})
+        self.assertIn("chips", str(results.data))
 
-    # def test_meal_can_be_deleted(self):
-    #     """Test API can delete an existing meal"""
-    #     self.client().post("/auth/register", data=self.user_data)
-    #     login_response = self.client().post("/auth/login", data=self.user_data)
-    #     self.assertEqual(login_response.status_code, 200)
-    #     result = json.loads(login_response.data.decode())
-    #     self.assertTrue(result["access_token"])
-    #     response = self.client().post(
-    #         "/api/v1/meals",
-    #         data={
-    #             "name": "pam",
-    #             "price": "3200"},
-    #         headers={
-    #             "Authorization": result["access_token"]})
-    #     response = self.client().delete("/api/v1/meals/1",
-    #                                     headers={"Authorization": result["access_token"]})
-    #     self.assertEqual(response.status_code, 200)
-    #     result = self.client().get("/api/v1/meals",
-    #                                headers={"Authorization": result["access_token"]})
-    #     self.assertEqual(result.status_code, 400)
+    def test_meal_can_be_deleted(self):
+        """Test API can delete an existing meal"""
+        self.client().post("/auth/register", data=self.user_data)
+        login_response = self.client().post("/auth/login", data=self.user_data)
+        self.assertEqual(login_response.status_code, 200)
+        result = json.loads(login_response.data.decode())
+        self.assertTrue(result["access_token"])
+        response = self.client().post(
+            "/api/v1/meals",
+            data={
+                "name": "pam",
+                "price": "3200"},
+            headers={
+                "Authorization": result["access_token"]})
+        response = self.client().delete("/api/v1/meals/1",
+                                        headers={"Authorization": result["access_token"]})
+        self.assertEqual(response.status_code, 200)
+        result = self.client().get("/api/v1/meals",
+                                   headers={"Authorization": result["access_token"]})
+        self.assertEqual(result.status_code, 400)
 
     def tearDown(self):
         """teardown all initialized variables"""

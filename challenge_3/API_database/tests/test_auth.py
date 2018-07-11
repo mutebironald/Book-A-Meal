@@ -42,7 +42,8 @@ class AuthTestCase(unittest.TestCase):
         """tests wether a user can register with invalid password"""
         user_data = {
             "email": "ronald@gmail.com",
-            "password": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzA5ODAyNDIsInN1YiI6Nn0.FDWEgSrNXmt6r_8ocwVbMRbU1h9u76w-ZhQ71SoJJus"
+            "password": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzA5\
+            ODAyNDIsInN1YiI6Nn0.FDWEgSrNXmt6r_8ocwVbMRbU1h9u76w-ZhQ71SoJJus"
         }
         response = self.client().post("/auth/register", data=user_data)
         result = json.loads(response.data.decode())
