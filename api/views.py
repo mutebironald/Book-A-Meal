@@ -3,7 +3,11 @@ import re
 from flasgger import Swagger
 from flask import request, jsonify, make_response, json
 
-from .models.model import User, Meal, Menu, Order
+from .models.user import User
+from .models.menu import Menu
+from .models.meal import Meal
+from .models.order import Order
+
 from . import app, PH
 from . import authentication
 from .decorators import login_required
