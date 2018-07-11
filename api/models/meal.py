@@ -39,7 +39,7 @@ class Meal:
             self.id += 1
             response = jsonify(self.meals)
             response.status_code = 201
-            return make_response(response, "You successfully created a meal")
+            return make_response(response, 201)
 
     def get_meals(self):
         """Returns all available meal options"""
