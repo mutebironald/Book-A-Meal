@@ -6,8 +6,6 @@ import os
 import binascii
 
 from instance.config import app_config
-# from app.decorators import login_required
-# from ...auth import login_required
 
 
 db = SQLAlchemy()
@@ -138,10 +136,6 @@ def create_app(config_name):
 
         name = data["name"]
         price = data["price"]
-        # meal = Meal(name, price)
-        print(name)
-        print(price)
-        # print(meal.create_meal(name, price))
         return Meal.create_meal(name, price)
 
     @app.route("/api/v1/meals/<int:id>", methods=["PUT"])
@@ -273,7 +267,6 @@ def create_app(config_name):
                 description: The menu has been successfully returned.
         """
         data = request.data
-        # id = int(request.data.get("meal_id"))
         id = data['meal_id']
         if id:
             return Menu.setup_menu(id)
