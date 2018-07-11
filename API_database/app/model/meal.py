@@ -1,5 +1,3 @@
-from flask_bcrypt import Bcrypt
-import jwt
 from datetime import datetime, timedelta
 from flask import jsonify, make_response
 
@@ -7,7 +5,6 @@ from app.__init__ import db, secret
 import datetime
 
 from app import db
-import re
 
 
 class Meal(db.Model):
@@ -67,10 +64,7 @@ class Meal(db.Model):
 
     @staticmethod
     def create_meal(name, price):
-        print("wagubi")
         meal = Meal(name, price)
-        print("-----")
-        print(str(meal) + "hello")
         meal.save()
         response = jsonify({
             'id': meal.id,

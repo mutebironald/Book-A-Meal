@@ -1,5 +1,3 @@
-from flask_bcrypt import Bcrypt
-import jwt
 from datetime import datetime, timedelta
 from flask import jsonify, make_response
 
