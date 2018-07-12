@@ -24,22 +24,6 @@ class MealsTestCase(unittest.TestCase):
             db.drop_all()
             db.create_all()
 
-    # def register_user(self, email='mail@gmail.com', password='epic'):
-    #     """This helper method helps register a test user."""
-    #     user_data = {
-    #         "email": email,
-    #         "password": password
-    #     }
-    #     return self.client().post("/auth/register", data=user_data)
-
-    # def login_user(self, email="mail@gmail.com", password="apic"):
-    #     """This helper method helps log in a test user."""
-    #     user_data = {
-    #         "email": email,
-    #         "password": password
-    #     }
-    #     return self.client().post('/auth/login', data=user_data)
-
     def test_meal_creation(self):
         """Test API can create a meal"""
         self.client().post("/auth/register", data=self.user_data)
