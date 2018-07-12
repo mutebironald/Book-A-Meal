@@ -1,4 +1,4 @@
-# Book-A-Meal  [![Build Status](https://travis-ci.org/mutebironald4/Book-A-Meal.svg?branch=develop)](https://travis-ci.org/mutebironald4/Book-A-Meal)  [![Coverage Status](https://coveralls.io/repos/github/mutebironald4/Book-A-Meal/badge.svg?branch=develop)](https://coveralls.io/github/mutebironald4/Book-A-Meal?branch=develop)  [![Maintainability](https://api.codeclimate.com/v1/badges/6017bd197aef0cd427f8/maintainability)](https://codeclimate.com/github/mutebironald4/Book-A-Meal/maintainability)
+# Book-A-Meal  [![Build Status](https://travis-ci.org/mutebironald4/Book-A-Meal.svg?branch=master)](https://travis-ci.org/mutebironald4/Book-A-Meal)  [![Coverage Status](https://coveralls.io/repos/github/mutebironald4/Book-A-Meal/badge.svg?branch=develop)](https://coveralls.io/github/mutebironald4/Book-A-Meal?branch=develop)  [![Maintainability](https://api.codeclimate.com/v1/badges/6017bd197aef0cd427f8/maintainability)](https://codeclimate.com/github/mutebironald4/Book-A-Meal/maintainability)
 
 
 Our application is a meal booking app that allows customers to make food orders and helps the food vendor know what the customers want to eat.
