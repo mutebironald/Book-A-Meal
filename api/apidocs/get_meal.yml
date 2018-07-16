@@ -1,0 +1,23 @@
+Meals route
+---
+tags:
+- Book-A-Meal API
+parameters:
+- name: Authorization
+    in: header
+    required: true
+    properties:
+    Authorization:
+        type: "string"
+- name: id
+    in: path
+    required: true
+    properties:
+    id:
+        type: "int"
+    default: 1
+responses:
+    400:
+        description: The meal with the specified id is absent
+    200:
+        description: The meal is successfully returned.

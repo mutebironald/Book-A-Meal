@@ -2,14 +2,10 @@ from . import auth_blueprint
 
 from flask.views import MethodView
 from flask import make_response, request, jsonify
-# from app.models import User
 from app.model.user import User
 import re
 
 from ..authentication import Token
-
-# authentication.Token.generate_token
-
 
 
 class RegistrationView(MethodView):
@@ -18,7 +14,6 @@ class RegistrationView(MethodView):
     def post(self):
         """Handle a POST request for this view. Url ---> /auth/register"""
         user = User.query.filter_by(email=request.data["email"]).first()
-
         if not user:
             try:
                 message = "Wrong email or password"
@@ -74,7 +69,6 @@ class LoginView(MethodView):
             user = User.query.filter_by(email=request.data["email"]).first()
 
             if user and user.password_is_valid(request.data["password"]):
-                print(user.id)
                 token = Token()
                 access_token =  token.generate_token(user.id)
                 if access_token:

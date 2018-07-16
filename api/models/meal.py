@@ -72,7 +72,6 @@ class Meal(db.Model):
             'price': meal.price,
         })
         response.status_code = 201
-        print(response)
         return response
 
     @staticmethod

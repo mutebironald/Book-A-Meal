@@ -60,7 +60,7 @@ class MealsTestCase(unittest.TestCase):
         self.client().post('/auth/register', data=self.user_data)
         login_response = self.client().post("/auth/login", data=self.user_data)
         self.assertEqual(login_response.status_code, 200)
-        result = json.loads(login_response.data.decode())
+        result = json.loads(login_response.data.decode()) 
         self.assertTrue(result["access_token"])
         response = self.client().post(
             "/api/v1/meals",
@@ -74,7 +74,7 @@ class MealsTestCase(unittest.TestCase):
                                    headers={"Authorization": result["access_token"]})
         print(result.data.decode())
         self.assertEqual(result.status_code, 200)
-    
+
         
 
     def test_meal_can_be_edited(self):

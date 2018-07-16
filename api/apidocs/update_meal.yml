@@ -1,0 +1,39 @@
+Meals route
+---
+tags:
+- Book-A-Meal API
+parameters:
+- name: body
+    in: body
+    required: true
+    schema:
+    type: object
+    required:
+        - "meal_name"
+        - "price"
+    properties:
+        meal_name:
+        type: "string"
+        example: "Chicken na ketchup"
+        price:
+        type: "int"
+        example: "6000"
+- name: meal_id
+    in: path
+    required: true
+    properties:
+    meal_id:
+        type: "int"
+    default: 1
+- name: Authorization
+    in: header
+    required: true
+    properties:
+    Authorization:
+        type: "string"
+
+responses:
+    404:
+        description: The meal you want to update is not in the database.
+    200:
+        description: The meal has been successfully updated.

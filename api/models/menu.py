@@ -2,9 +2,10 @@ from datetime import datetime, timedelta
 from flask import jsonify, make_response
 
 from app.__init__ import db, secret
-import datetime
+from datetime import datetime
 
 from app import db
+
 
 
 class Menu(db.Model):

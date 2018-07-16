@@ -1,0 +1,30 @@
+Meals route
+---
+tags:
+- Book-A-Meal API
+parameters:
+- name: body
+    in: body
+    required: true
+    schema:
+    type: object
+    required:
+        - "meal_name"
+        - "price"
+    properties:
+        meal_name:
+        type: "string"
+        example: "Indian potatoes with Ughali"
+        price:
+        type: "string"
+        example: "6000"
+- name: Authorization
+    in: header
+    required: true
+    properties:
+    Authorization:
+        type: "string"
+
+responses:
+    200:
+        description: The meal has been created.

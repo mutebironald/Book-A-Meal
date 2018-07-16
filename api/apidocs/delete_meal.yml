@@ -1,0 +1,21 @@
+Meals route
+---
+tags:
+- Book-A-Meal API
+parameters:
+- name: meal_id
+    in: path
+    required: true
+    properties:
+    meal_id:
+        type: "int"
+    default: 1
+- name: Authorization
+    in: header
+    required: true
+    properties:
+    Authorization:
+        type: "string"
+responses:
+    200:
+        description: The meal with the ID specified has been deleted

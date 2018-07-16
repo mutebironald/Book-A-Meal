@@ -1,0 +1,16 @@
+Menu route
+---
+tags:
+- Book-A-Meal API
+parameters:
+- name: Authorization
+    in: header
+    required: true
+    properties:
+    Authorization:
+        type: "string"
+responses:
+    400:
+        description: There is no menu present.
+    200:
+        description: The menu has successfully been returned.
